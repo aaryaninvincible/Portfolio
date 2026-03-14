@@ -1,15 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export const CursorFollower: React.FC = () => {
+    const [isEnabled, setIsEnabled] = useState(false);
     const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [target, setTarget] = useState({ x: 0, y: 0 });
     const [isVisible, setIsVisible] = useState(false);
+    const targetRef = useRef({ x: 0, y: 0 });
 
     useEffect(() => {
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+        const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        setIsEnabled(isFinePointer && !isReducedMotion);
+    }, []);
+
+    useEffect(() => {
+        if (!isEnabled) {
+            return;
+        }
+
         let animationFrameId: number;
 
         const onMouseMove = (e: MouseEvent) => {
-            setTarget({ x: e.clientX, y: e.clientY });
+            targetRef.current = { x: e.clientX, y: e.clientY };
             setIsVisible(true);
         };
 
@@ -20,8 +35,8 @@ export const CursorFollower: React.FC = () => {
         // Use requestAnimationFrame for smooth trailing effect
         const animate = () => {
             setPosition(prev => ({
-                x: prev.x + (target.x - prev.x) * 0.15,
-                y: prev.y + (target.y - prev.y) * 0.15,
+                x: prev.x + (targetRef.current.x - prev.x) * 0.15,
+                y: prev.y + (targetRef.current.y - prev.y) * 0.15,
             }));
             animationFrameId = requestAnimationFrame(animate);
         };
@@ -36,7 +51,11 @@ export const CursorFollower: React.FC = () => {
             window.removeEventListener('mouseout', onMouseOut);
             cancelAnimationFrame(animationFrameId);
         };
-    }, [target]);
+    }, [isEnabled]);
+
+    if (!isEnabled) {
+        return null;
+    }
 
     return (
         <div

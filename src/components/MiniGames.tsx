@@ -418,16 +418,16 @@ export const MiniGames: React.FC = () => {
     }, []);
 
     return (
-        <div className="w-full max-w-2xl mx-auto space-y-6">
+        <div className="w-full max-w-full sm:max-w-2xl mx-auto space-y-5">
 
             {/* Game Selector */}
-            <div className="flex flex-wrap gap-3 justify-center">
-                <button className="game-select-btn px-6 py-2 rounded-lg font-mono text-sm tracking-wider uppercase border transition-all" data-game="flappy">Flappy Neon</button>
-                <button className="game-select-btn px-6 py-2 rounded-lg font-mono text-sm tracking-wider uppercase border transition-all" data-game="dino">Dino Dash</button>
-                <button className="game-select-btn px-6 py-2 rounded-lg font-mono text-sm tracking-wider uppercase border transition-all" data-game="dodge">Sky Dodge</button>
+            <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:gap-3 sm:justify-center">
+                <button className="game-select-btn min-h-11 rounded-lg px-2 text-center font-mono text-[10px] sm:px-6 sm:text-sm tracking-wide uppercase border transition-all" data-game="flappy">Flappy</button>
+                <button className="game-select-btn min-h-11 rounded-lg px-2 text-center font-mono text-[10px] sm:px-6 sm:text-sm tracking-wide uppercase border transition-all" data-game="dino">Dino</button>
+                <button className="game-select-btn min-h-11 rounded-lg px-2 text-center font-mono text-[10px] sm:px-6 sm:text-sm tracking-wide uppercase border transition-all" data-game="dodge">Dodge</button>
             </div>
 
-            <div className="glass p-6 rounded-2xl border border-white/10 relative overflow-hidden">
+            <div className="glass p-3 sm:p-6 rounded-2xl border border-white/10 relative overflow-hidden">
 
                 {/* Flappy */}
                 <div className="game-card flex flex-col items-center" data-game="flappy">

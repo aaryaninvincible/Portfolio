@@ -2,14 +2,16 @@ import React, { useRef, useState } from 'react';
 
 type GlassCardProps = React.HTMLAttributes<HTMLDivElement> & {
     children: React.ReactNode;
+    disableTilt?: boolean;
 };
 
-export const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', ...props }) => {
+export const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', disableTilt = false, ...props }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const [style, setStyle] = useState({});
     const [glareStyle, setGlareStyle] = useState<React.CSSProperties>({ opacity: 0 });
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (disableTilt) return;
         if (!cardRef.current) return;
         const rect = cardRef.current.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -36,6 +38,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', 
     };
 
     const handleMouseLeave = () => {
+        if (disableTilt) return;
         setStyle({
             transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
             transition: 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s',

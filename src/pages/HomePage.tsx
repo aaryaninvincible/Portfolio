@@ -14,11 +14,13 @@ import {
   Rocket,
   Send,
   ShieldCheck,
+  Trophy,
   Utensils,
   Youtube,
 } from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
 import { MiniGames } from '../components/MiniGames';
+import { linkedInAchievements, linkedInCertificates } from '../data/profile';
 import { fetchGitHubProjects } from '../lib/github';
 import {
   submitContactMessage,
@@ -128,6 +130,7 @@ export const HomePage: React.FC = () => {
   }, [adminProjects, githubProjects]);
 
   const featuredProjects = projects.filter((project) => project.featured || project.source === 'github').slice(0, 9);
+  const visibleCertificates = certificates.length > 0 ? certificates : linkedInCertificates;
 
   const handleContact = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -247,7 +250,7 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
 
-        <GlassCard className="p-8">
+        <GlassCard className="p-8" disableTilt>
           <h3 className="font-orbitron text-2xl mb-4 text-light flex items-center gap-2">
             <Bot className="text-primary" /> Gaming Highlights
           </h3>
@@ -312,11 +315,18 @@ export const HomePage: React.FC = () => {
           <span className="section-kicker">Certificates</span>
           <h2 className="text-3xl md:text-5xl font-orbitron">Verified Learning</h2>
         </div>
-        {certificates.length > 0 ? (
+        {visibleCertificates.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {certificates.map((certificate) => (
+            {visibleCertificates.map((certificate) => (
               <GlassCard key={certificate.id} className="overflow-hidden">
-                <img src={certificate.imageUrl} alt={certificate.title} className="h-56 w-full object-cover" />
+                {certificate.imageUrl ? (
+                  <img src={certificate.imageUrl} alt={certificate.title} className="h-56 w-full object-cover" />
+                ) : (
+                  <div className="flex h-40 items-center justify-center border-b border-white/10 bg-black/50 px-6 text-center">
+                    <Trophy className="mr-3 h-8 w-8 shrink-0 text-primary" />
+                    <span className="font-orbitron text-lg text-light">{certificate.issuer || 'Certificate'}</span>
+                  </div>
+                )}
                 <div className="p-6">
                   <h3 className="font-orbitron text-xl text-primary">{certificate.title}</h3>
                   <p className="mt-2 text-sm text-slate-300">{certificate.description}</p>
@@ -328,6 +338,21 @@ export const HomePage: React.FC = () => {
         ) : (
           <GlassCard className="p-8 text-center text-slate-300">Certificates will appear here after upload from admin.</GlassCard>
         )}
+      </section>
+
+      <section id="achievements" className="space-y-10">
+        <div className="text-center space-y-4">
+          <span className="section-kicker">Achievements</span>
+          <h2 className="text-3xl md:text-5xl font-orbitron">LinkedIn Profile Highlights</h2>
+        </div>
+        <div className="grid md:grid-cols-2 gap-6">
+          {linkedInAchievements.map((achievement) => (
+            <GlassCard key={achievement.title} className="p-6">
+              <h3 className="font-orbitron text-xl text-accent">{achievement.title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-slate-300">{achievement.description}</p>
+            </GlassCard>
+          ))}
+        </div>
       </section>
 
       <section id="repo-request" className="grid gap-8 lg:grid-cols-2">

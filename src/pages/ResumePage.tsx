@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Download, FileText } from 'lucide-react';
+import { Download, FileText, Maximize2 } from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
 import { subscribeToResume } from '../lib/realtime';
 import type { ResumeProfile } from '../types';
@@ -24,9 +24,27 @@ export const ResumePage: React.FC = () => {
         </a>
       </div>
 
-      <GlassCard className="p-3 min-h-[70vh]">
+      <GlassCard className="p-3 min-h-[70vh]" disableTilt>
         {resumeUrl ? (
-          <iframe title="Aryan Raikwar resume" src={resumeUrl} className="h-[75vh] w-full rounded-lg bg-white" />
+          <div className="overflow-hidden rounded-lg bg-white">
+            <object data={`${resumeUrl}#toolbar=0&navpanes=0`} type="application/pdf" className="hidden h-[78vh] w-full md:block">
+              <div className="flex min-h-[60vh] items-center justify-center p-6 text-center text-slate-900">
+                <div>
+                  <FileText className="mx-auto mb-4 h-12 w-12" />
+                  PDF preview is not supported in this browser.
+                </div>
+              </div>
+            </object>
+            <div className="flex min-h-[55vh] items-center justify-center p-6 text-center text-slate-900 md:hidden">
+              <div>
+                <FileText className="mx-auto mb-4 h-12 w-12" />
+                <p className="mb-5 font-bold">Resume preview opens best in full screen on mobile.</p>
+                <a href={resumeUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-5 py-3 text-white">
+                  <Maximize2 size={18} /> Open Resume
+                </a>
+              </div>
+            </div>
+          </div>
         ) : (
           <div className="flex min-h-[60vh] items-center justify-center text-center text-slate-300">
             <div>

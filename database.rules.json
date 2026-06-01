@@ -1,0 +1,32 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "projects": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email == 'aryanraikwar78@gmail.com'"
+    },
+    "certificates": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email == 'aryanraikwar78@gmail.com'"
+    },
+    "resume": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email == 'aryanraikwar78@gmail.com'"
+    },
+    "messages": {
+      ".read": "auth != null && auth.token.email == 'aryanraikwar78@gmail.com'",
+      "$messageId": {
+        ".write": "(!data.exists() && newData.exists() && auth == null) || (auth != null && auth.token.email == 'aryanraikwar78@gmail.com')",
+        ".validate": "(auth != null && auth.token.email == 'aryanraikwar78@gmail.com') || (newData.hasChildren(['name', 'email', 'message', 'status', 'createdAt']) && newData.child('name').isString() && newData.child('email').isString() && newData.child('message').isString() && newData.child('status').val() == 'new')"
+      }
+    },
+    "repoRequests": {
+      ".read": "auth != null && auth.token.email == 'aryanraikwar78@gmail.com'",
+      "$requestId": {
+        ".write": "(!data.exists() && newData.exists() && auth == null) || (auth != null && auth.token.email == 'aryanraikwar78@gmail.com')",
+        ".validate": "(auth != null && auth.token.email == 'aryanraikwar78@gmail.com') || (newData.hasChildren(['name', 'email', 'projectTitle', 'reason', 'status', 'createdAt']) && newData.child('name').isString() && newData.child('email').isString() && newData.child('projectTitle').isString() && newData.child('reason').isString() && newData.child('status').val() == 'pending')"
+      }
+    }
+  }
+}

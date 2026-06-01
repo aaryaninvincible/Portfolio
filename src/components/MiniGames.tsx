@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 export const MiniGames: React.FC = () => {
 
     useEffect(() => {
-        let animationFrames: number[] = [];
+        const animationFrames: number[] = [];
 
         // Safety check - if component unmounts, we should ideally cancel animation frames
         // But since it's an IIFE port, let's just make sure it runs once perfectly
@@ -29,6 +29,7 @@ export const MiniGames: React.FC = () => {
                 const H = flappyCanvas.height;
                 let running = false, started = false, paused = false, over = false, score = 0, last = 0, spawn = 0;
                 let bird = { x: 70, y: H / 2, vy: 0, r: 10 };
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let pipes: any[] = [];
                 let afId: number;
 
@@ -153,6 +154,7 @@ export const MiniGames: React.FC = () => {
 
                 let running = false, started = false, paused = false, over = false, score = 0, last = 0, spawn = 0;
                 let dino = { x: 45, y: 165, w: 22, h: 35, vy: 0 };
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let obstacles: any[] = [];
                 const ground = 200;
 
@@ -244,6 +246,7 @@ export const MiniGames: React.FC = () => {
 
                 let running = false, started = false, paused = false, over = false, score = 0, last = 0, spawn = 0;
                 let player = { x: W / 2 - 16, y: H - 24, w: 32, h: 12 };
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let blocks: any[] = [];
                 let moveLeft = false, moveRight = false;
 
@@ -335,6 +338,7 @@ export const MiniGames: React.FC = () => {
             const flappy = setupFlappy();
             const dino = setupDino();
             const dodge = setupDodge();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const games: any = { flappy, dino, dodge };
 
             const gameCards = document.querySelectorAll('.game-card[data-game]');
@@ -384,7 +388,10 @@ export const MiniGames: React.FC = () => {
                 if (activeGame === 'dino' && e.code === 'ArrowUp' && games.dino) games.dino.action();
                 if (e.code === 'KeyP') {
                     e.preventDefault();
-                    if (games[activeGame]) games[activeGame].isPaused() ? games[activeGame].resume() : games[activeGame].pause();
+                    if (games[activeGame]) {
+                        if (games[activeGame].isPaused()) games[activeGame].resume();
+                        else games[activeGame].pause();
+                    }
                 }
             };
 

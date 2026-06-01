@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import { ThemeSwitcher } from './ThemeSwitcher';
 
 const navLinks = [
     { name: 'Home', path: '/' },
+    { name: 'Resume', path: '/resume' },
     { name: 'Updates', path: '/updates' },
     { name: 'Gallery', path: '/gallery' },
     { name: 'All Work', path: '/all-work' },
@@ -24,7 +26,7 @@ export const Navbar: React.FC = () => {
                 <Link to="/" className="text-2xl font-black font-orbitron tracking-wider text-gradient animate-pulse-glow">
                     ARYAN ZONE
                 </Link>
-                <nav className="hidden md:flex gap-8">
+                <nav className="hidden md:flex gap-6">
                     {navLinks.map((link) => (
                         <Link
                             key={link.path}
@@ -39,15 +41,18 @@ export const Navbar: React.FC = () => {
                     ))}
                 </nav>
 
-                <button
-                    type="button"
-                    className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/15 text-light hover:text-primary hover:border-primary/40 transition-colors"
-                    aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
-                    aria-expanded={isMobileMenuOpen}
-                    onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-                >
-                    {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-                </button>
+                <div className="flex items-center gap-3">
+                    <ThemeSwitcher />
+                    <button
+                        type="button"
+                        className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/15 text-light hover:text-primary hover:border-primary/40 transition-colors"
+                        aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+                        aria-expanded={isMobileMenuOpen}
+                        onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+                    >
+                        {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+                    </button>
+                </div>
             </div>
 
             <nav

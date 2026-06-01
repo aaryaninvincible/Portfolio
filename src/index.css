@@ -3,14 +3,66 @@
 @tailwind utilities;
 
 @layer base {
+  :root,
+  [data-theme='amoled'] {
+    --color-primary: 34 211 238;
+    --color-secondary: 168 85 247;
+    --color-accent: 16 185 129;
+    --color-dark: 3 7 18;
+    --color-darker: 0 0 0;
+    --color-light: 248 250 252;
+    --glass-bg: rgba(10, 10, 12, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.12);
+  }
+
+  [data-theme='dark'] {
+    --color-primary: 56 189 248;
+    --color-secondary: 129 140 248;
+    --color-accent: 16 185 129;
+    --color-dark: 15 23 42;
+    --color-darker: 2 6 23;
+    --color-light: 248 250 252;
+    --glass-bg: rgba(30, 41, 59, 0.46);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
+
+  [data-theme='light'] {
+    --color-primary: 2 132 199;
+    --color-secondary: 79 70 229;
+    --color-accent: 5 150 105;
+    --color-dark: 241 245 249;
+    --color-darker: 248 250 252;
+    --color-light: 15 23 42;
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --glass-border: rgba(15, 23, 42, 0.12);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-darker text-light font-mono overflow-x-hidden;
+  }
+
+  input,
+  textarea,
+  select {
+    color-scheme: dark;
+  }
+
+  [data-theme='light'] input,
+  [data-theme='light'] textarea,
+  [data-theme='light'] select {
+    color-scheme: light;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-slate-800/40 backdrop-blur-md border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)];
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    @apply backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.1)];
   }
   
   .glass-hover {
@@ -19,5 +71,28 @@
   
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+  }
+
+  .input-shell {
+    @apply w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-light outline-none transition-all focus:border-primary focus:shadow-[0_0_10px_rgba(56,189,248,0.25)];
+  }
+
+  .section-kicker {
+    @apply text-xs uppercase tracking-[0.25em] text-primary font-bold;
+  }
+}
+
+@keyframes smoothRgbFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 300% 50%;
+  }
+}
+
+@keyframes spinRGB {
+  to {
+    transform: rotate(360deg);
   }
 }

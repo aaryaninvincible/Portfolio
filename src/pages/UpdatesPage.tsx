@@ -2,6 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { GlassCard } from '../components/GlassCard';
 import { Youtube, Github, Trophy, Code, Link as LinkIcon, ExternalLink } from 'lucide-react';
 
+type GitHubEvent = {
+    type: string;
+    created_at: string;
+    repo: { name: string };
+    payload: {
+        commits?: Array<{ message?: string; sha?: string }>;
+    };
+};
+
 const STATIC_UPDATES = [
     {
         id: 1,
@@ -81,15 +90,15 @@ const getTypeConfig = (type: string) => {
 };
 
 export const UpdatesPage: React.FC = () => {
-    const [liveGithubUpdate, setLiveGithubUpdate] = useState<any>(null);
+    const [liveGithubUpdate, setLiveGithubUpdate] = useState<GitHubEvent | null>(null);
 
     useEffect(() => {
         const fetchGithub = async () => {
             try {
                 const response = await fetch('https://api.github.com/users/aaryaninvincible/events/public');
                 if (!response.ok) return;
-                const events = await response.json();
-                const pushEvent = events.find((event: any) => event.type === 'PushEvent');
+                const events = (await response.json()) as GitHubEvent[];
+                const pushEvent = events.find((event) => event.type === 'PushEvent');
                 if (pushEvent) {
                     setLiveGithubUpdate(pushEvent);
                 }

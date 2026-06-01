@@ -1,6 +1,10 @@
 import React, { useRef, useState } from 'react';
 
-export const GlassCard: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => {
+type GlassCardProps = React.HTMLAttributes<HTMLDivElement> & {
+    children: React.ReactNode;
+};
+
+export const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', ...props }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const [style, setStyle] = useState({});
     const [glareStyle, setGlareStyle] = useState<React.CSSProperties>({ opacity: 0 });
@@ -46,6 +50,7 @@ export const GlassCard: React.FC<{ children: React.ReactNode; className?: string
             onMouseLeave={handleMouseLeave}
             className={`relative glass rounded-2xl overflow-hidden glass-hover [transform-style:preserve-3d] ${className}`}
             style={style}
+            {...props}
         >
             <div
                 className="absolute inset-0 pointer-events-none z-10 mix-blend-overlay transition-opacity duration-300"

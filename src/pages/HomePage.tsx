@@ -1,255 +1,393 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
+import {
+  Bot,
+  CheckCircle2,
+  Download,
+  ExternalLink,
+  FileSpreadsheet,
+  Github,
+  Instagram,
+  Languages,
+  Linkedin,
+  Mail,
+  Rocket,
+  Send,
+  ShieldCheck,
+  Utensils,
+  Youtube,
+} from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
 import { MiniGames } from '../components/MiniGames';
-import { Github, Instagram, Linkedin, FileSpreadsheet, Utensils, Languages, Youtube, Mail, Zap, Bot, Leaf, ExternalLink, Download } from 'lucide-react';
+import { fetchGitHubProjects } from '../lib/github';
+import {
+  submitContactMessage,
+  submitRepoRequest,
+  subscribeToCertificates,
+  subscribeToProjects,
+} from '../lib/realtime';
+import type { Certificate, PortfolioProject } from '../types';
 
 const skills = [
-    'JavaScript', 'Python', 'React.js', 'Node.js', 'IoT', 'MongoDB',
-    'PHP', 'SQL', 'AI/ML', 'Flask', 'AWS', 'Shopify'
+  'JavaScript',
+  'Python',
+  'React.js',
+  'Node.js',
+  'IoT',
+  'MongoDB',
+  'PHP',
+  'SQL',
+  'AI/ML',
+  'Firebase',
+  'Flask',
+  'AWS',
 ];
 
-const projects = [
-    {
-        title: 'Excel AI Editor',
-        desc: 'An intelligent Excel editor powered by AI for data manipulation and advanced spreadsheet management.',
-        tech: ['AI', 'JavaScript', 'HTML', 'CSS'],
-        icon: <FileSpreadsheet className="w-16 h-16 text-primary group-hover:scale-110 transition-transform duration-500 relative z-10" />,
-        linkLive: '../ExcelAI Editor/index.html',
-        linkSource: 'https://github.com/aaryaninvincible/ExcelAI_Editor'
-    },
-    {
-        title: 'Bawarchi 2.0',
-        desc: 'A modern restaurant website featuring a dynamic menu, responsive design, and an elegant user interface.',
-        tech: ['HTML', 'CSS', 'JavaScript'],
-        icon: <Utensils className="w-16 h-16 text-primary group-hover:scale-110 transition-transform duration-500 relative z-10" />,
-        linkLive: '../Bawarchi_2.0/index.html',
-        linkSource: 'https://github.com/aaryaninvincible/Projects/tree/main/Bawarchi_2.0'
-    },
-    {
-        title: 'Linguistic Academy',
-        desc: 'A comprehensive language learning platform with interactive lessons and a beautiful user interface.',
-        tech: ['HTML', 'CSS', 'Vanilla JS'],
-        icon: <Languages className="w-16 h-16 text-primary group-hover:scale-110 transition-transform duration-500 relative z-10" />,
-        linkLive: '../Linguistic Academy/index.html',
-        linkSource: 'https://github.com/aaryaninvincible/Projects/tree/main/Linguistic%20Academy'
-    }
+const fallbackProjects: PortfolioProject[] = [
+  {
+    id: 'excel-ai-editor',
+    title: 'Excel AI Editor',
+    description: 'AI-powered spreadsheet editor for data cleanup, analysis, and advanced Excel workflows.',
+    technologies: ['AI', 'JavaScript', 'HTML', 'CSS'],
+    category: 'AI',
+    demoUrl: '../ExcelAI Editor/index.html',
+    featured: true,
+  },
+  {
+    id: 'bawarchi-2',
+    title: 'Bawarchi 2.0',
+    description: 'Restaurant website with a polished menu, responsive design, and customer-first layout.',
+    technologies: ['HTML', 'CSS', 'JavaScript'],
+    category: 'Web',
+    demoUrl: '../Bawarchi_2.0/index.html',
+    featured: true,
+  },
+  {
+    id: 'linguistic-academy',
+    title: 'Linguistic Academy',
+    description: 'Language learning interface with interactive lessons and clean student navigation.',
+    technologies: ['HTML', 'CSS', 'Vanilla JS'],
+    category: 'Education',
+    demoUrl: '../Linguistic Academy/index.html',
+    featured: true,
+  },
 ];
 
-const clients = [
-    {
-        name: 'Voltros',
-        desc: 'Complete e-commerce platform for electronics and tech products. Built with modern web technologies and integrated payment gateways.',
-        icon: <Zap className="text-secondary w-10 h-10" />,
-        link: 'https://voltros.in'
-    },
-    {
-        name: 'Ouranos Robotics',
-        desc: 'E-commerce platform for IoT devices and robotics products. Integrated Shopify with custom IoT solutions for enhanced user experience.',
-        icon: <Bot className="text-primary w-10 h-10" />,
-        link: 'https://shop.ouranosrobotics.com'
-    },
-    {
-        name: 'Krishi Verse',
-        desc: 'IoT-based agricultural solutions platform. Developed patented smart devices and scalable e-commerce integration.',
-        icon: <Leaf className="text-accent w-10 h-10" />,
-        link: '#'
-    }
+const storyPanels = [
+  {
+    title: 'Idea to MVP',
+    copy: 'Fast prototypes for BTech, MTech, startup, and freelance software needs.',
+  },
+  {
+    title: 'Build + Integrate',
+    copy: 'React, Firebase, Node, AI/ML, IoT dashboards, admin panels, and automations.',
+  },
+  {
+    title: 'Demo Ready',
+    copy: 'Clean project pages with media, use cases, live demos, and approval-based repo access.',
+  },
 ];
+
+const ProjectIcon = ({ index }: { index: number }) => {
+  const icons = [
+    <FileSpreadsheet className="h-12 w-12 text-primary" />,
+    <Utensils className="h-12 w-12 text-primary" />,
+    <Languages className="h-12 w-12 text-primary" />,
+    <Bot className="h-12 w-12 text-primary" />,
+  ];
+  return icons[index % icons.length];
+};
 
 export const HomePage: React.FC = () => {
-    return (
-        <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto space-y-32">
-            {/* Hero */}
-            <section className="text-center space-y-8 relative">
-                <div className="relative w-48 h-48 mx-auto mb-8 rounded-full p-[4px] bg-gradient-to-tr from-primary via-secondary to-accent animate-[spinRGB_4s_linear_infinite] shadow-[0_0_30px_rgba(56,189,248,0.5)]">
-                    <img src="/Profile.jpg" alt="Aryan Raikwar" className="w-full h-full object-cover rounded-full border-4 border-dark block" />
-                </div>
+  const [adminProjects, setAdminProjects] = useState<PortfolioProject[]>([]);
+  const [githubProjects, setGithubProjects] = useState<PortfolioProject[]>([]);
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [contactStatus, setContactStatus] = useState('');
+  const [requestStatus, setRequestStatus] = useState('');
 
-                <h1 className="text-5xl md:text-7xl font-orbitron font-black text-light drop-shadow-[0_0_10px_rgba(56,189,248,0.7)]">
-                    Aryan <span className="text-gradient">Raikwar</span>
-                </h1>
-                <p className="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto font-mono leading-relaxed">
-                    IoT & Full Stack Developer | AI Engineer | Tech Content Creator with 13K+ followers | Passionate about innovation and tackling real-world challenges with cutting-edge technology.
-                </p>
-                <div className="h-1 w-64 mx-auto !bg-[length:300%_100%] animate-[smoothRgbFlow_3s_linear_infinite]"
-                    style={{ background: 'linear-gradient(90deg, #38bdf8, #818cf8, #10b981, #38bdf8, #818cf8)' }} />
+  useEffect(() => {
+    const unsubProjects = subscribeToProjects(setAdminProjects);
+    const unsubCertificates = subscribeToCertificates(setCertificates);
 
-                <div className="flex justify-center gap-6 mt-12 flex-wrap">
-                    <a href="#projects" className="glass hover:bg-white/10 text-primary border-primary px-8 py-3 rounded-lg font-mono font-medium transition-all hover:shadow-[0_0_15px_rgba(56,189,248,0.5)]">
-                        Wait Let's See Projects
-                    </a>
-                    <a href="AryanRaikwarResume.pdf" download className="glass hover:bg-white/10 text-secondary border-secondary px-8 py-3 rounded-lg font-mono font-medium transition-all hover:shadow-[0_0_15px_rgba(129,140,248,0.5)] flex items-center justify-center gap-2">
-                        <Download size={20} /> Download Resume
-                    </a>
-                </div>
-            </section>
+    fetchGitHubProjects()
+      .then(setGithubProjects)
+      .catch(() => setGithubProjects([]));
 
-            {/* About & Content Creator Segment */}
-            <section className="grid lg:grid-cols-2 gap-12 items-start" id="about">
-                <div className="space-y-12">
-                    <div>
-                        <h2 className="text-3xl md:text-5xl font-orbitron mb-8 relative">
-                            About <span className="text-primary">Me</span>
-                            <span className="absolute -bottom-4 left-0 w-24 h-1 bg-primary rounded-full"></span>
-                        </h2>
-                        <p className="text-slate-300 font-mono text-lg mb-4 leading-relaxed">
-                            I am an IoT & Full Stack Developer ready to take on complex projects and see them through to completion with a focus on excellence. Passionate about innovation and always looking for ways to expand my skills and tackle real-world challenges.
-                        </p>
-                        <p className="text-slate-300 font-mono text-lg leading-relaxed">
-                            With experience in IoT development at Krishi Verse (Ouranos Robotics) and full-stack development at Inocrypt Infosoft, I've honed my skills in creating scalable solutions that drive efficiency and growth.
-                        </p>
-                    </div>
+    return () => {
+      unsubProjects();
+      unsubCertificates();
+    };
+  }, []);
 
-                    <div>
-                        <h2 className="text-3xl md:text-5xl font-orbitron mb-8 relative">
-                            @codesworld.exe
-                            <span className="absolute -bottom-4 left-0 w-24 h-1 bg-[#E1306C] rounded-full"></span>
-                        </h2>
-                        <p className="text-slate-300 font-mono text-lg mb-8 leading-relaxed">
-                            Sharing tech tutorials, coding tips, and project showcases with a growing community.
-                        </p>
-                        <div className="grid grid-cols-3 gap-4 mb-8">
-                            <div className="glass p-4 rounded-xl text-center border-white/5">
-                                <div className="text-2xl font-black font-orbitron text-[#E1306C]">13K+</div>
-                                <div className="text-sm font-mono text-slate-400">Followers</div>
-                            </div>
-                            <div className="text-center glass p-4 rounded-xl border-white/5">
-                                <div className="text-2xl font-black font-orbitron text-[#E1306C]">2M+</div>
-                                <div className="text-sm font-mono text-slate-400">Views</div>
-                            </div>
-                            <div className="text-center glass p-4 rounded-xl border-white/5">
-                                <div className="text-2xl font-black font-orbitron text-[#E1306C]">100M+</div>
-                                <div className="text-sm font-mono text-slate-400">Reach</div>
-                            </div>
-                        </div>
-                        <a href="https://instagram.com/codesworld.exe" target="_blank" rel="noreferrer" className="inline-flex glass border-[#E1306C] text-[#E1306C] hover:bg-[#E1306C] hover:text-white px-6 py-3 rounded-lg font-mono items-center gap-2 transition-all">
-                            <Instagram size={20} /> Visit Instagram Channel
-                        </a>
-                    </div>
+  const projects = useMemo(() => {
+    const byTitle = new Map<string, PortfolioProject>();
+    [...fallbackProjects, ...githubProjects, ...adminProjects].forEach((project) => {
+      byTitle.set(project.title.toLowerCase(), project);
+    });
+    return Array.from(byTitle.values());
+  }, [adminProjects, githubProjects]);
+
+  const featuredProjects = projects.filter((project) => project.featured || project.source === 'github').slice(0, 9);
+
+  const handleContact = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    setContactStatus('Sending...');
+    await submitContactMessage({
+      name: String(form.get('name') || ''),
+      email: String(form.get('email') || ''),
+      phone: String(form.get('phone') || ''),
+      topic: String(form.get('topic') || 'General inquiry'),
+      message: String(form.get('message') || ''),
+    });
+    event.currentTarget.reset();
+    setContactStatus('Message received. Aryan can reply from the admin panel.');
+  };
+
+  const handleRepoRequest = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    setRequestStatus('Sending request...');
+    await submitRepoRequest({
+      name: String(form.get('name') || ''),
+      email: String(form.get('email') || ''),
+      projectTitle: String(form.get('projectTitle') || ''),
+      reason: String(form.get('reason') || ''),
+    });
+    event.currentTarget.reset();
+    setRequestStatus('Request received. You will receive a mail for repo access after review.');
+  };
+
+  return (
+    <div className="pt-28 pb-20 px-6 max-w-7xl mx-auto space-y-28">
+      <section className="grid min-h-[calc(100vh-7rem)] items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="space-y-8">
+          <span className="section-kicker">Full stack + AI/ML + freelance builds</span>
+          <h1 className="text-5xl md:text-7xl font-orbitron font-black text-light drop-shadow-[0_0_10px_rgba(56,189,248,0.7)]">
+            Aryan <span className="text-gradient">Raikwar</span>
+          </h1>
+          <p className="text-lg md:text-xl text-slate-300 max-w-3xl font-mono leading-relaxed">
+            I build full-stack apps, AI/ML tools, IoT dashboards, student major projects, and freelance software systems
+            with clean demos, admin panels, and production-ready workflows.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <a href="#projects" className="glass px-6 py-3 rounded-lg text-primary font-bold hover:bg-white/10">
+              View Projects
+            </a>
+            <a href="/resume" className="glass px-6 py-3 rounded-lg text-secondary font-bold hover:bg-white/10 inline-flex items-center gap-2">
+              <Download size={18} /> Resume
+            </a>
+            <a href="#repo-request" className="glass px-6 py-3 rounded-lg text-accent font-bold hover:bg-white/10">
+              Ask For Repo
+            </a>
+          </div>
+        </div>
+
+        <div className="relative mx-auto w-full max-w-sm">
+          <div className="relative rounded-[2rem] border border-primary/30 bg-black p-3 shadow-[0_0_60px_rgba(34,211,238,0.25)]">
+            <img src="/aryan.png" alt="Aryan Raikwar" className="aspect-[4/5] w-full rounded-[1.5rem] object-cover" />
+            <div className="absolute -bottom-6 left-6 right-6 glass rounded-xl p-4">
+              <div className="grid grid-cols-3 gap-3 text-center">
+                <div>
+                  <p className="font-orbitron text-xl text-primary">13K+</p>
+                  <p className="text-xs text-slate-400">Followers</p>
                 </div>
                 <div>
-                    <h2 className="text-3xl md:text-5xl font-orbitron mb-8 relative">
-                        Tech Stack
-                        <span className="absolute -bottom-4 left-0 w-24 h-1 bg-secondary rounded-full"></span>
-                    </h2>
-                    <div className="flex flex-wrap gap-4">
-                        {skills.map(skill => (
-                            <GlassCard key={skill} className="px-6 py-3 cursor-default text-center hover:-translate-y-1 transition-transform">
-                                <span className="font-bold text-light uppercase tracking-wider text-sm">{skill}</span>
-                            </GlassCard>
-                        ))}
-                    </div>
-
-                    <div className="mt-16 p-8 glass border-t border-white/10 rounded-2xl relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div className="relative z-10 space-y-8">
-                            <div>
-                                <h3 className="font-orbitron text-2xl mb-4 text-light flex items-center gap-2"><Bot className="text-primary" /> Gaming Highlights</h3>
-                                <p className="font-mono text-slate-300 text-sm leading-relaxed mb-6">
-                                    Explore my 3 quick solo 2D games originally built for mobile and desktop. Play them right here!
-                                </p>
-                            </div>
-
-                            <MiniGames />
-
-                            <div className="pt-4 border-t border-white/5">
-                                <a href="https://github.com/aaryaninvincible" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-mono text-sm font-bold tracking-widest text-primary hover:text-white transition-colors">
-                                    View Game Repositories <ExternalLink size={16} />
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                  <p className="font-orbitron text-xl text-secondary">AI/ML</p>
+                  <p className="text-xs text-slate-400">Focus</p>
                 </div>
-            </section>
-            {/* Clients */}
-            <section id="clients">
-                <h2 className="text-3xl md:text-5xl font-orbitron text-center mb-16 relative">
-                    Client Projects
-                    <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-24 h-1 bg-accent rounded-full"></span>
-                </h2>
-
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {clients.map((client, i) => (
-                        <GlassCard key={i} className="p-8 group flex flex-col h-full">
-                            <div className="flex items-center gap-4 mb-6">
-                                {client.icon}
-                                <h3 className="text-2xl font-orbitron font-bold text-light">{client.name}</h3>
-                            </div>
-                            <p className="text-slate-300 font-mono text-sm leading-relaxed mb-8 flex-grow">
-                                {client.desc}
-                            </p>
-                            <a href={client.link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-mono text-sm font-bold tracking-widest uppercase text-light hover:text-primary transition-colors">
-                                Visit Site <ExternalLink size={16} />
-                            </a>
-                        </GlassCard>
-                    ))}
+                <div>
+                  <p className="font-orbitron text-xl text-accent">Full</p>
+                  <p className="text-xs text-slate-400">Stack</p>
                 </div>
-            </section>
-
-            {/* Featured Projects Highlight */}
-            <section id="projects">
-                <h2 className="text-3xl md:text-5xl font-orbitron text-center mb-16 relative">
-                    Featured Work
-                    <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-24 h-1 bg-primary rounded-full"></span>
-                </h2>
-
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {projects.map((item, index) => (
-                        <GlassCard key={index} className="group flex flex-col h-full">
-                            <div className="h-48 bg-black/40 relative overflow-hidden flex items-center justify-center border-b border-white/5">
-                                {item.icon}
-                                <div className="absolute inset-[-50%] w-[200%] h-[200%] bg-[linear-gradient(45deg,transparent,rgba(56,189,248,0.2),transparent)] animate-shine opacity-50 z-0"></div>
-                            </div>
-                            <div className="p-6 flex flex-col flex-grow">
-                                <h3 className="font-orbitron text-2xl text-primary mb-2 font-bold">{item.title}</h3>
-                                <p className="text-slate-300 text-sm mb-6 font-mono leading-relaxed flex-grow">{item.desc}</p>
-                                <div className="flex gap-2 flex-wrap mb-6">
-                                    {item.tech.map(t => (
-                                        <span key={t} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-mono border border-primary/20">{t}</span>
-                                    ))}
-                                </div>
-                                <div className="flex gap-4">
-                                    <a href={item.linkLive} target="_blank" rel="noreferrer" className="text-sm font-bold font-mono tracking-widest text-light hover:text-primary transition-colors flex items-center gap-1">
-                                        LIVE
-                                    </a>
-                                    <a href={item.linkSource} target="_blank" rel="noreferrer" className="text-sm font-bold font-mono tracking-widest text-slate-400 hover:text-white transition-colors flex items-center gap-1">
-                                        CODE
-                                    </a>
-                                </div>
-                            </div>
-                        </GlassCard>
-                    ))}
-                </div>
-
-                <div className="text-center mt-12">
-                    <a href="/all-work" className="inline-flex glass text-light px-8 py-3 rounded-lg font-mono tracking-widest uppercase hover:bg-white/5 transition-all mt-4 border border-white/10 hover:border-primary/50">
-                        Explore Full Gallery &rarr;
-                    </a>
-                </div>
-            </section>
-
-
-            {/* Socials & Footer Area */}
-            <footer id="contact" className="text-center pt-20 border-t border-white/10">
-                <div className="flex justify-center gap-4 md:gap-6 mb-12 flex-wrap">
-                    <a href="https://github.com/aaryaninvincible" target="_blank" rel="noreferrer" className="w-14 h-14 rounded-full glass flex items-center justify-center text-white hover:text-primary hover:-translate-y-2 hover:shadow-[0_0_20px_rgba(56,189,248,0.5)] transition-all">
-                        <Github size={24} />
-                    </a>
-                    <a href="https://instagram.com/codesworld.exe" target="_blank" rel="noreferrer" className="w-14 h-14 rounded-full glass flex items-center justify-center text-white hover:text-[#E1306C] hover:-translate-y-2 hover:shadow-[0_0_20px_rgba(225,48,108,0.5)] transition-all">
-                        <Instagram size={24} />
-                    </a>
-                    <a href="https://linkedin.com/in/aryanraikwar" target="_blank" rel="noreferrer" className="w-14 h-14 rounded-full glass flex items-center justify-center text-white hover:text-[#0077b5] hover:-translate-y-2 hover:shadow-[0_0_20px_rgba(0,119,181,0.5)] transition-all">
-                        <Linkedin size={24} />
-                    </a>
-                    <a href="https://www.youtube.com/@codesworld.exe" target="_blank" rel="noreferrer" className="w-14 h-14 rounded-full glass flex items-center justify-center text-white hover:text-[#FF0000] hover:-translate-y-2 hover:shadow-[0_0_20px_rgba(255,0,0,0.5)] transition-all">
-                        <Youtube size={24} />
-                    </a>
-                    <a href="mailto:aryanraikwar78@gmail.com" className="w-14 h-14 rounded-full glass flex items-center justify-center text-white hover:text-accent hover:-translate-y-2 hover:shadow-[0_0_20px_rgba(16,185,129,0.5)] transition-all">
-                        <Mail size={24} />
-                    </a>
-                </div>
-                <p className="text-slate-400 font-mono text-sm tracking-wide">&copy; {new Date().getFullYear()} Aryan Zone / aaryaninvincible. All rights reserved.</p>
-            </footer>
+              </div>
+            </div>
+          </div>
         </div>
-    );
+      </section>
+
+      <section className="grid gap-8 lg:grid-cols-3">
+        {storyPanels.map((panel, index) => (
+          <motion.div
+            key={panel.title}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ delay: index * 0.12 }}
+          >
+            <GlassCard className="p-8 h-full">
+              <div className="mb-8 h-40 rounded-xl border border-white/10 bg-black/50 overflow-hidden">
+                <motion.div
+                  className="h-full w-full bg-[linear-gradient(120deg,rgba(34,211,238,0.15),rgba(168,85,247,0.35),rgba(16,185,129,0.15))]"
+                  whileInView={{ x: ['-20%', '20%', '-10%'], scale: [1, 1.12, 1.05] }}
+                  transition={{ duration: 2.8, repeat: Infinity, repeatType: 'mirror' }}
+                />
+              </div>
+              <h2 className="font-orbitron text-2xl text-light mb-3">{panel.title}</h2>
+              <p className="text-slate-300 leading-relaxed">{panel.copy}</p>
+            </GlassCard>
+          </motion.div>
+        ))}
+      </section>
+
+      <section id="about" className="grid lg:grid-cols-2 gap-12 items-start">
+        <div className="space-y-8">
+          <span className="section-kicker">About</span>
+          <h2 className="text-3xl md:text-5xl font-orbitron">Software that ships</h2>
+          <p className="text-slate-300 font-mono text-lg leading-relaxed">
+            I work across frontend, backend, Firebase, AI/ML, IoT, and automation. I can help with free learning
+            projects, paid freelance builds, BTech/MTech final year projects, demos, documentation, and deployment.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            {skills.map((skill) => (
+              <GlassCard key={skill} className="px-5 py-3">
+                <span className="font-bold text-light text-sm">{skill}</span>
+              </GlassCard>
+            ))}
+          </div>
+        </div>
+
+        <GlassCard className="p-8">
+          <h3 className="font-orbitron text-2xl mb-4 text-light flex items-center gap-2">
+            <Bot className="text-primary" /> Gaming Highlights
+          </h3>
+          <p className="font-mono text-slate-300 text-sm leading-relaxed mb-6">
+            Three quick 2D games built for mobile and desktop play.
+          </p>
+          <MiniGames />
+        </GlassCard>
+      </section>
+
+      <section id="projects" className="space-y-10">
+        <div className="text-center space-y-4">
+          <span className="section-kicker">Projects</span>
+          <h2 className="text-3xl md:text-5xl font-orbitron">Latest Work From GitHub + Admin</h2>
+          <p className="text-slate-300 max-w-3xl mx-auto">
+            Repo links are private by request. Public visitors can view project details, demos, media, and ask for access.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuredProjects.map((project, index) => (
+            <GlassCard key={project.id} className="group flex flex-col h-full">
+              <div className="h-48 bg-black/60 relative overflow-hidden flex items-center justify-center border-b border-white/5">
+                {project.videoUrl ? (
+                  <video src={project.videoUrl} className="h-full w-full object-cover opacity-80" autoPlay muted loop playsInline />
+                ) : project.imageUrl ? (
+                  <img src={project.imageUrl} className="h-full w-full object-cover opacity-80" alt={project.title} />
+                ) : (
+                  <ProjectIcon index={index} />
+                )}
+              </div>
+              <div className="p-6 flex flex-col flex-grow">
+                <span className="text-xs font-bold text-secondary uppercase tracking-widest">{project.category}</span>
+                <h3 className="font-orbitron text-2xl text-primary mt-3 mb-2 font-bold capitalize">{project.title}</h3>
+                <p className="text-slate-300 text-sm mb-4 font-mono leading-relaxed flex-grow">{project.description}</p>
+                {project.useCase && <p className="text-xs text-slate-400 mb-4">Use case: {project.useCase}</p>}
+                <div className="flex gap-2 flex-wrap mb-6">
+                  {project.technologies.slice(0, 5).map((tech) => (
+                    <span key={tech} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-mono border border-primary/20">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {project.demoUrl && (
+                    <a href={project.demoUrl} target="_blank" rel="noreferrer" className="text-sm font-bold text-light hover:text-primary inline-flex items-center gap-1">
+                      Demo <ExternalLink size={14} />
+                    </a>
+                  )}
+                  <a href="#repo-request" className="text-sm font-bold text-accent hover:text-white inline-flex items-center gap-1">
+                    Ask For Repo <ShieldCheck size={14} />
+                  </a>
+                </div>
+              </div>
+            </GlassCard>
+          ))}
+        </div>
+      </section>
+
+      <section id="certificates" className="space-y-10">
+        <div className="text-center space-y-4">
+          <span className="section-kicker">Certificates</span>
+          <h2 className="text-3xl md:text-5xl font-orbitron">Verified Learning</h2>
+        </div>
+        {certificates.length > 0 ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {certificates.map((certificate) => (
+              <GlassCard key={certificate.id} className="overflow-hidden">
+                <img src={certificate.imageUrl} alt={certificate.title} className="h-56 w-full object-cover" />
+                <div className="p-6">
+                  <h3 className="font-orbitron text-xl text-primary">{certificate.title}</h3>
+                  <p className="mt-2 text-sm text-slate-300">{certificate.description}</p>
+                  <p className="mt-4 text-xs text-slate-400">{[certificate.issuer, certificate.date].filter(Boolean).join(' - ')}</p>
+                </div>
+              </GlassCard>
+            ))}
+          </div>
+        ) : (
+          <GlassCard className="p-8 text-center text-slate-300">Certificates will appear here after upload from admin.</GlassCard>
+        )}
+      </section>
+
+      <section id="repo-request" className="grid gap-8 lg:grid-cols-2">
+        <GlassCard className="p-8">
+          <span className="section-kicker">Repo access</span>
+          <h2 className="font-orbitron text-3xl mt-3 mb-4">Ask for a project repo</h2>
+          <p className="text-slate-300 mb-6">
+            Repo links are not shown publicly. Send a request and Aryan will review it from the admin panel.
+          </p>
+          <form onSubmit={handleRepoRequest} className="space-y-4">
+            <input name="name" className="input-shell" placeholder="Your name" required />
+            <input name="email" type="email" className="input-shell" placeholder="Email address" required />
+            <input name="projectTitle" className="input-shell" placeholder="Project name" required />
+            <textarea name="reason" className="input-shell min-h-28" placeholder="Why do you need repo access?" required />
+            <button className="glass px-5 py-3 rounded-lg text-accent font-bold inline-flex items-center gap-2" type="submit">
+              <Send size={18} /> Send Request
+            </button>
+            {requestStatus && <p className="text-sm text-accent">{requestStatus}</p>}
+          </form>
+        </GlassCard>
+
+        <GlassCard className="p-8" id="contact">
+          <span className="section-kicker">Contact</span>
+          <h2 className="font-orbitron text-3xl mt-3 mb-4">Project, freelancing, BTech/MTech help</h2>
+          <form onSubmit={handleContact} className="space-y-4">
+            <input name="name" className="input-shell" placeholder="Your name" required />
+            <input name="email" type="email" className="input-shell" placeholder="Email address" required />
+            <input name="phone" className="input-shell" placeholder="Phone / WhatsApp optional" />
+            <input name="topic" className="input-shell" placeholder="Topic: freelancing, AI/ML, BTech project..." />
+            <textarea name="message" className="input-shell min-h-28" placeholder="Tell me what you want to build" required />
+            <button className="glass px-5 py-3 rounded-lg text-primary font-bold inline-flex items-center gap-2" type="submit">
+              <Rocket size={18} /> Send Message
+            </button>
+            {contactStatus && <p className="text-sm text-primary">{contactStatus}</p>}
+          </form>
+        </GlassCard>
+      </section>
+
+      <footer className="text-center pt-16 border-t border-white/10">
+        <div className="flex justify-center gap-4 md:gap-6 mb-10 flex-wrap">
+          <a href="https://github.com/aaryaninvincible" target="_blank" rel="noreferrer" className="w-14 h-14 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all">
+            <Github size={24} />
+          </a>
+          <a href="https://instagram.com/codesworld.exe" target="_blank" rel="noreferrer" className="w-14 h-14 rounded-full glass flex items-center justify-center text-white hover:text-[#E1306C] transition-all">
+            <Instagram size={24} />
+          </a>
+          <a href="https://linkedin.com/in/aryanraikwar" target="_blank" rel="noreferrer" className="w-14 h-14 rounded-full glass flex items-center justify-center text-white hover:text-[#0077b5] transition-all">
+            <Linkedin size={24} />
+          </a>
+          <a href="https://www.youtube.com/@codesworld.exe" target="_blank" rel="noreferrer" className="w-14 h-14 rounded-full glass flex items-center justify-center text-white hover:text-[#FF0000] transition-all">
+            <Youtube size={24} />
+          </a>
+          <a href="mailto:aryanraikwar78@gmail.com" className="w-14 h-14 rounded-full glass flex items-center justify-center text-white hover:text-accent transition-all">
+            <Mail size={24} />
+          </a>
+        </div>
+        <p className="text-slate-400 font-mono text-sm inline-flex items-center gap-2">
+          <CheckCircle2 size={16} /> {new Date().getFullYear()} Aryan Zone / aaryaninvincible.
+        </p>
+      </footer>
+    </div>
+  );
 };

@@ -5,12 +5,14 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Navbar } from './components/Navbar';
 import { CursorFollower } from './components/CursorFollower';
 import { ParticleBackground } from './components/ParticleBackground';
+import { SplashLoader } from './components/SplashLoader';
 
 import { HomePage } from './pages/HomePage';
 import { UpdatesPage } from './pages/UpdatesPage';
 import { GalleryPage } from './pages/GalleryPage';
 import { AllWorkPage } from './pages/AllWorkPage';
 import { AdminPage } from './pages/AdminPage';
+import { ResumePage } from './pages/ResumePage';
 
 const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
@@ -33,6 +35,7 @@ const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const AppContent: React.FC = () => {
   return (
     <>
+      <SplashLoader />
       <ParticleBackground />
       <CursorFollower />
       <Navbar />
@@ -40,6 +43,7 @@ const AppContent: React.FC = () => {
         <PageTransition>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/resume" element={<ResumePage />} />
             <Route path="/updates" element={<UpdatesPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/all-work" element={<AllWorkPage />} />

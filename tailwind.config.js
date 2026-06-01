@@ -7,12 +7,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#38bdf8',
-        secondary: '#818cf8',
-        accent: '#10b981',
-        dark: '#0f172a',
-        darker: '#020617',
-        light: '#f8fafc',
+        primary: 'rgb(var(--color-primary) / <alpha-value>)',
+        secondary: 'rgb(var(--color-secondary) / <alpha-value>)',
+        accent: 'rgb(var(--color-accent) / <alpha-value>)',
+        dark: 'rgb(var(--color-dark) / <alpha-value>)',
+        darker: 'rgb(var(--color-darker) / <alpha-value>)',
+        light: 'rgb(var(--color-light) / <alpha-value>)',
         gray: {
           900: '#0f172a',
           800: '#1e293b',

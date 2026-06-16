@@ -8,6 +8,9 @@ export const MiniGames: React.FC = () => {
 
         // Safety check - if component unmounts, we should ideally cancel animation frames
         // But since it's an IIFE port, let's just make sure it runs once perfectly
+
+        // Safety check - if component unmounts, we should ideally cancel animation frames
+        // But since it's an IIFE port, let's just make sure it runs once perfectly
         const runGames = () => {
             const flappyCanvas = document.getElementById('flappyCanvas') as HTMLCanvasElement;
             const dinoCanvas = document.getElementById('dinoCanvas') as HTMLCanvasElement;
@@ -16,6 +19,21 @@ export const MiniGames: React.FC = () => {
 
             let activeGame = 'flappy';
             const safeFocus = (id: string) => { activeGame = id; };
+
+            const updateLeaderboard = (gameId: string, score: number) => {
+                const high = parseInt(localStorage.getItem(`highScore_${gameId}`) || '0');
+                if (score > high) {
+                    localStorage.setItem(`highScore_${gameId}`, Math.floor(score).toString());
+                    renderLeaderboard();
+                }
+            };
+
+            const renderLeaderboard = () => {
+                ['flappy', 'dino', 'dodge'].forEach(g => {
+                    const el = document.getElementById(`${g}HighScore`);
+                    if (el) el.textContent = localStorage.getItem(`highScore_${g}`) || '0';
+                });
+            };
 
             function setupFlappy() {
                 const ctx = flappyCanvas.getContext('2d');
@@ -50,6 +68,7 @@ export const MiniGames: React.FC = () => {
                 function end() {
                     running = false; over = true; paused = false;
                     if (pauseBtn) pauseBtn.textContent = 'Pause';
+                    updateLeaderboard('flappy', score);
                 }
 
                 function start() {
@@ -178,7 +197,7 @@ export const MiniGames: React.FC = () => {
                     animationFrames.push(afId);
                 }
 
-                function end() { running = false; over = true; paused = false; if (pauseBtn) pauseBtn.textContent = 'Pause'; }
+                function end() { running = false; over = true; paused = false; if (pauseBtn) pauseBtn.textContent = 'Pause'; updateLeaderboard('dino', score); }
                 function pause() { if (!running || over) return; running = false; paused = true; if (pauseBtn) pauseBtn.textContent = 'Resume'; }
                 function resume() { if (!paused || over) return; paused = false; running = true; if (pauseBtn) pauseBtn.textContent = 'Pause'; last = performance.now(); afId = requestAnimationFrame(loop); }
                 function togglePause() { if (paused) resume(); else pause(); }
@@ -263,7 +282,7 @@ export const MiniGames: React.FC = () => {
                     animationFrames.push(afId);
                 }
 
-                function end() { running = false; over = true; paused = false; if (pauseBtn) pauseBtn.textContent = 'Pause'; }
+                function end() { running = false; over = true; paused = false; if (pauseBtn) pauseBtn.textContent = 'Pause'; updateLeaderboard('dodge', score); }
                 function pause() { if (!running || over) return; running = false; paused = true; if (pauseBtn) pauseBtn.textContent = 'Resume'; }
                 function resume() { if (!paused || over) return; paused = false; running = true; if (pauseBtn) pauseBtn.textContent = 'Pause'; last = performance.now(); afId = requestAnimationFrame(loop); }
                 function togglePause() { if (paused) resume(); else pause(); }
@@ -400,6 +419,8 @@ export const MiniGames: React.FC = () => {
                 if (activeGame === 'dodge' && e.code === 'ArrowRight' && games.dodge) games.dodge.rightUp();
             };
 
+            renderLeaderboard();
+
             document.addEventListener('keydown', handleKeyDown);
             document.addEventListener('keyup', handleKeyUp);
 
@@ -428,6 +449,13 @@ export const MiniGames: React.FC = () => {
             </div>
 
             <div className="glass p-3 sm:p-6 rounded-2xl border border-white/10 relative overflow-hidden">
+                {/* Leaderboard Overlay */}
+                <div className="absolute top-4 right-4 z-20 bg-darker/80 border border-white/10 p-2 rounded-lg text-[10px] sm:text-xs font-mono text-slate-300 hidden sm:block">
+                    <div className="font-bold text-white mb-1 border-b border-white/10 pb-1 text-center">HIGH SCORES</div>
+                    <div className="flex justify-between gap-4"><span>Flappy:</span> <span id="flappyHighScore" className="text-secondary">0</span></div>
+                    <div className="flex justify-between gap-4"><span>Dino:</span> <span id="dinoHighScore" className="text-accent">0</span></div>
+                    <div className="flex justify-between gap-4"><span>Dodge:</span> <span id="dodgeHighScore" className="text-primary">0</span></div>
+                </div>
 
                 {/* Flappy */}
                 <div className="game-card flex flex-col items-center" data-game="flappy">

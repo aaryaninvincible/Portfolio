@@ -2,6 +2,30 @@ import type { Certificate } from '../types';
 
 export const linkedInCertificates: Certificate[] = [
   {
+    id: 'linkedin-inocrypt-internship',
+    title: 'Software Engineer Trainee Internship',
+    issuer: 'Inocrypt Infosoft',
+    date: 'Issued Jul 2022',
+    description: '1 year internship program. Certificate ID INO/INT/2022/0715.',
+    imageUrl: '/certificates/cert1.jpg',
+  },
+  {
+    id: 'linkedin-oasis-infobyte-web-dev',
+    title: 'Web Development and Designing',
+    issuer: 'Oasis Infobyte',
+    date: 'Issued Aug 2024',
+    description: '1 month AICTE OIB-SIP internship. Certificate ID OIB/J1/IP427.',
+    imageUrl: '/certificates/cert2.jpg',
+  },
+  {
+    id: 'linkedin-krishi-verse-web-dev',
+    title: 'Web Development & IoT Internship',
+    issuer: 'Krishi Verse (Ouranos Robotics)',
+    date: 'Issued Aug 2024',
+    description: '11 month internship program. Certificate ID 824015.',
+    imageUrl: '/certificates/cert3.jpg',
+  },
+  {
     id: 'linkedin-python-competitive-hackerrank',
     title: 'Python Competative Question',
     issuer: 'HackerRank',

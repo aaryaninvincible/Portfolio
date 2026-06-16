@@ -19,6 +19,7 @@ import {
   Youtube,
 } from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
+import { InteractiveWidgets } from '../components/InteractiveWidgets';
 import { MiniGames } from '../components/MiniGames';
 import { linkedInAchievements, linkedInCertificates } from '../data/profile';
 import { fetchGitHubProjects } from '../lib/github';
@@ -232,6 +233,8 @@ export const HomePage: React.FC = () => {
           </motion.div>
         ))}
       </section>
+
+      <InteractiveWidgets />
 
       <section id="about" className="grid lg:grid-cols-2 gap-12 items-start">
         <div className="space-y-8">

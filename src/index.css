@@ -26,16 +26,7 @@
     --glass-border: rgba(255, 255, 255, 0.1);
   }
 
-  [data-theme='light'] {
-    --color-primary: 2 132 199;
-    --color-secondary: 79 70 229;
-    --color-accent: 5 150 105;
-    --color-dark: 241 245 249;
-    --color-darker: 248 250 252;
-    --color-light: 15 23 42;
-    --glass-bg: rgba(255, 255, 255, 0.72);
-    --glass-border: rgba(15, 23, 42, 0.12);
-  }
+
 
   html {
     scroll-behavior: smooth;
@@ -51,11 +42,7 @@
     color-scheme: dark;
   }
 
-  [data-theme='light'] input,
-  [data-theme='light'] textarea,
-  [data-theme='light'] select {
-    color-scheme: light;
-  }
+
 }
 
 @layer utilities {

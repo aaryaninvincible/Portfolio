@@ -5,25 +5,25 @@
 @layer base {
   :root,
   [data-theme='amoled'] {
-    --color-primary: 34 211 238;
-    --color-secondary: 168 85 247;
-    --color-accent: 16 185 129;
-    --color-dark: 3 7 18;
+    --color-primary: 255 115 0;
+    --color-secondary: 255 85 0;
+    --color-accent: 255 150 0;
+    --color-dark: 5 5 5;
     --color-darker: 0 0 0;
     --color-light: 248 250 252;
-    --glass-bg: rgba(10, 10, 12, 0.72);
-    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-bg: rgba(10, 10, 10, 0.85);
+    --glass-border: rgba(255, 115, 0, 0.2);
   }
 
   [data-theme='dark'] {
-    --color-primary: 56 189 248;
-    --color-secondary: 129 140 248;
-    --color-accent: 16 185 129;
-    --color-dark: 15 23 42;
-    --color-darker: 2 6 23;
+    --color-primary: 255 115 0;
+    --color-secondary: 255 85 0;
+    --color-accent: 255 150 0;
+    --color-dark: 10 10 10;
+    --color-darker: 5 5 5;
     --color-light: 248 250 252;
-    --glass-bg: rgba(30, 41, 59, 0.46);
-    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-bg: rgba(15, 15, 15, 0.85);
+    --glass-border: rgba(255, 115, 0, 0.2);
   }
 
 
@@ -49,11 +49,11 @@
   .glass {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
-    @apply backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.1)];
+    @apply backdrop-blur-md shadow-[0_2px_8px_rgba(0,0,0,0.5)];
   }
   
   .glass-hover {
-    @apply hover:-translate-y-2 hover:border-white/30 hover:shadow-[0_15px_35px_rgba(0,0,0,0.2),0_0_15px_rgba(56,189,248,0.5)];
+    @apply hover:-translate-y-2 hover:border-primary/50 hover:shadow-[0_10px_25px_rgba(0,0,0,0.5),0_0_15px_rgba(255,115,0,0.2)];
   }
   
   .text-gradient {
@@ -61,7 +61,7 @@
   }
 
   .input-shell {
-    @apply w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-light outline-none transition-all focus:border-primary focus:shadow-[0_0_10px_rgba(56,189,248,0.25)];
+    @apply w-full rounded-lg border border-white/5 bg-black/60 px-4 py-3 text-light outline-none transition-all focus:border-primary focus:shadow-[0_0_10px_rgba(255,115,0,0.25)];
   }
 
   .section-kicker {

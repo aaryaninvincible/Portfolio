@@ -167,7 +167,7 @@ export const HomePage: React.FC = () => {
       <section className="grid min-h-[calc(100vh-7rem)] items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="space-y-8">
           <span className="section-kicker">Full stack + AI/ML + freelance builds</span>
-          <h1 className="text-5xl md:text-7xl font-orbitron font-black text-light drop-shadow-[0_0_10px_rgba(56,189,248,0.7)]">
+          <h1 className="text-5xl md:text-7xl font-orbitron font-black text-light drop-shadow-[0_0_10px_rgba(255,115,0,0.7)]">
             Aryan <span className="text-gradient">Raikwar</span>
           </h1>
           <p className="text-lg md:text-xl text-slate-300 max-w-3xl font-mono leading-relaxed">
@@ -188,8 +188,8 @@ export const HomePage: React.FC = () => {
         </div>
 
         <div className="relative mx-auto w-full max-w-sm">
-          <div className="relative rounded-[2rem] border border-primary/30 bg-black p-3 shadow-[0_0_60px_rgba(34,211,238,0.25)]">
-            <img src="/aryan.png" alt="Aryan Raikwar" className="aspect-[4/5] w-full rounded-[1.5rem] object-cover" />
+          <div className="relative rounded-[2rem] border border-primary/30 bg-black p-3 shadow-[0_0_60px_rgba(255,115,0,0.25)]">
+            <img src="/logo.png" alt="Aryan Raikwar Logo" className="aspect-[4/5] w-full rounded-[1.5rem] object-cover" />
             <div className="absolute -bottom-6 left-6 right-6 glass rounded-xl p-4">
               <div className="grid grid-cols-3 gap-3 text-center">
                 <div>
@@ -210,6 +210,15 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
+      <motion.img 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        src="/banner1.png" 
+        alt="Technology Banner" 
+        className="w-full rounded-2xl border border-primary/20 shadow-[0_0_40px_rgba(255,115,0,0.15)]"
+      />
+
       <section className="grid gap-8 lg:grid-cols-3">
         {storyPanels.map((panel, index) => (
           <motion.div
@@ -222,7 +231,7 @@ export const HomePage: React.FC = () => {
             <GlassCard className="p-8 h-full">
               <div className="mb-8 h-40 rounded-xl border border-white/10 bg-black/50 overflow-hidden">
                 <motion.div
-                  className="h-full w-full bg-[linear-gradient(120deg,rgba(34,211,238,0.15),rgba(168,85,247,0.35),rgba(16,185,129,0.15))]"
+                  className="h-full w-full bg-[linear-gradient(120deg,rgba(255,115,0,0.15),rgba(255,150,0,0.35),rgba(255,85,0,0.15))]"
                   whileInView={{ x: ['-20%', '20%', '-10%'], scale: [1, 1.12, 1.05] }}
                   transition={{ duration: 2.8, repeat: Infinity, repeatType: 'mirror' }}
                 />

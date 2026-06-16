@@ -38,8 +38,8 @@ export default {
           '100%': { transform: 'translateX(100%) translateY(100%) rotate(45deg)' },
         },
         'pulse-glow': {
-          '0%, 100%': { boxShadow: '0 0 0 0 rgba(16, 185, 129, 0.7)' },
-          '50%': { boxShadow: '0 0 0 10px rgba(16, 185, 129, 0)' },
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(255, 115, 0, 0.4)' },
+          '50%': { boxShadow: '0 0 0 10px rgba(255, 115, 0, 0)' },
         }
       }
     },

@@ -354,15 +354,121 @@ export const MiniGames: React.FC = () => {
                 return { leftDown: () => pressLeft(true), leftUp: () => pressLeft(false), rightDown: () => pressRight(true), rightUp: () => pressRight(false), pause, resume, isPaused: () => paused, isRunning: () => running };
             }
 
+            function setupSnake() {
+                const snakeCanvas = document.getElementById('snakeCanvas') as HTMLCanvasElement;
+                const ctx = snakeCanvas?.getContext('2d');
+                if (!ctx) return null;
+                const scoreEl = document.getElementById('snakeScore');
+                const startBtn = document.getElementById('snakeStart');
+                const pauseBtn = document.getElementById('snakePause');
+                const W = snakeCanvas.width; const H = snakeCanvas.height;
+                const gridSize = 15;
+                let afId: number;
+
+                let running = false, paused = false, over = false, score = 0, last = 0, speed = 0.15, timer = 0;
+                let snake = [{ x: 5 * gridSize, y: 5 * gridSize }];
+                let dir = { x: gridSize, y: 0 };
+                let nextDir = { x: gridSize, y: 0 };
+                let food = { x: 10 * gridSize, y: 10 * gridSize };
+
+                function reset() {
+                    running = false; paused = false; over = false; score = 0; speed = 0.15; timer = 0;
+                    snake = [{ x: 5 * gridSize, y: 5 * gridSize }];
+                    dir = { x: gridSize, y: 0 }; nextDir = { x: gridSize, y: 0 };
+                    placeFood();
+                    if (scoreEl) scoreEl.textContent = 'Score: 0';
+                    if (pauseBtn) pauseBtn.textContent = 'Pause';
+                }
+
+                function placeFood() {
+                    food.x = Math.floor(Math.random() * (W / gridSize)) * gridSize;
+                    food.y = Math.floor(Math.random() * (H / gridSize)) * gridSize;
+                }
+
+                function start() {
+                    safeFocus('snake'); reset(); running = true;
+                    last = performance.now(); afId = requestAnimationFrame(loop);
+                    animationFrames.push(afId);
+                }
+
+                function end() { running = false; over = true; paused = false; if (pauseBtn) pauseBtn.textContent = 'Pause'; updateLeaderboard('snake', score); }
+                function pause() { if (!running || over) return; running = false; paused = true; if (pauseBtn) pauseBtn.textContent = 'Resume'; }
+                function resume() { if (!paused || over) return; paused = false; running = true; if (pauseBtn) pauseBtn.textContent = 'Pause'; last = performance.now(); afId = requestAnimationFrame(loop); }
+                function togglePause() { if (paused) resume(); else pause(); }
+
+                function update(dt: number) {
+                    timer += dt;
+                    if (timer >= speed) {
+                        timer = 0;
+                        dir = nextDir;
+                        const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+                        
+                        if (head.x < 0 || head.x >= W || head.y < 0 || head.y >= H) { end(); return; }
+                        for (let i = 0; i < snake.length; i++) {
+                            if (head.x === snake[i].x && head.y === snake[i].y) { end(); return; }
+                        }
+                        
+                        snake.unshift(head);
+                        if (head.x === food.x && head.y === food.y) {
+                            score += 10;
+                            speed = Math.max(0.05, speed - 0.005);
+                            if (scoreEl) scoreEl.textContent = `Score: ${score}`;
+                            placeFood();
+                        } else {
+                            snake.pop();
+                        }
+                    }
+                }
+
+                function draw() {
+                    if (!ctx) return;
+                    ctx.clearRect(0, 0, W, H);
+                    ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, W, H);
+                    
+                    ctx.fillStyle = '#facc15'; // Yellow food
+                    ctx.fillRect(food.x, food.y, gridSize, gridSize);
+                    
+                    ctx.fillStyle = '#4ade80'; // Green snake
+                    snake.forEach((s) => {
+                        ctx.fillRect(s.x, s.y, gridSize - 1, gridSize - 1);
+                    });
+
+                    if (!running && over) {
+                        ctx.fillStyle = '#f0f0f0'; ctx.font = '16px "Orbitron", sans-serif';
+                        ctx.fillText('Game Over - Restart', 80, H / 2);
+                    } else if (!running && paused) {
+                        ctx.fillStyle = '#f0f0f0'; ctx.font = '16px "Orbitron", sans-serif';
+                        ctx.fillText('Paused', 140, H / 2);
+                    }
+                }
+
+                function loop(ts: number) {
+                    if (!running) { draw(); return; }
+                    const dt = Math.min(0.033, (ts - last) / 1000);
+                    last = ts; update(dt); draw();
+                    if (running) { afId = requestAnimationFrame(loop); animationFrames.push(afId); }
+                }
+
+                function up() { if (dir.y === 0) nextDir = { x: 0, y: -gridSize }; }
+                function down() { if (dir.y === 0) nextDir = { x: 0, y: gridSize }; }
+                function left() { if (dir.x === 0) nextDir = { x: -gridSize, y: 0 }; }
+                function right() { if (dir.x === 0) nextDir = { x: gridSize, y: 0 }; }
+
+                startBtn?.addEventListener('click', start); pauseBtn?.addEventListener('click', togglePause);
+                reset(); draw();
+                return { up, down, left, right, pause, resume, isPaused: () => paused, isRunning: () => running };
+            }
+
             const flappy = setupFlappy();
             const dino = setupDino();
             const dodge = setupDodge();
+            const snake = setupSnake();
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const games: any = { flappy, dino, dodge };
+            const games: any = { flappy, dino, dodge, snake };
 
             const gameCards = document.querySelectorAll('.game-card[data-game]');
             const selectBtns = document.querySelectorAll('.game-select-btn[data-game]');
-            const gameOrder = ['flappy', 'dino', 'dodge'];
+            const gameOrder = ['flappy', 'dino', 'dodge', 'snake'];
             const prevGameBtn = document.getElementById('prevGame');
             const nextGameBtn = document.getElementById('nextGame');
 
@@ -400,11 +506,18 @@ export const MiniGames: React.FC = () => {
                 if (e.code === 'Space') {
                     e.preventDefault();
                     if (activeGame === 'dino' && games.dino) games.dino.action();
-                    else if (games.flappy) games.flappy.action();
+                    else if (activeGame === 'flappy' && games.flappy) games.flappy.action();
                 }
                 if (activeGame === 'dodge' && e.code === 'ArrowLeft' && games.dodge) games.dodge.leftDown();
                 if (activeGame === 'dodge' && e.code === 'ArrowRight' && games.dodge) games.dodge.rightDown();
                 if (activeGame === 'dino' && e.code === 'ArrowUp' && games.dino) games.dino.action();
+                
+                if (activeGame === 'snake' && games.snake) {
+                    if (e.code === 'ArrowUp') games.snake.up();
+                    if (e.code === 'ArrowDown') games.snake.down();
+                    if (e.code === 'ArrowLeft') games.snake.left();
+                    if (e.code === 'ArrowRight') games.snake.right();
+                }
                 if (e.code === 'KeyP') {
                     e.preventDefault();
                     if (games[activeGame]) {
@@ -442,19 +555,21 @@ export const MiniGames: React.FC = () => {
         <div className="w-full max-w-full sm:max-w-2xl mx-auto space-y-5">
 
             {/* Game Selector */}
-            <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:gap-3 sm:justify-center">
+            <div className="grid grid-cols-4 gap-2 sm:flex sm:flex-wrap sm:gap-3 sm:justify-center">
                 <button className="game-select-btn min-h-11 rounded-lg px-2 text-center font-mono text-[10px] sm:px-6 sm:text-sm tracking-wide uppercase border transition-all" data-game="flappy">Flappy</button>
                 <button className="game-select-btn min-h-11 rounded-lg px-2 text-center font-mono text-[10px] sm:px-6 sm:text-sm tracking-wide uppercase border transition-all" data-game="dino">Dino</button>
                 <button className="game-select-btn min-h-11 rounded-lg px-2 text-center font-mono text-[10px] sm:px-6 sm:text-sm tracking-wide uppercase border transition-all" data-game="dodge">Dodge</button>
+                <button className="game-select-btn min-h-11 rounded-lg px-2 text-center font-mono text-[10px] sm:px-6 sm:text-sm tracking-wide uppercase border transition-all" data-game="snake">Snake</button>
             </div>
 
             <div className="glass p-3 sm:p-6 rounded-2xl border border-white/10 relative overflow-hidden">
                 {/* Leaderboard Overlay */}
-                <div className="absolute top-4 right-4 z-20 bg-darker/80 border border-white/10 p-2 rounded-lg text-[10px] sm:text-xs font-mono text-slate-300 hidden sm:block">
-                    <div className="font-bold text-white mb-1 border-b border-white/10 pb-1 text-center">HIGH SCORES</div>
+                <div className="absolute top-4 right-4 z-20 bg-darker/90 border border-white/20 p-3 rounded-lg text-xs font-mono text-slate-300 block shadow-xl shadow-black">
+                    <div className="font-bold text-white mb-2 border-b border-white/10 pb-1 text-center">HIGH SCORES</div>
                     <div className="flex justify-between gap-4"><span>Flappy:</span> <span id="flappyHighScore" className="text-secondary">0</span></div>
                     <div className="flex justify-between gap-4"><span>Dino:</span> <span id="dinoHighScore" className="text-accent">0</span></div>
                     <div className="flex justify-between gap-4"><span>Dodge:</span> <span id="dodgeHighScore" className="text-primary">0</span></div>
+                    <div className="flex justify-between gap-4"><span>Snake:</span> <span id="snakeHighScore" className="text-yellow-400">0</span></div>
                 </div>
 
                 {/* Flappy */}

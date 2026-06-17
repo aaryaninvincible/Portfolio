@@ -189,7 +189,7 @@ export const HomePage: React.FC = () => {
 
         <div className="relative mx-auto w-full max-w-sm">
           <div className="relative rounded-[2rem] border border-primary/30 bg-black p-3 shadow-[0_0_60px_rgba(255,115,0,0.25)]">
-            <img src="/logo.png" alt="Aryan Raikwar Logo" className="aspect-[4/5] w-full rounded-[1.5rem] object-cover" />
+            <img src="/aryan.png" alt="Aryan Raikwar" className="aspect-[4/5] w-full rounded-[1.5rem] object-cover" />
             <div className="absolute -bottom-6 left-6 right-6 glass rounded-xl p-4">
               <div className="grid grid-cols-3 gap-3 text-center">
                 <div>

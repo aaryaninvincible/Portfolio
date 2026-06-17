@@ -27,6 +27,7 @@ export const BuyProjectsPage: React.FC = () => {
       if (data.length === 0) {
         const defaultProjects = [
           {
+            id: 'chatbot-ai-integration',
             title: 'Chatbot AI Integration',
             description: 'A clean React chat interface integrated with OpenAI and Gemini APIs, complete with message history, styling, and system prompt configurations.',
             price: 199,
@@ -38,6 +39,7 @@ export const BuyProjectsPage: React.FC = () => {
             ]
           },
           {
+            id: 'ecommerce-cart-template',
             title: 'E-commerce Cart Template',
             description: 'A premium frontend e-commerce layout featuring grid products view, slide-over cart management, responsive drawers, and animated add-to-cart operations.',
             price: 299,
@@ -49,6 +51,7 @@ export const BuyProjectsPage: React.FC = () => {
             ]
           },
           {
+            id: 'task-automation-script',
             title: 'Task Automation Script',
             description: 'Python scripts equipped with a clean GUI to automate file cataloging, batch renaming, automated backups, and PDF format conversions in one-click.',
             price: 149,
@@ -59,6 +62,7 @@ export const BuyProjectsPage: React.FC = () => {
             ]
           },
           {
+            id: 'iot-dashboard-ui',
             title: 'IoT Dashboard UI',
             description: 'Fully responsive React monitoring dashboard with real-time graphs, toggles, gauges, and mock web-sockets integration for sensor management.',
             price: 399,
@@ -70,6 +74,7 @@ export const BuyProjectsPage: React.FC = () => {
             ]
           },
           {
+            id: 'weather-forecast-pwa',
             title: 'Weather Forecast PWA',
             description: 'A Progressive Web App featuring current atmospheric readings, 5-day forecasts, location history memory, offline caching, and location search coordinates.',
             price: 99,
@@ -80,7 +85,10 @@ export const BuyProjectsPage: React.FC = () => {
             ]
           }
         ];
-        defaultProjects.forEach(p => saveStoreProduct(p));
+        defaultProjects.forEach(p => {
+          const { id, ...rest } = p;
+          saveStoreProduct(rest, id);
+        });
       }
     });
     return unsubscribe;

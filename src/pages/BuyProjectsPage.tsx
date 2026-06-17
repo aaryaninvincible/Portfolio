@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ShoppingCart, ShoppingBag, X, Plus, Minus, Trash2, ExternalLink, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
 import { subscribeToStoreProducts, createOrder, saveStoreProduct } from '../lib/realtime';
@@ -20,11 +20,13 @@ export const BuyProjectsPage: React.FC = () => {
 
   // Carousel screenshots index tracker
   const [activeScreenshot, setActiveScreenshot] = useState<Record<string, number>>({});
+  const hasSeeded = useRef(false);
 
   useEffect(() => {
     const unsubscribe = subscribeToStoreProducts((data) => {
       setProducts(data);
-      if (data.length === 0) {
+      if (data.length === 0 && !hasSeeded.current) {
+        hasSeeded.current = true;
         const defaultProjects = [
           {
             id: 'chatbot-ai-integration',

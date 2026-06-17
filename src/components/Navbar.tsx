@@ -2,15 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { motion, useScroll, useSpring } from 'framer-motion';
-import { ThemeSwitcher } from './ThemeSwitcher';
 
 const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Resume', path: '/resume' },
     { name: 'Updates', path: '/updates' },
-    { name: 'Gallery', path: '/gallery' },
-    { name: 'All Work', path: '/all-work' },
-    { name: 'Admin', path: '/admin' }
+    { name: 'Buy Projects', path: '/buy-projects' },
+    { name: 'All Work', path: '/all-work' }
 ];
 
 export const Navbar: React.FC = () => {
@@ -53,7 +51,6 @@ export const Navbar: React.FC = () => {
                     </nav>
 
                     <div className="flex items-center gap-3">
-                        <ThemeSwitcher />
                         <button
                             type="button"
                             className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/15 text-light hover:text-primary hover:border-primary/40 transition-colors"
@@ -65,6 +62,7 @@ export const Navbar: React.FC = () => {
                         </button>
                     </div>
                 </div>
+
 
                 <nav
                     className={`md:hidden border-t border-white/10 bg-black/95 backdrop-blur-md transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'

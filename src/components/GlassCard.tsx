@@ -28,7 +28,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', 
             transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`,
             transition: 'none',
             borderColor: 'rgba(255,255,255,0.3)',
-            boxShadow: '0 15px 35px rgba(0,0,0,0.2), 0 0 10px rgba(56, 189, 248, 0.5)'
+            boxShadow: '0 15px 35px rgba(0,0,0,0.2), 0 0 10px rgba(255, 115, 0, 0.5)'
         });
 
         setGlareStyle({

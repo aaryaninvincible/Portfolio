@@ -24,6 +24,11 @@ export const CursorFollower: React.FC = () => {
         let animationFrameId: number;
 
         const onMouseMove = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            if (target && target.closest('.no-cursor-follower')) {
+                setIsVisible(false);
+                return;
+            }
             targetRef.current = { x: e.clientX, y: e.clientY };
             setIsVisible(true);
         };
@@ -61,9 +66,11 @@ export const CursorFollower: React.FC = () => {
         <div
             className={`fixed top-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none z-[9999] opacity-0 mix-blend-screen transition-opacity duration-300 ${isVisible ? 'opacity-100' : ''}`}
             style={{
-                background: 'radial-gradient(circle, rgba(248, 165, 56, 0.23) 0%, rgba(129, 140, 248, 0.05) 40%, transparent 70%)',
+                background: 'radial-gradient(circle, rgba(248, 165, 56, 0.23) 0%, rgba(255, 115, 0, 0.05) 40%, transparent 70%)',
                 transform: `translate(calc(${position.x}px - 50%), calc(${position.y}px - 50%))`,
             }}
         />
     );
 };
+
+ 

@@ -6,7 +6,7 @@ import { GlassCard } from './GlassCard';
 export const InteractiveWidgets: React.FC = () => {
   const stats = [
     { label: 'Commits', value: '1.2k+', icon: <Code className="text-primary" /> },
-    { label: 'Projects', value: '45+', icon: <Server className="text-secondary" /> },
+    { label: 'Projects', value: '300+', icon: <Server className="text-secondary" /> },
     { label: 'Uptime', value: '99.9%', icon: <Activity className="text-accent" /> },
     { label: 'Databases', value: '12+', icon: <Database className="text-primary" /> },
   ];

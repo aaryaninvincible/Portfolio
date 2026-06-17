@@ -47,8 +47,41 @@ export type RepoRequest = {
   createdAt?: number;
 };
 
+export type StoreProject = {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  demoUrl?: string;
+  imageUrl: string;
+  screenshots?: string[]; // list of screenshot urls
+  updatedAt?: number | string;
+};
+
+export type Order = {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  projectId: string;
+  projectTitle: string;
+  price: number;
+  upiTxnId?: string;
+  status: 'pending' | 'completed' | 'failed';
+  createdAt?: number;
+};
+
+export type LeaderboardEntry = {
+  id: string;
+  name: string;
+  score: number;
+  gameId: 'flappy' | 'dino' | 'dodge' | 'snake';
+  createdAt?: number;
+};
+
 export type ResumeProfile = {
   title?: string;
   fileUrl?: string;
   updatedAt?: number;
 };
+

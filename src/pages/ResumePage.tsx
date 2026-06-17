@@ -19,7 +19,7 @@ export const ResumePage: React.FC = () => {
           Aryan Raikwar <span className="text-gradient">Resume</span>
         </h1>
         <p className="text-slate-300">View the latest resume directly here. Admin uploads will replace this file.</p>
-        <a href={resumeUrl} target="_blank" rel="noreferrer" className="glass inline-flex items-center gap-2 rounded-lg px-5 py-3 text-primary font-bold">
+        <a href={resumeUrl} download="Aryan_Raikwar_Resume.pdf" target="_blank" rel="noreferrer" className="glass inline-flex items-center gap-2 rounded-lg px-5 py-3 text-primary font-bold">
           <Download size={18} /> Open / Download
         </a>
       </div>
@@ -39,7 +39,7 @@ export const ResumePage: React.FC = () => {
               <div>
                 <FileText className="mx-auto mb-4 h-12 w-12" />
                 <p className="mb-5 font-bold">Resume preview opens best in full screen on mobile.</p>
-                <a href={resumeUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-5 py-3 text-white">
+                <a href={resumeUrl} download="Aryan_Raikwar_Resume.pdf" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-5 py-3 text-white">
                   <Maximize2 size={18} /> Open Resume
                 </a>
               </div>

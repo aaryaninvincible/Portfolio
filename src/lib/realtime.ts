@@ -1,7 +1,7 @@
 import { onValue, ref, remove, serverTimestamp, set, update, push } from 'firebase/database';
 import { getDownloadURL, ref as storageRef, uploadBytes } from 'firebase/storage';
 import { db, storage } from './firebase';
-import type { Certificate, ContactMessage, PortfolioProject, RepoRequest, ResumeProfile } from '../types';
+import type { Certificate, ContactMessage, PortfolioProject, RepoRequest, ResumeProfile, StoreProject, Order, LeaderboardEntry } from '../types';
 
 const snapshotToList = <T extends { id: string }>(value: unknown): T[] => {
   if (!value || typeof value !== 'object') return [];
@@ -77,3 +77,49 @@ export const saveResume = (resume: ResumeProfile) =>
     ...resume,
     updatedAt: serverTimestamp(),
   });
+
+export const subscribeToLeaderboard = (gameId: string, callback: (entries: LeaderboardEntry[]) => void) =>
+  onValue(ref(db, `leaderboard/${gameId}`), (snapshot) => {
+    const data = snapshot.val();
+    if (!data) return callback([]);
+    const list = Object.entries(data as Record<string, Omit<LeaderboardEntry, 'id'>>)
+      .map(([id, item]) => ({ id, ...item }) as LeaderboardEntry)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 10);
+    callback(list);
+  });
+
+export const submitHighScore = (gameId: string, name: string, score: number) => {
+  return push(ref(db, `leaderboard/${gameId}`), {
+    name,
+    score,
+    createdAt: serverTimestamp(),
+  });
+};
+
+export const subscribeToStoreProducts = (callback: (products: StoreProject[]) => void) =>
+  onValue(ref(db, 'storeProducts'), (snapshot) => callback(snapshotToList<StoreProject>(snapshot.val())));
+
+export const subscribeToOrders = (callback: (orders: Order[]) => void) =>
+  onValue(ref(db, 'orders'), (snapshot) => callback(snapshotToList<Order>(snapshot.val())));
+
+export const saveStoreProduct = (product: Omit<StoreProject, 'id' | 'updatedAt'>, id?: string) => {
+  const productRef = id ? ref(db, `storeProducts/${id}`) : push(ref(db, 'storeProducts'));
+  return set(productRef, {
+    ...product,
+    updatedAt: serverTimestamp(),
+  });
+};
+
+export const deleteStoreProduct = (id: string) => remove(ref(db, `storeProducts/${id}`));
+
+export const createOrder = (order: Omit<Order, 'id' | 'createdAt'>) => {
+  return push(ref(db, 'orders'), {
+    ...order,
+    createdAt: serverTimestamp(),
+  });
+};
+
+export const updateOrder = (id: string, data: Partial<Order>) => update(ref(db, `orders/${id}`), data);
+export const deleteOrder = (id: string) => remove(ref(db, `orders/${id}`));
+

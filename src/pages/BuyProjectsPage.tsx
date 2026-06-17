@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ShoppingCart, ShoppingBag, X, Plus, Minus, Trash2, ExternalLink, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
-import { subscribeToStoreProducts, createOrder, saveStoreProduct } from '../lib/realtime';
+import { subscribeToStoreProducts, createOrder } from '../lib/realtime';
 import type { StoreProject } from '../types';
 
 export const BuyProjectsPage: React.FC = () => {
@@ -20,80 +20,9 @@ export const BuyProjectsPage: React.FC = () => {
 
   // Carousel screenshots index tracker
   const [activeScreenshot, setActiveScreenshot] = useState<Record<string, number>>({});
-  const hasSeeded = useRef(false);
 
   useEffect(() => {
-    const unsubscribe = subscribeToStoreProducts((data) => {
-      setProducts(data);
-      if (data.length === 0 && !hasSeeded.current) {
-        hasSeeded.current = true;
-        const defaultProjects = [
-          {
-            id: 'chatbot-ai-integration',
-            title: 'Chatbot AI Integration',
-            description: 'A clean React chat interface integrated with OpenAI and Gemini APIs, complete with message history, styling, and system prompt configurations.',
-            price: 199,
-            demoUrl: 'https://github.com/aaryaninvincible',
-            imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780efad99a?w=600&auto=format&fit=crop&q=60',
-            screenshots: [
-              'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60',
-              'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&auto=format&fit=crop&q=60'
-            ]
-          },
-          {
-            id: 'ecommerce-cart-template',
-            title: 'E-commerce Cart Template',
-            description: 'A premium frontend e-commerce layout featuring grid products view, slide-over cart management, responsive drawers, and animated add-to-cart operations.',
-            price: 299,
-            demoUrl: 'https://github.com/aaryaninvincible',
-            imageUrl: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&auto=format&fit=crop&q=60',
-            screenshots: [
-              'https://images.unsplash.com/photo-1472851294608-062f824d296e?w=600&auto=format&fit=crop&q=60',
-              'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&auto=format&fit=crop&q=60'
-            ]
-          },
-          {
-            id: 'task-automation-script',
-            title: 'Task Automation Script',
-            description: 'Python scripts equipped with a clean GUI to automate file cataloging, batch renaming, automated backups, and PDF format conversions in one-click.',
-            price: 149,
-            demoUrl: 'https://github.com/aaryaninvincible',
-            imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=60',
-            screenshots: [
-              'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop&q=60'
-            ]
-          },
-          {
-            id: 'iot-dashboard-ui',
-            title: 'IoT Dashboard UI',
-            description: 'Fully responsive React monitoring dashboard with real-time graphs, toggles, gauges, and mock web-sockets integration for sensor management.',
-            price: 399,
-            demoUrl: 'https://github.com/aaryaninvincible',
-            imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=60',
-            screenshots: [
-              'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&auto=format&fit=crop&q=60',
-              'https://images.unsplash.com/photo-1563770660941-20978e870e26?w=600&auto=format&fit=crop&q=60'
-            ]
-          },
-          {
-            id: 'weather-forecast-pwa',
-            title: 'Weather Forecast PWA',
-            description: 'A Progressive Web App featuring current atmospheric readings, 5-day forecasts, location history memory, offline caching, and location search coordinates.',
-            price: 99,
-            demoUrl: 'https://github.com/aaryaninvincible',
-            imageUrl: 'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=600&auto=format&fit=crop&q=60',
-            screenshots: [
-              'https://images.unsplash.com/photo-1580193796842-143008c3327a?w=600&auto=format&fit=crop&q=60'
-            ]
-          }
-        ];
-        defaultProjects.forEach(p => {
-          const { id, ...rest } = p;
-          saveStoreProduct(rest, id);
-        });
-      }
-    });
-    return unsubscribe;
+    return subscribeToStoreProducts(setProducts);
   }, []);
 
   const addToCart = (product: StoreProject) => {

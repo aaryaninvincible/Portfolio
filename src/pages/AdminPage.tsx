@@ -155,6 +155,78 @@ export const AdminPage: React.FC = () => {
     }
   };
 
+  const handleSeedProducts = async () => {
+    setBusy('Seeding default projects...');
+    try {
+      const defaultProjects = [
+        {
+          title: 'Chatbot AI Integration',
+          description: 'A clean React chat interface integrated with OpenAI and Gemini APIs, complete with message history, styling, and system prompt configurations.',
+          price: 199,
+          demoUrl: 'https://github.com/aaryaninvincible',
+          imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780efad99a?w=600&auto=format&fit=crop&q=60',
+          screenshots: [
+            'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60',
+            'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&auto=format&fit=crop&q=60'
+          ]
+        },
+        {
+          title: 'E-commerce Cart Template',
+          description: 'A premium frontend e-commerce layout featuring grid products view, slide-over cart management, responsive drawers, and animated add-to-cart operations.',
+          price: 299,
+          demoUrl: 'https://github.com/aaryaninvincible',
+          imageUrl: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&auto=format&fit=crop&q=60',
+          screenshots: [
+            'https://images.unsplash.com/photo-1472851294608-062f824d296e?w=600&auto=format&fit=crop&q=60',
+            'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&auto=format&fit=crop&q=60'
+          ]
+        },
+        {
+          title: 'Task Automation Script',
+          description: 'Python scripts equipped with a clean GUI to automate file cataloging, batch renaming, automated backups, and PDF format conversions in one-click.',
+          price: 149,
+          demoUrl: 'https://github.com/aaryaninvincible',
+          imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=60',
+          screenshots: [
+            'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop&q=60'
+          ]
+        },
+        {
+          title: 'IoT Dashboard UI',
+          description: 'Fully responsive React monitoring dashboard with real-time graphs, toggles, gauges, and mock web-sockets integration for sensor management.',
+          price: 399,
+          demoUrl: 'https://github.com/aaryaninvincible',
+          imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=60',
+          screenshots: [
+            'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&auto=format&fit=crop&q=60',
+            'https://images.unsplash.com/photo-1563770660941-20978e870e26?w=600&auto=format&fit=crop&q=60'
+          ]
+        },
+        {
+          title: 'Weather Forecast PWA',
+          description: 'A Progressive Web App featuring current atmospheric readings, 5-day forecasts, location history memory, offline caching, and location search coordinates.',
+          price: 99,
+          demoUrl: 'https://github.com/aaryaninvincible',
+          imageUrl: 'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=600&auto=format&fit=crop&q=60',
+          screenshots: [
+            'https://images.unsplash.com/photo-1580193796842-143008c3327a?w=600&auto=format&fit=crop&q=60'
+          ]
+        }
+      ];
+
+      for (const p of defaultProjects) {
+        const id = p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        await saveStoreProduct(p, id);
+      }
+      alert('5 default projects successfully seeded!');
+    } catch (err) {
+      console.error(err);
+      alert('Error seeding default projects.');
+    } finally {
+      setBusy('');
+    }
+  };
+
   const handleCertificateSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
@@ -421,6 +493,17 @@ export const AdminPage: React.FC = () => {
                 <Plus size={18} /> List Project For Sale
               </button>
             </form>
+
+            <div className="mt-6 pt-6 border-t border-white/5 space-y-3">
+              <p className="text-[10px] text-slate-400">Quick seed helper:</p>
+              <button 
+                type="button" 
+                onClick={handleSeedProducts}
+                className="w-full glass border-accent/30 text-accent font-bold py-2.5 rounded-lg text-xs font-orbitron uppercase flex justify-center items-center gap-2"
+              >
+                <Tag size={14} /> Seed 5 Default Projects
+              </button>
+            </div>
           </GlassCard>
 
           <div className="grid gap-4">

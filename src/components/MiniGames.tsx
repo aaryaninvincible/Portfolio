@@ -540,9 +540,13 @@ export const MiniGames: React.FC = () => {
             const tag = (e.target as HTMLElement).tagName || '';
             if (tag === 'INPUT' || tag === 'TEXTAREA') return;
 
+            // Prevent scroll for game keys
+            if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+                e.preventDefault();
+            }
+
             const current = activeGameRef.current;
             if (e.code === 'Space') {
-                e.preventDefault();
                 if (current === 'dino' && games.dino) games.dino.action();
                 else if (current === 'flappy' && games.flappy) games.flappy.action();
             }
@@ -557,7 +561,6 @@ export const MiniGames: React.FC = () => {
                 if (e.code === 'ArrowRight') games.snake.right();
             }
             if (e.code === 'KeyP') {
-                e.preventDefault();
                 if (games[current]) {
                     if (games[current].isPaused()) games[current].resume();
                     else games[current].pause();

@@ -48,7 +48,7 @@ export const ParticleBackground: React.FC = () => {
             constructor() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                const colors = ['rgba(56, 189, 248, 0.6)', 'rgba(129, 140, 248, 0.6)', 'rgba(16, 185, 129, 0.6)'];
+                const colors = ['rgba(255, 156, 35, 0.6)', 'rgba(255, 247, 98, 0.6)', 'rgba(151, 185, 16, 0.6)'];
                 this.color = colors[Math.floor(Math.random() * colors.length)];
                 this.size = Math.random() * 3 + 1;
                 this.speedX = Math.random() * 1 - 0.5;

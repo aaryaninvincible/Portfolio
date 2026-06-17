@@ -210,14 +210,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      <motion.img 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        src="/banner1.png" 
-        alt="Technology Banner" 
-        className="w-full rounded-2xl border border-primary/20 shadow-[0_0_40px_rgba(255,115,0,0.15)]"
-      />
+
 
       <section className="grid gap-8 lg:grid-cols-3">
         {storyPanels.map((panel, index) => (

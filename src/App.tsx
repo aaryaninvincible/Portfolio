@@ -14,7 +14,6 @@ import { BuyProjectsPage } from './pages/BuyProjectsPage';
 import { AllWorkPage } from './pages/AllWorkPage';
 import { AdminPage } from './pages/AdminPage';
 import { ResumePage } from './pages/ResumePage';
-import { toggleGlobalMusic, getMusicMuteState } from './lib/audio';
 
 const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
@@ -35,21 +34,16 @@ const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) =
 };
 
 const MusicWidget: React.FC = () => {
-  const [muted, setMuted] = useState(getMusicMuteState());
-
-  const handleToggle = () => {
-    const isMuted = !toggleGlobalMusic();
-    setMuted(isMuted);
-  };
+  const [unmuted, setUnmuted] = useState(false);
 
   return (
     <div className="fixed bottom-6 right-6 z-[45] flex items-center gap-2">
       <button
-        onClick={handleToggle}
+        onClick={() => setUnmuted(!unmuted)}
         className="glass flex items-center gap-2 rounded-full px-4 py-2.5 text-xs font-bold font-orbitron tracking-widest uppercase text-primary border-primary/30 hover:border-primary hover:shadow-[0_0_15px_rgba(255,115,0,0.3)] transition-all"
         title="Background Music"
       >
-        {muted ? (
+        {!unmuted ? (
           <>
             <VolumeX size={14} className="text-secondary animate-pulse" />
             <span>Muted</span>
@@ -61,6 +55,16 @@ const MusicWidget: React.FC = () => {
           </>
         )}
       </button>
+      
+      {unmuted && (
+        <iframe
+          src="https://www.youtube.com/embed/PaJQx2mkCTA?autoplay=1&loop=1&playlist=PaJQx2mkCTA"
+          allow="autoplay"
+          className="hidden w-0 h-0 absolute pointer-events-none"
+          title="Background Music Player"
+          frameBorder="0"
+        />
+      )}
     </div>
   );
 };

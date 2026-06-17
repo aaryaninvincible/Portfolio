@@ -121,7 +121,7 @@ export const ParticleBackground: React.FC = () => {
 
                     if (distance < 100) {
                         ctx.beginPath();
-                        ctx.strokeStyle = `rgba(129, 140, 248, ${0.2 - (distance / 100) * 0.2})`;
+                        ctx.strokeStyle = `rgba(255, 115, 0, ${0.2 - (distance / 100) * 0.2})`;
                         ctx.lineWidth = 1;
                         ctx.moveTo(particles[a].x, particles[a].y);
                         ctx.lineTo(particles[b].x, particles[b].y);

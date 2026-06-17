@@ -78,7 +78,7 @@ const AppContent: React.FC = () => {
       <ParticleBackground />
       <CursorFollower />
       <Navbar />
-      <main className="min-h-screen z-10 relative bg-darker">
+      <main className="min-h-screen z-10 relative">
         <PageTransition>
           <Routes>
             <Route path="/" element={<HomePage />} />

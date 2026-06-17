@@ -61,7 +61,7 @@ export const CursorFollower: React.FC = () => {
         <div
             className={`fixed top-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none z-[9999] opacity-0 mix-blend-screen transition-opacity duration-300 ${isVisible ? 'opacity-100' : ''}`}
             style={{
-                background: 'radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(129, 140, 248, 0.05) 40%, transparent 70%)',
+                background: 'radial-gradient(circle, rgba(248, 165, 56, 0.23) 0%, rgba(129, 140, 248, 0.05) 40%, transparent 70%)',
                 transform: `translate(calc(${position.x}px - 50%), calc(${position.y}px - 50%))`,
             }}
         />

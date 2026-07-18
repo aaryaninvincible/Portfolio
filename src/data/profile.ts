@@ -2,6 +2,54 @@ import type { Certificate } from '../types';
 
 export const linkedInCertificates: Certificate[] = [
   {
+    id: 'intel-ai-for-future',
+    title: 'AI For Future',
+    issuer: 'Intel & Chandigarh University',
+    date: 'Issued 2026',
+    description: 'Artificial Intelligence training and certification program by Intel in collaboration with Chandigarh University.',
+    imageUrl: '/certificates/AI FOR FUTURE BY INTEL CHANDIGARH UNIVERSITY.png',
+  },
+  {
+    id: 'sih-2022-finalist',
+    title: 'Smart India Hackathon 2022 Finalist',
+    issuer: 'Ministry of Education, Government of India',
+    date: 'Issued Aug 2022',
+    description: 'National level hackathon finalist certificate for developing innovative tech solutions.',
+    imageUrl: '/certificates/SIH 2022 FINAL CERTIFICATE.png',
+  },
+  {
+    id: 'claude-code-in-action',
+    title: 'Claude Code in Action',
+    issuer: 'Anthropic / Developer Community',
+    date: 'Issued 2026',
+    description: 'Practical training on Claude Code CLI for autonomous coding and development workflows.',
+    imageUrl: '/certificates/claude code in action.png',
+  },
+  {
+    id: 'critical-thinking-cert',
+    title: 'Critical Thinking Certification',
+    issuer: 'Great Learning',
+    date: 'Issued 2025',
+    description: 'Professional development certificate on structured analytical frameworks and critical thinking.',
+    imageUrl: '/certificates/critical thinking certificate.png',
+  },
+  {
+    id: 'data-analysis-python',
+    title: 'Data Analysis with Python',
+    issuer: 'freeCodeCamp / IBM',
+    date: 'Issued 2025',
+    description: 'Hands-on validation of data wrangling, exploratory data analysis, and predictive modeling using Python libraries.',
+    imageUrl: '/certificates/data analysis with python.png',
+  },
+  {
+    id: 'python-by-meta',
+    title: 'Programming in Python (Meta)',
+    issuer: 'Meta (Coursera)',
+    date: 'Issued 2024',
+    description: 'Meta backend development track certificate covering python programming paradigms and software architecture.',
+    imageUrl: '/certificates/python by METa.png',
+  },
+  {
     id: 'coursera-google-ai',
     title: 'Google AI Professional Certificate',
     issuer: 'Google (Coursera)',
@@ -67,7 +115,7 @@ export const linkedInCertificates: Certificate[] = [
     issuer: 'HackerRank',
     date: 'Issued Aug 2024',
     description: 'Credential ID AC2AAE56D489. Listed on Aryan Raikwar LinkedIn profile.',
-    imageUrl: '',
+    imageUrl: '/certificates/hacker rank python.png',
   },
   {
     id: 'linkedin-accenture-data-analytics',
@@ -83,7 +131,7 @@ export const linkedInCertificates: Certificate[] = [
     issuer: 'HackerRank',
     date: 'Issued Apr 2024',
     description: 'Credential ID EAA5B3B095E1. Listed on Aryan Raikwar LinkedIn profile.',
-    imageUrl: '',
+    imageUrl: '/certificates/hackerrank sql.png',
   },
   {
     id: 'linkedin-hackathon-2022',

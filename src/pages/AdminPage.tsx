@@ -241,7 +241,7 @@ export const AdminPage: React.FC = () => {
           pdfUrl: cert.pdfUrl || '',
         }, cert.id);
       }
-      alert('17 default certificates successfully seeded!');
+      alert('23 default certificates successfully seeded!');
     } catch (err) {
       console.error(err);
       alert('Error seeding default certificates.');

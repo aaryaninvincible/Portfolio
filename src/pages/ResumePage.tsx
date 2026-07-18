@@ -1,15 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { Download, FileText, Maximize2 } from 'lucide-react';
+import { Download, FileText, Maximize2, Trophy, ExternalLink } from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
-import { subscribeToResume } from '../lib/realtime';
-import type { ResumeProfile } from '../types';
+import { subscribeToResume, subscribeToCertificates } from '../lib/realtime';
+import { linkedInCertificates } from '../data/profile';
+import type { Certificate, ResumeProfile } from '../types';
 
 export const ResumePage: React.FC = () => {
   const [resume, setResume] = useState<ResumeProfile | null>(null);
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
 
-  useEffect(() => subscribeToResume(setResume), []);
+  useEffect(() => {
+    const unsubResume = subscribeToResume(setResume);
+    const unsubCertificates = subscribeToCertificates(setCertificates);
+    return () => {
+      unsubResume();
+      unsubCertificates();
+    };
+  }, []);
 
   const resumeUrl = resume?.fileUrl || '/AryanRaikwarResume.pdf';
+  const visibleCertificates = certificates.length > 0 ? certificates : linkedInCertificates;
 
   return (
     <div className="pt-32 pb-20 px-6 max-w-6xl mx-auto space-y-10">
@@ -54,6 +64,59 @@ export const ResumePage: React.FC = () => {
           </div>
         )}
       </GlassCard>
+
+      <section className="space-y-10 pt-10 border-t border-white/10">
+        <div className="text-center space-y-4">
+          <span className="section-kicker">Certifications</span>
+          <h2 className="text-3xl md:text-5xl font-orbitron">Professional Credentials</h2>
+        </div>
+        {visibleCertificates.length > 0 ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {visibleCertificates.map((certificate) => (
+              <GlassCard key={certificate.id} className="overflow-hidden flex flex-col h-full">
+                {certificate.imageUrl ? (
+                  certificate.imageUrl.toLowerCase().endsWith('.pdf') ? (
+                    <div className="flex h-56 flex-col items-center justify-center border-b border-white/10 bg-black/50 px-6 text-center gap-2">
+                      <FileText className="h-10 w-10 text-primary animate-pulse" />
+                      <span className="font-orbitron text-sm text-slate-300">PDF Credential</span>
+                    </div>
+                  ) : (
+                    <img src={certificate.imageUrl} alt={certificate.title} className="h-56 w-full object-cover" />
+                  )
+                ) : (
+                  <div className="flex h-40 items-center justify-center border-b border-white/10 bg-black/50 px-6 text-center">
+                    <Trophy className="mr-3 h-8 w-8 shrink-0 text-primary" />
+                    <span className="font-orbitron text-lg text-light">{certificate.issuer || 'Certificate'}</span>
+                  </div>
+                )}
+                <div className="p-6 flex flex-col flex-grow justify-between">
+                  <div>
+                    <h3 className="font-orbitron text-xl text-primary">{certificate.title}</h3>
+                    <p className="mt-2 text-sm text-slate-300 leading-relaxed">{certificate.description}</p>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between">
+                    <p className="text-xs text-slate-400 font-mono">
+                      {[certificate.issuer, certificate.date].filter(Boolean).join(' - ')}
+                    </p>
+                    {certificate.imageUrl && (
+                      <a 
+                        href={certificate.imageUrl} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className="text-xs font-bold text-accent hover:text-white inline-flex items-center gap-1 transition-colors"
+                      >
+                        View <ExternalLink size={12} />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </GlassCard>
+            ))}
+          </div>
+        ) : (
+          <GlassCard className="p-8 text-center text-slate-300">Certificates will appear here after upload.</GlassCard>
+        )}
+      </section>
     </div>
   );
 };

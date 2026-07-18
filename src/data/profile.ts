@@ -2,6 +2,38 @@ import type { Certificate } from '../types';
 
 export const linkedInCertificates: Certificate[] = [
   {
+    id: 'coursera-google-ai',
+    title: 'Google AI Professional Certificate',
+    issuer: 'Google (Coursera)',
+    date: 'Issued Jul 2026',
+    description: '7-course professional certificate covering AI Fundamentals, Brainstorming, Research, Communication, Content Creation, Data Analysis, and App Building. Credential ID 9WN3KNALX3BH.',
+    imageUrl: '/certificates/google ai certificate.pdf',
+  },
+  {
+    id: 'coursera-aws-prompt-engineering',
+    title: 'Foundations of Prompt Engineering',
+    issuer: 'AWS Training & Certification',
+    date: 'Issued Jul 2026',
+    description: 'Completion certificate awarded by AWS Training & Certification.',
+    imageUrl: '/certificates/AWS prompt engineering cert.pdf',
+  },
+  {
+    id: 'coursera-aicerts-ai-ui-ux',
+    title: 'AI Powered UI/UX Design Specialization',
+    issuer: 'AI CERTs (Coursera)',
+    date: 'Issued Jul 2026',
+    description: '3-course specialization (AI Foundations & Design Thinking; AI Tools, Data, and Experience Design; Design Strategy, Future Trends & Implementation with AI). Credential ID BHC6UT390DCP.',
+    imageUrl: '/certificates/AiCerts Ai Powerd Ui ux .pdf',
+  },
+  {
+    id: 'coursera-aicerts-design-thinking',
+    title: 'AI Foundations & Design Thinking',
+    issuer: 'AI CERTs (Coursera)',
+    date: 'Issued Jul 2026',
+    description: 'Completion certificate authorized by AI CERTs, offered through Coursera. Credential ID 2GZ7UKNMWFW4.',
+    imageUrl: '/certificates/ai foundation and design thinking .pdf',
+  },
+  {
     id: 'linkedin-inocrypt-internship',
     title: 'Software Engineer Trainee Internship',
     issuer: 'Inocrypt Infosoft',

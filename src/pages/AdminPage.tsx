@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut, type User } from 'firebase/auth';
-import { Check, FileUp, Lock, LogIn, LogOut, Mail, Plus, Trash2, ShoppingCart, Tag } from 'lucide-react';
+import { Check, FileUp, Lock, LogIn, LogOut, Mail, Plus, Trash2, ShoppingCart, Tag, Trophy, FileText } from 'lucide-react';
+import { linkedInCertificates } from '../data/profile';
 import { GlassCard } from '../components/GlassCard';
 import { auth } from '../lib/firebase';
 import {
@@ -227,6 +228,27 @@ export const AdminPage: React.FC = () => {
     }
   };
 
+  const handleSeedCertificates = async () => {
+    setBusy('Seeding default certificates...');
+    try {
+      for (const cert of linkedInCertificates) {
+        await saveCertificate({
+          title: cert.title,
+          description: cert.description,
+          issuer: cert.issuer || '',
+          date: cert.date || '',
+          imageUrl: cert.imageUrl,
+        }, cert.id);
+      }
+      alert('13 default certificates successfully seeded!');
+    } catch (err) {
+      console.error(err);
+      alert('Error seeding default certificates.');
+    } finally {
+      setBusy('');
+    }
+  };
+
   const handleCertificateSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
@@ -438,14 +460,39 @@ export const AdminPage: React.FC = () => {
                 <FileUp size={18} /> Upload Certificate
               </button>
             </form>
+
+            <div className="mt-6 pt-6 border-t border-white/5 space-y-3">
+              <p className="text-[10px] text-slate-400">Quick seed helper:</p>
+              <button 
+                type="button" 
+                onClick={handleSeedCertificates}
+                className="w-full glass border-accent/30 text-accent font-bold py-2.5 rounded-lg text-xs font-orbitron uppercase flex justify-center items-center gap-2"
+              >
+                <Trophy size={14} /> Seed LinkedIn Certificates
+              </button>
+            </div>
           </GlassCard>
           <div className="grid md:grid-cols-2 gap-4">
             {certificates.map((certificate) => (
-              <GlassCard key={certificate.id} className="overflow-hidden">
-                <img src={certificate.imageUrl} alt={certificate.title} className="h-40 w-full object-cover" />
-                <div className="p-4 text-xs">
+              <GlassCard key={certificate.id} className="overflow-hidden flex flex-col h-full">
+                {certificate.imageUrl ? (
+                  certificate.imageUrl.toLowerCase().endsWith('.pdf') ? (
+                    <div className="flex h-40 flex-col items-center justify-center border-b border-white/10 bg-black/50 px-6 text-center gap-2">
+                      <FileText className="h-8 w-8 text-primary" />
+                      <span className="font-orbitron text-xs text-slate-300">PDF Credential</span>
+                    </div>
+                  ) : (
+                    <img src={certificate.imageUrl} alt={certificate.title} className="h-40 w-full object-cover" />
+                  )
+                ) : (
+                  <div className="flex h-32 items-center justify-center border-b border-white/10 bg-black/50 px-6 text-center">
+                    <Trophy className="mr-3 h-6 w-6 shrink-0 text-primary" />
+                    <span className="font-orbitron text-sm text-light">{certificate.issuer || 'Certificate'}</span>
+                  </div>
+                )}
+                <div className="p-4 text-xs flex flex-col flex-grow justify-between">
                   <h3 className="font-orbitron text-primary">{certificate.title}</h3>
-                  <button className="mt-3 text-red-300 inline-flex items-center gap-2" onClick={() => deleteCertificate(certificate.id)}>
+                  <button className="mt-3 text-red-300 hover:text-red-500 inline-flex items-center gap-2 w-max" onClick={() => deleteCertificate(certificate.id)}>
                     <Trash2 size={16} /> Delete
                   </button>
                 </div>

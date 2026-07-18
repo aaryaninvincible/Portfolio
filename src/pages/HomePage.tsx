@@ -6,6 +6,7 @@ import {
   Download,
   ExternalLink,
   FileSpreadsheet,
+  FileText,
   Github,
   Instagram,
   Languages,
@@ -323,19 +324,42 @@ export const HomePage: React.FC = () => {
         {visibleCertificates.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {visibleCertificates.map((certificate) => (
-              <GlassCard key={certificate.id} className="overflow-hidden">
+              <GlassCard key={certificate.id} className="overflow-hidden flex flex-col h-full">
                 {certificate.imageUrl ? (
-                  <img src={certificate.imageUrl} alt={certificate.title} className="h-56 w-full object-cover" />
+                  certificate.imageUrl.toLowerCase().endsWith('.pdf') ? (
+                    <div className="flex h-56 flex-col items-center justify-center border-b border-white/10 bg-black/50 px-6 text-center gap-2">
+                      <FileText className="h-10 w-10 text-primary animate-pulse" />
+                      <span className="font-orbitron text-sm text-slate-300">PDF Credential</span>
+                    </div>
+                  ) : (
+                    <img src={certificate.imageUrl} alt={certificate.title} className="h-56 w-full object-cover" />
+                  )
                 ) : (
                   <div className="flex h-40 items-center justify-center border-b border-white/10 bg-black/50 px-6 text-center">
                     <Trophy className="mr-3 h-8 w-8 shrink-0 text-primary" />
                     <span className="font-orbitron text-lg text-light">{certificate.issuer || 'Certificate'}</span>
                   </div>
                 )}
-                <div className="p-6">
-                  <h3 className="font-orbitron text-xl text-primary">{certificate.title}</h3>
-                  <p className="mt-2 text-sm text-slate-300">{certificate.description}</p>
-                  <p className="mt-4 text-xs text-slate-400">{[certificate.issuer, certificate.date].filter(Boolean).join(' - ')}</p>
+                <div className="p-6 flex flex-col flex-grow justify-between">
+                  <div>
+                    <h3 className="font-orbitron text-xl text-primary">{certificate.title}</h3>
+                    <p className="mt-2 text-sm text-slate-300 leading-relaxed">{certificate.description}</p>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between">
+                    <p className="text-xs text-slate-400 font-mono">
+                      {[certificate.issuer, certificate.date].filter(Boolean).join(' - ')}
+                    </p>
+                    {certificate.imageUrl && (
+                      <a 
+                        href={certificate.imageUrl} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className="text-xs font-bold text-accent hover:text-white inline-flex items-center gap-1 transition-colors"
+                      >
+                        View <ExternalLink size={12} />
+                      </a>
+                    )}
+                  </div>
                 </div>
               </GlassCard>
             ))}

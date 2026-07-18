@@ -21,7 +21,7 @@ export const InteractiveWidgets: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {stats.map((stat) => (
           <GlassCard key={stat.label} className="p-6 text-center flex flex-col items-center justify-center gap-3 hover:-translate-y-2 transition-transform duration-300">
-            <div className="p-3 bg-white/5 rounded-full border border-white/10">
+            <div className="w-12 h-12 flex items-center justify-center bg-white/5 rounded-full border border-white/10">
               {stat.icon}
             </div>
             <div className="text-2xl font-orbitron font-bold text-light">{stat.value}</div>

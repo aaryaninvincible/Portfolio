@@ -2,6 +2,38 @@ import type { Certificate } from '../types';
 
 export const linkedInCertificates: Certificate[] = [
   {
+    id: 'google-analytics',
+    title: 'Google Analytics Certification',
+    issuer: 'Google',
+    date: 'Issued Sep 2024',
+    description: 'Certified in Google Analytics. Verification of skills in setting up Google Analytics 4, tracking events, and analyzing data.',
+    imageUrl: '/certificates/google-analytics.png',
+  },
+  {
+    id: 'mastercard-cybersecurity',
+    title: 'Cybersecurity Job Simulation',
+    issuer: 'Mastercard (Forage)',
+    date: 'Issued Jul 2024',
+    description: 'Completed Mastercard Cybersecurity simulation focusing on phishing email analysis and interpreting simulation results. Credential ID gaPBJB86apyacvmyM.',
+    imageUrl: '/certificates/mastercard-cybersecurity.png',
+  },
+  {
+    id: 'jpmorgan-software-engineering',
+    title: 'Software Engineering Lite Job Simulation',
+    issuer: 'JPMorgan Chase & Co. (Forage)',
+    date: 'Issued Jan 2024',
+    description: 'Completed JPMorgan Chase Software Engineering simulation focusing on modifying existing systems and unit testing. Credential ID gaPBJB86apyacvmyM.',
+    imageUrl: '/certificates/jpmorgan-software-engineering.png',
+  },
+  {
+    id: 'redbull-sales',
+    title: 'On-Premise Sales Job Simulation',
+    issuer: 'Red Bull (Forage)',
+    date: 'Issued Jan 2024',
+    description: 'Completed Red Bull On-Premise Sales simulation focusing on account data analysis and sales objections. Credential ID gaPBJB86apyacvmyM.',
+    imageUrl: '/certificates/redbull-sales.png',
+  },
+  {
     id: 'intel-ai-for-future',
     title: 'AI For Future',
     issuer: 'Intel & Chandigarh University',
@@ -123,7 +155,7 @@ export const linkedInCertificates: Certificate[] = [
     issuer: 'Accenture',
     date: 'Issued Jul 2024',
     description: 'Credential ID gaPBJB86apyacvmyM. Listed on Aryan Raikwar LinkedIn profile.',
-    imageUrl: '',
+    imageUrl: '/certificates/accenture data analytics certificate.png',
   },
   {
     id: 'linkedin-sql-hackerrank',
@@ -147,7 +179,7 @@ export const linkedInCertificates: Certificate[] = [
     issuer: 'learnmall.in',
     date: 'Issued Feb 2022',
     description: 'Credential ID 35191B. Listed on Aryan Raikwar LinkedIn profile.',
-    imageUrl: '',
+    imageUrl: '/certificates/a-z data sciece learning mall certificate.jpg',
   },
   {
     id: 'linkedin-it-quiz',
@@ -155,7 +187,7 @@ export const linkedInCertificates: Certificate[] = [
     issuer: 'Bell Institute of Hotel Management and Catering Technology',
     date: 'Issued Feb 2022',
     description: 'International level virtual quiz contest certificate listed on LinkedIn.',
-    imageUrl: '',
+    imageUrl: '/certificates/bell-it-quiz.png',
   },
   {
     id: 'linkedin-iaeng-membership',
@@ -163,7 +195,7 @@ export const linkedInCertificates: Certificate[] = [
     issuer: 'IAENG',
     date: 'Issued Jan 2022',
     description: 'Credential ID 303815. Listed on Aryan Raikwar LinkedIn profile.',
-    imageUrl: '',
+    imageUrl: '/certificates/international association of engineers letter.jpg',
   },
   {
     id: 'linkedin-python-ml-fundamentals',
@@ -171,7 +203,7 @@ export const linkedInCertificates: Certificate[] = [
     issuer: 'The Perfect Plan',
     date: 'Issued Dec 2021',
     description: 'Credential ID U80301HR2021PTC093214. Listed on Aryan Raikwar LinkedIn profile.',
-    imageUrl: '',
+    imageUrl: '/certificates/perfeect plan python certificate.jpg',
   },
   {
     id: 'linkedin-arduino-interfacing',
@@ -179,7 +211,7 @@ export const linkedInCertificates: Certificate[] = [
     issuer: 'Incubation Center, Bio-DIC, RDVV Jabalpur',
     date: 'Issued Nov 2021 - Expires Jan 2022',
     description: 'Arduino and device interfacing certificate listed on LinkedIn.',
-    imageUrl: '',
+    imageUrl: '/certificates/arduino govt certificate .jpg',
   },
   {
     id: 'linkedin-graphic-designing-photoshop',
@@ -187,7 +219,7 @@ export const linkedInCertificates: Certificate[] = [
     issuer: 'Great Learning',
     date: 'Listed on LinkedIn',
     description: 'Graphic design certification shown on Aryan Raikwar LinkedIn profile.',
-    imageUrl: '',
+    imageUrl: '/certificates/graphic-design-photoshop.png',
   },
 ];
 

@@ -98,9 +98,9 @@ export const ResumePage: React.FC = () => {
                     <p className="text-xs text-slate-400 font-mono">
                       {[certificate.issuer, certificate.date].filter(Boolean).join(' - ')}
                     </p>
-                    {certificate.imageUrl && (
+                    {(certificate.pdfUrl || certificate.imageUrl) && (
                       <a 
-                        href={certificate.imageUrl} 
+                        href={certificate.pdfUrl || certificate.imageUrl} 
                         target="_blank" 
                         rel="noreferrer" 
                         className="text-xs font-bold text-accent hover:text-white inline-flex items-center gap-1 transition-colors"

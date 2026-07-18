@@ -238,9 +238,10 @@ export const AdminPage: React.FC = () => {
           issuer: cert.issuer || '',
           date: cert.date || '',
           imageUrl: cert.imageUrl,
+          pdfUrl: cert.pdfUrl || '',
         }, cert.id);
       }
-      alert('13 default certificates successfully seeded!');
+      alert('17 default certificates successfully seeded!');
     } catch (err) {
       console.error(err);
       alert('Error seeding default certificates.');

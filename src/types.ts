@@ -22,6 +22,7 @@ export type Certificate = {
   issuer?: string;
   date?: string;
   imageUrl: string;
+  pdfUrl?: string;
 };
 
 export type ContactMessage = {

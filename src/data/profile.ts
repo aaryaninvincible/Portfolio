@@ -7,7 +7,8 @@ export const linkedInCertificates: Certificate[] = [
     issuer: 'Google (Coursera)',
     date: 'Issued Jul 2026',
     description: '7-course professional certificate covering AI Fundamentals, Brainstorming, Research, Communication, Content Creation, Data Analysis, and App Building. Credential ID 9WN3KNALX3BH.',
-    imageUrl: '/certificates/google ai certificate.pdf',
+    imageUrl: '/certificates/google-ai-certificate.jpg',
+    pdfUrl: '/certificates/google ai certificate.pdf',
   },
   {
     id: 'coursera-aws-prompt-engineering',
@@ -15,7 +16,8 @@ export const linkedInCertificates: Certificate[] = [
     issuer: 'AWS Training & Certification',
     date: 'Issued Jul 2026',
     description: 'Completion certificate awarded by AWS Training & Certification.',
-    imageUrl: '/certificates/AWS prompt engineering cert.pdf',
+    imageUrl: '/certificates/aws-prompt-engineering-cert.jpg',
+    pdfUrl: '/certificates/AWS prompt engineering cert.pdf',
   },
   {
     id: 'coursera-aicerts-ai-ui-ux',
@@ -23,7 +25,8 @@ export const linkedInCertificates: Certificate[] = [
     issuer: 'AI CERTs (Coursera)',
     date: 'Issued Jul 2026',
     description: '3-course specialization (AI Foundations & Design Thinking; AI Tools, Data, and Experience Design; Design Strategy, Future Trends & Implementation with AI). Credential ID BHC6UT390DCP.',
-    imageUrl: '/certificates/AiCerts Ai Powerd Ui ux .pdf',
+    imageUrl: '/certificates/aicerts-ai-powerd-ui-ux-.jpg',
+    pdfUrl: '/certificates/AiCerts Ai Powerd Ui ux .pdf',
   },
   {
     id: 'coursera-aicerts-design-thinking',
@@ -31,7 +34,8 @@ export const linkedInCertificates: Certificate[] = [
     issuer: 'AI CERTs (Coursera)',
     date: 'Issued Jul 2026',
     description: 'Completion certificate authorized by AI CERTs, offered through Coursera. Credential ID 2GZ7UKNMWFW4.',
-    imageUrl: '/certificates/ai foundation and design thinking .pdf',
+    imageUrl: '/certificates/ai-foundation-and-design-thinking-.jpg',
+    pdfUrl: '/certificates/ai foundation and design thinking .pdf',
   },
   {
     id: 'linkedin-inocrypt-internship',

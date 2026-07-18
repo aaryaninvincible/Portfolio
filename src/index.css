@@ -31,10 +31,12 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
     @apply bg-darker text-light font-mono overflow-x-hidden;
+    overflow-y: overlay; /* native scrollbar, doesn't shift layout */
   }
 
   input,

@@ -844,6 +844,40 @@ export const HomePage: React.FC = () => {
         ))}
       </section>
 
+      {/* ── Interactive Code Curtain ──────────────────────────────────────── */}
+      <motion.section
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        className="space-y-6"
+      >
+        <div className="text-center space-y-3">
+          <span className="section-kicker">Interactive</span>
+          <h2 className="text-3xl md:text-4xl font-orbitron font-black text-light">
+            Code <span className="text-gradient">Curtain</span>
+          </h2>
+          <p className="text-slate-400 font-mono text-sm max-w-lg mx-auto">
+            Hover or drag the curtain — the source code itself hangs like fabric in the breeze.
+          </p>
+        </div>
+
+        <GlassCard className="overflow-hidden p-0 border border-white/10 rounded-2xl relative" disableTilt>
+          {/* Overlay label */}
+          <div className="absolute top-3 right-3 z-10 glass border-white/10 px-3 py-1 rounded-full font-mono text-[10px] text-slate-400 pointer-events-none select-none">
+            🖱 hover · drag to stretch
+          </div>
+
+          <iframe
+            src="/test.html"
+            title="Code Curtain"
+            className="w-full border-0"
+            style={{ height: '420px' }}
+            sandbox="allow-scripts allow-same-origin"
+            loading="lazy"
+          />
+        </GlassCard>
+      </motion.section>
+
       <footer className="text-center pt-16 border-t border-white/10">
         <div className="flex justify-center gap-4 md:gap-6 mb-10 flex-wrap">
           <a href="https://github.com/aaryaninvincible" target="_blank" rel="noreferrer" className="w-14 h-14 rounded-full glass flex items-center justify-center text-white hover:text-primary transition-all">

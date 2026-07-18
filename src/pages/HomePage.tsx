@@ -868,11 +868,11 @@ export const HomePage: React.FC = () => {
           </div>
 
           <iframe
-            src="/test.html"
+            src="/curtain.html"
             title="Code Curtain"
             className="w-full border-0"
             style={{ height: '420px' }}
-            sandbox="allow-scripts allow-same-origin"
+            sandbox="allow-scripts"
             loading="lazy"
           />
         </GlassCard>

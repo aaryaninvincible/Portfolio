@@ -36,6 +36,12 @@ const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) =
 // ─── Fullscreen alert banner ──────────────────────────────────────────────────
 const FullscreenAlert: React.FC = () => {
   const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(false), 3000);
+    return () => clearTimeout(t);
+  }, []);
+
   if (!visible) return null;
   return (
     <div className="fixed top-0 left-0 right-0 z-[999] flex items-center justify-between gap-3 px-4 py-2.5 bg-gradient-to-r from-primary/90 to-accent/80 backdrop-blur-sm text-black font-mono text-xs font-bold shadow-lg">
@@ -114,7 +120,7 @@ const MusicWidget: React.FC = () => {
       {unmuted && (
         <iframe
           ref={iframeRef}
-          src={`https://www.youtube.com/embed/PaJQx2mkCTA?autoplay=1&loop=1&playlist=PaJQx2mkCTA&enablejsapi=1&volume=${volume}`}
+          src={`https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&loop=1&playlist=jfKfPfyJRdk&enablejsapi=1&volume=${volume}`}
           allow="autoplay"
           className="hidden w-0 h-0 absolute pointer-events-none"
           title="Background Music Player"

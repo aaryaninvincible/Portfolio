@@ -49,6 +49,36 @@ const skills = [
 
 const fallbackProjects: PortfolioProject[] = [
   {
+    id: 'fitness-rewired',
+    title: 'Fitness Rewired',
+    description: 'A premium human performance ecosystem designed to transform how people move, think, and live.',
+    technologies: ['React', 'Vite', 'Tailwind', 'Framer Motion'],
+    category: 'Web',
+    demoUrl: 'https://fitness-rewired.vercel.app/',
+    imageUrl: '/fitness_demo.png',
+    featured: true,
+  },
+  {
+    id: 'e-challan-detector',
+    title: 'E-Challan Scam Detector',
+    description: 'Professional screening workflow for SMS, URL, and PDF challan evidence with explainable risk scoring.',
+    technologies: ['AI/ML', 'Python', 'React', 'Tailwind'],
+    category: 'Security',
+    demoUrl: 'https://challanchecker.vercel.app/',
+    imageUrl: '/echallan_demo.png',
+    featured: true,
+  },
+  {
+    id: 'synapse-ai',
+    title: 'Synapse AI',
+    description: 'Advanced AI voice and screen assistant designed to help with queries, screen-sharing, and real-time interactive tasks.',
+    technologies: ['React', 'Vite', 'Gemini API', 'AI'],
+    category: 'AI',
+    demoUrl: 'https://aaryan-synapse-ai.vercel.app/',
+    imageUrl: '/synapse_demo.png',
+    featured: true,
+  },
+  {
     id: 'excel-ai-editor',
     title: 'Excel AI Editor',
     description: 'AI-powered spreadsheet editor for data cleanup, analysis, and advanced Excel workflows.',

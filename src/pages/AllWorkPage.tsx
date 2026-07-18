@@ -7,6 +7,33 @@ import type { PortfolioProject } from '../types';
 
 const fallbackProjects: PortfolioProject[] = [
   {
+    id: 'fitness-rewired',
+    title: 'Fitness Rewired',
+    description: 'A premium human performance ecosystem designed to transform how people move, think, and live.',
+    category: 'Web',
+    technologies: ['React', 'Vite', 'Tailwind', 'Framer Motion'],
+    demoUrl: 'https://fitness-rewired.vercel.app/',
+    imageUrl: '/fitness_demo.png',
+  },
+  {
+    id: 'e-challan-detector',
+    title: 'E-Challan Scam Detector',
+    description: 'Professional screening workflow for SMS, URL, and PDF challan evidence with explainable risk scoring.',
+    category: 'Security',
+    technologies: ['AI/ML', 'Python', 'React', 'Tailwind'],
+    demoUrl: 'https://challanchecker.vercel.app/',
+    imageUrl: '/echallan_demo.png',
+  },
+  {
+    id: 'synapse-ai',
+    title: 'Synapse AI',
+    description: 'Advanced AI voice and screen assistant designed to help with queries, screen-sharing, and real-time interactive tasks.',
+    category: 'AI',
+    technologies: ['React', 'Vite', 'Gemini API', 'AI'],
+    demoUrl: 'https://aaryan-synapse-ai.vercel.app/',
+    imageUrl: '/synapse_demo.png',
+  },
+  {
     id: 'ambulance-booking',
     title: 'Ambulance Booking System',
     description: 'Emergency ambulance booking platform with booking workflow and admin-oriented management.',

@@ -68,6 +68,7 @@ export type Order = {
   projectTitle: string;
   price: number;
   upiTxnId?: string;
+  paymentScreenshotUrl?: string;
   status: 'pending' | 'completed' | 'failed';
   createdAt?: number;
 };

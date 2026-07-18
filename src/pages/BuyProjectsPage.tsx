@@ -1,11 +1,217 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { ShoppingCart, ShoppingBag, X, Plus, Minus, Trash2, ExternalLink, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
-import { subscribeToStoreProducts, createOrder } from '../lib/realtime';
+import { subscribeToStoreProducts, createOrder, uploadAsset } from '../lib/realtime';
 import type { StoreProject } from '../types';
 
+const fallbackStoreProjects: StoreProject[] = [
+  {
+    id: 'store-windows11-clone',
+    title: 'Windows 11 Clone',
+    description: 'A premium CSS & React reproduction of the Windows 11 desktop experience, complete with an interactive Start Menu, taskbar, widgets, and draggable windows.',
+    price: 399,
+    imageUrl: 'https://images.unsplash.com/photo-1628277613967-6abca504d0ac?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-excel-ai',
+    title: 'Excel AI Editor',
+    description: 'AI-powered spreadsheet editor featuring inline formulas, batch text cleaning, data formatting, and smart sheet operations.',
+    price: 349,
+    imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-spotify-clone',
+    title: 'Spotify Web Player',
+    description: 'Fully responsive HTML/CSS/JS clone of the Spotify web player UI with custom playlists, animated music player bars, and hover utilities.',
+    price: 299,
+    imageUrl: 'https://images.unsplash.com/photo-1614680376593-902f74fa0d41?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-youtube-clone',
+    title: 'YouTube Portal Clone',
+    description: 'Sleek frontend dashboard clone of YouTube\'s video portal, complete with collapsible sidebars, video player grids, and category filter bars.',
+    price: 299,
+    imageUrl: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-myntra-clone',
+    title: 'Myntra Design Clone',
+    description: 'E-commerce store clone mimicking the Myntra design, featuring responsive shopping categories, wishlist, and sliding banners.',
+    price: 249,
+    imageUrl: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-billing-software',
+    title: 'Billing & Invoice System',
+    description: 'Standalone system equipped to catalog sales, calculate GST/VAT, generate invoices, and print receipt summaries in one-click.',
+    price: 349,
+    imageUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-socketio-chat',
+    title: 'Socket.IO Chat App',
+    description: 'Real-time communication app built with Node.js and Socket.io, featuring multiple rooms, message timestamps, and active user list.',
+    price: 199,
+    imageUrl: 'https://images.unsplash.com/photo-1611746872915-64382b5c76da?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-drawing-pad',
+    title: 'HTML5 Drawing Pad',
+    description: 'HTML5 canvas drawing board with custom brushes, color palettes, size controls, eraser tool, and export-to-image option.',
+    price: 149,
+    imageUrl: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-sorting-visualizer',
+    title: 'Sorting Visualizer',
+    description: 'Interactive algorithm visualizer showing Bubble Sort, Merge Sort, and Quick Sort operations with adjustable execution speeds.',
+    price: 199,
+    imageUrl: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-mindstate-analyzer',
+    title: 'MindState Analyzer',
+    description: 'AI health application designed to analyze journal logs and evaluate stress and focus metrics with visual charting.',
+    price: 249,
+    imageUrl: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-2048-game',
+    title: '2048 Game Classic',
+    description: 'Responsive slider puzzle game built in Vanilla Javascript with smooth sliding cell animations and local high score tracking.',
+    price: 99,
+    imageUrl: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-bawarchi2',
+    title: 'Bawarchi 2.0 Website',
+    description: 'Premium restaurant ordering landing page featuring interactive menus, shopping drawers, and polished responsive sections.',
+    price: 299,
+    imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-pdf-opener',
+    title: 'PDF Password Opener',
+    description: 'A utility program that uses key processing algorithms to safely unlock and decrypt password-protected PDF files.',
+    price: 149,
+    imageUrl: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-pdf-editor',
+    title: 'PDF Editor WebApp',
+    description: 'A browser-based editor built to split, merge, rotate, annotate, and manage PDF documents with instant exports.',
+    price: 199,
+    imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-notepad',
+    title: 'Rich Note Pad',
+    description: 'Clean text writing application featuring rich formatting tools, category tagging, search filters, and automatic local storage.',
+    price: 99,
+    imageUrl: 'https://images.unsplash.com/photo-1517842645767-c639042777db?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-attendance-tracker',
+    title: 'Attendance Tracker System',
+    description: 'Responsive database logger built to track student/employee logs, check-in timestamps, and generate monthly reports.',
+    price: 199,
+    imageUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-qr-scanner',
+    title: 'QR Code Camera Scanner',
+    description: 'Utility app utilizing browser media devices to scan, decode, and open links embedded within QR codes instantly.',
+    price: 99,
+    imageUrl: 'https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-mock-test',
+    title: 'Online Mock Test System',
+    description: 'Responsive educational portal featuring multiple-choice questions, automated timer thresholds, and grading summaries.',
+    price: 249,
+    imageUrl: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-screen-recorder',
+    title: 'Web Screen Recorder',
+    description: 'Browser capturing utility that records active window, tab, or full screen video and audio, exporting ready-to-use webm clips.',
+    price: 149,
+    imageUrl: 'https://images.unsplash.com/photo-1461151304267-38cd8907a900?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-wordle-clone',
+    title: 'Wordle Guessing Game',
+    description: 'Interactive clone of the viral word game Wordle, featuring key styling animations, stat analytics, and win streak counters.',
+    price: 99,
+    imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-typing-game',
+    title: 'Typing Speed Assessor',
+    description: 'Game UI measuring keystroke accuracy, word counts, and WPM speeds over customizable training periods.',
+    price: 99,
+    imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-watch-store',
+    title: 'Luxury Watch Store Portal',
+    description: 'Minimalist product showroom for luxury timepieces with dynamic sliding banners and custom cart integrations.',
+    price: 249,
+    imageUrl: 'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-nebula-chat',
+    title: 'Nebula Chat Interface',
+    description: 'Responsive chat environment utilizing Firebase Realtime Database for persistent global and channel text messaging.',
+    price: 199,
+    imageUrl: 'https://images.unsplash.com/photo-1577563906417-a0a84594612d?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-disk-scheduling',
+    title: 'Disk Scheduling Simulator',
+    description: 'Academic visualizer charting operating system disk arm movements (FCFS, SCAN, SSTF) with responsive data grids.',
+    price: 149,
+    imageUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-linguistic',
+    title: 'Linguistic Academy Portal',
+    description: 'Educational website offering interactive foreign language courses, clean student navigation, and signup forms.',
+    price: 299,
+    imageUrl: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-weather-app',
+    title: 'Forecast Weather App',
+    description: 'Real-time forecasting tool requesting open weather API statistics to display humidity, wind speeds, and temperature overlays.',
+    price: 50,
+    imageUrl: 'https://images.unsplash.com/photo-1592210454359-9043f067919b?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-todo-list',
+    title: 'Responsive To-Do List',
+    description: 'Modern task organizer featuring category grouping, completion tracking, list sorting, and state memory.',
+    price: 50,
+    imageUrl: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-password-gen',
+    title: 'Secure Password Generator',
+    description: 'Developer utility configuring cryptographic character sets to generate custom, crack-resistant keys.',
+    price: 50,
+    imageUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&auto=format&fit=crop&q=60',
+  },
+  {
+    id: 'store-analog-watch',
+    title: 'Analog Clock ticking UI',
+    description: 'Elegant CSS grid stopwatch and analog clock widget matching precise system time events.',
+    price: 50,
+    imageUrl: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600&auto=format&fit=crop&q=60',
+  }
+];
+
 export const BuyProjectsPage: React.FC = () => {
-  const [products, setProducts] = useState<StoreProject[]>([]);
+  const [dbProducts, setDbProducts] = useState<StoreProject[]>([]);
   const [cart, setCart] = useState<Array<{ product: StoreProject; quantity: number }>>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   
@@ -15,6 +221,7 @@ export const BuyProjectsPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [upiTxnId, setUpiTxnId] = useState('');
+  const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
   const [orderId, setOrderId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -22,8 +229,19 @@ export const BuyProjectsPage: React.FC = () => {
   const [activeScreenshot, setActiveScreenshot] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    return subscribeToStoreProducts(setProducts);
+    return subscribeToStoreProducts(setDbProducts);
   }, []);
+
+  const products = useMemo(() => {
+    const merged = [...dbProducts];
+    const dbTitles = new Set(dbProducts.map(p => p.title.toLowerCase()));
+    fallbackStoreProjects.forEach(fp => {
+      if (!dbTitles.has(fp.title.toLowerCase())) {
+        merged.push(fp);
+      }
+    });
+    return merged;
+  }, [dbProducts]);
 
   const addToCart = (product: StoreProject) => {
     setCart((prev) => {
@@ -73,14 +291,13 @@ export const BuyProjectsPage: React.FC = () => {
     }
   };
 
-  const upiId = 'aryanraikwar78@okaxis';
+  const upiId = 'aryanraikwar78@okicici';
   const subtotal = getSubtotal();
   const upiName = 'Aryan Raikwar';
   
   // Format items description for payment reference
   const itemNames = cart.map(c => `${c.product.title} x${c.quantity}`).join(', ');
   const upiPaymentUri = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${subtotal}&tn=${encodeURIComponent(itemNames.substring(0, 40))}&cu=INR`;
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&color=255-115-0&bgcolor=0-0-0&data=${encodeURIComponent(upiPaymentUri)}`;
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,11 +305,20 @@ export const BuyProjectsPage: React.FC = () => {
       alert('Please enter your UPI Transaction Ref/UTR to complete checkout.');
       return;
     }
+    if (!screenshotFile) {
+      alert('Please upload a screenshot of your payment receipt.');
+      return;
+    }
     setIsSubmitting(true);
 
     try {
       const generatedId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
       
+      let screenshotUrl = '';
+      if (screenshotFile) {
+        screenshotUrl = await uploadAsset('certificates', screenshotFile);
+      }
+
       // Save each product in the cart as a separate order
       for (const item of cart) {
         await createOrder({
@@ -103,6 +329,7 @@ export const BuyProjectsPage: React.FC = () => {
           projectTitle: item.product.title,
           price: item.product.price * item.quantity,
           upiTxnId: upiTxnId,
+          paymentScreenshotUrl: screenshotUrl,
           status: 'pending'
         });
       }
@@ -111,6 +338,7 @@ export const BuyProjectsPage: React.FC = () => {
       setCheckoutStep('success');
       setCart([]);
       setUpiTxnId('');
+      setScreenshotFile(null);
     } catch (err) {
       console.error(err);
       alert('Something went wrong. Please check connection and try again.');
@@ -361,8 +589,8 @@ export const BuyProjectsPage: React.FC = () => {
                     
                     <div className="flex flex-col items-center gap-3 w-full bg-black/40 border border-white/5 rounded-xl p-4">
                       {/* QR Code */}
-                      <div className="bg-black p-2 border border-primary/30 rounded-lg">
-                        <img src={qrCodeUrl} className="w-40 h-40 object-contain" alt="Scan QR code" />
+                      <div className="bg-white p-2 border border-primary/30 rounded-lg">
+                        <img src="/payment_qr.png" className="w-48 h-56 object-contain" alt="Scan QR code" />
                       </div>
                       
                       <p className="text-[10px] text-slate-400 text-center font-bold">
@@ -386,6 +614,16 @@ export const BuyProjectsPage: React.FC = () => {
 
                     <form onSubmit={handlePlaceOrder} className="w-full space-y-4 border-t border-white/5 pt-4">
                       <div className="space-y-1">
+                        <label className="text-[10px] text-slate-400 uppercase font-bold">Upload Payment Screenshot*</label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setScreenshotFile(e.target.files?.[0] || null)}
+                          className="input-shell text-xs"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-1">
                         <label className="text-[10px] text-slate-400 uppercase font-bold">UPI Transaction ID / UTR*</label>
                         <input
                           type="text"
@@ -397,11 +635,11 @@ export const BuyProjectsPage: React.FC = () => {
                         />
                       </div>
                       <p className="text-[9px] text-slate-400 text-center leading-relaxed">
-                        Enter UTR reference after payment. We will verify and email download files to <span className="text-light font-bold">{email}</span>.
+                        Upload screenshot and enter UTR. We will verify and email download files to <span className="text-light font-bold">{email}</span>.
                       </p>
                       <button
                         type="submit"
-                        disabled={isSubmitting || !upiTxnId.trim()}
+                        disabled={isSubmitting || !upiTxnId.trim() || !screenshotFile}
                         className="w-full bg-primary text-black py-3 rounded-lg text-xs font-bold uppercase tracking-widest hover:shadow-[0_0_15px_rgba(255,115,0,0.3)] disabled:opacity-50 font-orbitron"
                       >
                         {isSubmitting ? 'Submitting Receipt...' : 'Confirm Payment & Order'}

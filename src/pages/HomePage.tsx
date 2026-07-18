@@ -625,33 +625,6 @@ export const HomePage: React.FC = () => {
         </GlassCard>
       </motion.div>
 
-      <section className="grid gap-8 lg:grid-cols-3">
-        {storyPanels.map((panel, index) => (
-          <motion.div
-            key={panel.title}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ delay: index * 0.12 }}
-          >
-            <GlassCard className="p-8 h-full">
-              <div className="mb-8 h-40 rounded-xl border border-white/10 bg-black/50 overflow-hidden relative group">
-                <motion.img
-                  src={panel.imageUrl}
-                  alt={panel.title}
-                  className="h-full w-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.4 }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-              </div>
-              <h2 className="font-orbitron text-2xl text-light mb-3">{panel.title}</h2>
-              <p className="text-slate-300 leading-relaxed">{panel.copy}</p>
-            </GlassCard>
-          </motion.div>
-        ))}
-      </section>
-
       <InteractiveWidgets />
 
       <section id="about" className="grid lg:grid-cols-2 gap-12 items-start">
@@ -842,6 +815,33 @@ export const HomePage: React.FC = () => {
             {contactStatus && <p className="text-sm text-primary">{contactStatus}</p>}
           </form>
         </GlassCard>
+      </section>
+
+      <section className="grid gap-8 lg:grid-cols-3">
+        {storyPanels.map((panel, index) => (
+          <motion.div
+            key={panel.title}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ delay: index * 0.12 }}
+          >
+            <GlassCard className="p-8 h-full">
+              <div className="mb-8 h-40 rounded-xl border border-white/10 bg-black/50 overflow-hidden relative group">
+                <motion.img
+                  src={panel.imageUrl}
+                  alt={panel.title}
+                  className="h-full w-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.4 }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+              </div>
+              <h2 className="font-orbitron text-2xl text-light mb-3">{panel.title}</h2>
+              <p className="text-slate-300 leading-relaxed">{panel.copy}</p>
+            </GlassCard>
+          </motion.div>
+        ))}
       </section>
 
       <footer className="text-center pt-16 border-t border-white/10">

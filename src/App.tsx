@@ -37,7 +37,7 @@ const MusicWidget: React.FC = () => {
   const [unmuted, setUnmuted] = useState(false);
 
   return (
-    <div className="fixed bottom-6 right-6 z-[45] flex items-center gap-2">
+    <div className="fixed bottom-6 left-6 z-[45] flex items-center gap-2">
       <button
         onClick={() => setUnmuted(!unmuted)}
         className="glass flex items-center gap-2 rounded-full px-4 py-2.5 text-xs font-bold font-orbitron tracking-widest uppercase text-primary border-primary/30 hover:border-primary hover:shadow-[0_0_15px_rgba(255,115,0,0.3)] transition-all"

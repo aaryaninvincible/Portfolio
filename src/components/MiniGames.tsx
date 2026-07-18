@@ -14,6 +14,7 @@ export const MiniGames: React.FC = () => {
     const [showSubmit, setShowSubmit] = useState<boolean>(false);
     const [playerName, setPlayerName] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false);
 
     const activeGameRef = useRef(activeGame);
     useEffect(() => {
@@ -48,6 +49,7 @@ export const MiniGames: React.FC = () => {
             playSound('crash');
             setLastScore(Math.floor(score));
             setShowSubmit(true);
+            setShowLeaderboard(true);
         };
 
         // --- FLAPPY ---
@@ -188,7 +190,19 @@ export const MiniGames: React.FC = () => {
             tapBtn?.addEventListener('click', flap);
             flappyCanvas.addEventListener('pointerdown', flap);
             reset(); draw();
-            return { action: flap, pause, resume, isPaused: () => paused, isRunning: () => running };
+            return {
+                action: flap,
+                pause,
+                resume,
+                isPaused: () => paused,
+                isRunning: () => running,
+                cleanup: () => {
+                    startBtn?.removeEventListener('click', start);
+                    pauseBtn?.removeEventListener('click', togglePause);
+                    tapBtn?.removeEventListener('click', flap);
+                    flappyCanvas.removeEventListener('pointerdown', flap);
+                }
+            };
         }
 
         // --- DINO ---
@@ -299,7 +313,19 @@ export const MiniGames: React.FC = () => {
             startBtn?.addEventListener('click', start); pauseBtn?.addEventListener('click', togglePause);
             jumpBtn?.addEventListener('click', jump); dinoCanvas.addEventListener('pointerdown', jump);
             reset(); draw();
-            return { action: jump, pause, resume, isPaused: () => paused, isRunning: () => running };
+            return {
+                action: jump,
+                pause,
+                resume,
+                isPaused: () => paused,
+                isRunning: () => running,
+                cleanup: () => {
+                    startBtn?.removeEventListener('click', start);
+                    pauseBtn?.removeEventListener('click', togglePause);
+                    jumpBtn?.removeEventListener('click', jump);
+                    dinoCanvas.removeEventListener('pointerdown', jump);
+                }
+            };
         }
 
         // --- DODGE ---
@@ -400,32 +426,62 @@ export const MiniGames: React.FC = () => {
             function pressLeft(on: boolean) { safeFocus('dodge'); moveLeft = on; }
             function pressRight(on: boolean) { safeFocus('dodge'); moveRight = on; }
 
-            startBtn?.addEventListener('click', start); pauseBtn?.addEventListener('click', togglePause);
-            
-            leftBtn?.addEventListener('pointerdown', (e) => { e.preventDefault(); pressLeft(true); });
-            leftBtn?.addEventListener('pointerup', () => pressLeft(false));
-            leftBtn?.addEventListener('pointerleave', () => pressLeft(false));
-            leftBtn?.addEventListener('pointercancel', () => pressLeft(false));
-
-            rightBtn?.addEventListener('pointerdown', (e) => { e.preventDefault(); pressRight(true); });
-            rightBtn?.addEventListener('pointerup', () => pressRight(false));
-            rightBtn?.addEventListener('pointerleave', () => pressRight(false));
-            rightBtn?.addEventListener('pointercancel', () => pressRight(false));
-
-            dodgeCanvas.addEventListener('pointerdown', (e) => {
+            const handleStart = () => start();
+            const handleTogglePause = () => togglePause();
+            const handleLeftDown = (e: PointerEvent) => { e.preventDefault(); pressLeft(true); };
+            const handleLeftUp = () => pressLeft(false);
+            const handleRightDown = (e: PointerEvent) => { e.preventDefault(); pressRight(true); };
+            const handleRightUp = () => pressRight(false);
+            const handleCanvasDown = (e: PointerEvent) => {
                 if (document.getElementById('scoreSubmitOverlay')) return;
                 safeFocus('dodge'); const rect = dodgeCanvas.getBoundingClientRect(); const x = e.clientX - rect.left;
                 player.x = Math.max(0, Math.min(W - player.w, (x / rect.width) * W - player.w / 2));
                 if (!started || over) start(); else if (paused) resume();
-            });
-            dodgeCanvas.addEventListener('pointermove', (e) => {
+            };
+            const handleCanvasMove = (e: PointerEvent) => {
                 if (document.getElementById('scoreSubmitOverlay')) return;
                 if (!running) return; const rect = dodgeCanvas.getBoundingClientRect(); const x = e.clientX - rect.left;
                 player.x = Math.max(0, Math.min(W - player.w, (x / rect.width) * W - player.w / 2));
-            });
+            };
+
+            startBtn?.addEventListener('click', handleStart);
+            pauseBtn?.addEventListener('click', handleTogglePause);
+            leftBtn?.addEventListener('pointerdown', handleLeftDown as any);
+            leftBtn?.addEventListener('pointerup', handleLeftUp);
+            leftBtn?.addEventListener('pointerleave', handleLeftUp);
+            leftBtn?.addEventListener('pointercancel', handleLeftUp);
+            rightBtn?.addEventListener('pointerdown', handleRightDown as any);
+            rightBtn?.addEventListener('pointerup', handleRightUp);
+            rightBtn?.addEventListener('pointerleave', handleRightUp);
+            rightBtn?.addEventListener('pointercancel', handleRightUp);
+            dodgeCanvas.addEventListener('pointerdown', handleCanvasDown as any);
+            dodgeCanvas.addEventListener('pointermove', handleCanvasMove as any);
 
             reset(); draw();
-            return { leftDown: () => pressLeft(true), leftUp: () => pressLeft(false), rightDown: () => pressRight(true), rightUp: () => pressRight(false), pause, resume, isPaused: () => paused, isRunning: () => running };
+            return {
+                leftDown: () => pressLeft(true),
+                leftUp: () => pressLeft(false),
+                rightDown: () => pressRight(true),
+                rightUp: () => pressRight(false),
+                pause,
+                resume,
+                isPaused: () => paused,
+                isRunning: () => running,
+                cleanup: () => {
+                    startBtn?.removeEventListener('click', handleStart);
+                    pauseBtn?.removeEventListener('click', handleTogglePause);
+                    leftBtn?.removeEventListener('pointerdown', handleLeftDown as any);
+                    leftBtn?.removeEventListener('pointerup', handleLeftUp);
+                    leftBtn?.removeEventListener('pointerleave', handleLeftUp);
+                    leftBtn?.removeEventListener('pointercancel', handleLeftUp);
+                    rightBtn?.removeEventListener('pointerdown', handleRightDown as any);
+                    rightBtn?.removeEventListener('pointerup', handleRightUp);
+                    rightBtn?.removeEventListener('pointerleave', handleRightUp);
+                    rightBtn?.removeEventListener('pointercancel', handleRightUp);
+                    dodgeCanvas.removeEventListener('pointerdown', handleCanvasDown as any);
+                    dodgeCanvas.removeEventListener('pointermove', handleCanvasMove as any);
+                }
+            };
         }
 
         // --- SNAKE ---
@@ -543,14 +599,39 @@ export const MiniGames: React.FC = () => {
             const leftBtn = document.getElementById('snakeLeft');
             const rightBtn = document.getElementById('snakeRight');
 
-            upBtn?.addEventListener('click', () => { safeFocus('snake'); up(); });
-            downBtn?.addEventListener('click', () => { safeFocus('snake'); down(); });
-            leftBtn?.addEventListener('click', () => { safeFocus('snake'); left(); });
-            rightBtn?.addEventListener('click', () => { safeFocus('snake'); right(); });
+            const handleUpClick = () => { safeFocus('snake'); up(); };
+            const handleDownClick = () => { safeFocus('snake'); down(); };
+            const handleLeftClick = () => { safeFocus('snake'); left(); };
+            const handleRightClick = () => { safeFocus('snake'); right(); };
+            const handleStart = () => start();
+            const handleTogglePause = () => togglePause();
 
-            startBtn?.addEventListener('click', start); pauseBtn?.addEventListener('click', togglePause);
+            upBtn?.addEventListener('click', handleUpClick);
+            downBtn?.addEventListener('click', handleDownClick);
+            leftBtn?.addEventListener('click', handleLeftClick);
+            rightBtn?.addEventListener('click', handleRightClick);
+            startBtn?.addEventListener('click', handleStart);
+            pauseBtn?.addEventListener('click', handleTogglePause);
+
             reset(); draw();
-            return { up, down, left, right, pause, resume, isPaused: () => paused, isRunning: () => running };
+            return {
+                up,
+                down,
+                left,
+                right,
+                pause,
+                resume,
+                isPaused: () => paused,
+                isRunning: () => running,
+                cleanup: () => {
+                    upBtn?.removeEventListener('click', handleUpClick);
+                    downBtn?.removeEventListener('click', handleDownClick);
+                    leftBtn?.removeEventListener('click', handleLeftClick);
+                    rightBtn?.removeEventListener('click', handleRightClick);
+                    startBtn?.removeEventListener('click', handleStart);
+                    pauseBtn?.removeEventListener('click', handleTogglePause);
+                }
+            };
         }
 
         const flappy = setupFlappy();
@@ -604,7 +685,12 @@ export const MiniGames: React.FC = () => {
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('keyup', handleKeyUp);
             animationFrames.forEach(id => cancelAnimationFrame(id));
-            Object.keys(games).forEach(k => { if (games[k]) games[k].pause(); });
+            Object.keys(games).forEach(k => { 
+                if (games[k]) {
+                    games[k].pause(); 
+                    if (games[k].cleanup) games[k].cleanup();
+                }
+            });
         };
     }, [activeGame]);
 
@@ -626,6 +712,7 @@ export const MiniGames: React.FC = () => {
             await submitHighScore(activeGame, playerName.trim(), lastScore);
             setPlayerName('');
             setShowSubmit(false);
+            setShowLeaderboard(true);
             // Re-fetch handled automatically by Firebase onValue subscription
         } catch (error) {
             console.error('Leaderboard submission error:', error);
@@ -653,13 +740,26 @@ export const MiniGames: React.FC = () => {
                         </button>
                     ))}
                 </div>
-                <button
-                    onClick={handleMuteToggle}
-                    className="glass rounded-lg px-4 py-2 text-xs font-mono flex items-center justify-center gap-2 text-slate-300 border-white/10 hover:border-primary/40"
-                >
-                    {isMuted ? <VolumeX size={14} className="text-secondary" /> : <Volume2 size={14} className="text-primary" />}
-                    <span>{isMuted ? 'Unmute game' : 'Mute game'}</span>
-                </button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => setShowLeaderboard(!showLeaderboard)}
+                        className={`glass rounded-lg px-4 py-2 text-xs font-mono flex items-center justify-center gap-2 border-white/10 hover:border-primary/40 transition-all ${
+                            showLeaderboard
+                                ? 'bg-primary/20 border-primary text-primary font-bold shadow-[0_0_10px_rgba(255,115,0,0.15)]'
+                                : 'text-slate-300 hover:text-white'
+                        }`}
+                    >
+                        <Trophy size={14} className={showLeaderboard ? 'text-primary' : 'text-slate-400'} />
+                        <span>{showLeaderboard ? 'Hide Scores' : 'Leaderboard'}</span>
+                    </button>
+                    <button
+                        onClick={handleMuteToggle}
+                        className="glass rounded-lg px-4 py-2 text-xs font-mono flex items-center justify-center gap-2 text-slate-300 border-white/10 hover:border-primary/40"
+                    >
+                        {isMuted ? <VolumeX size={14} className="text-secondary" /> : <Volume2 size={14} className="text-primary" />}
+                        <span>{isMuted ? 'Muted' : 'Mute'}</span>
+                    </button>
+                </div>
             </div>
 
             {/* Game Box */}
@@ -772,43 +872,45 @@ export const MiniGames: React.FC = () => {
             </div>
 
             {/* Global Leaderboard - DISPLAY OUTSIDE THE GAME BOX */}
-            <div className="glass p-5 rounded-2xl border border-white/10 bg-black/50">
-                <div className="flex items-center gap-2 mb-4">
-                    <Trophy className="text-primary" size={18} />
-                    <h3 className="font-orbitron text-sm font-bold uppercase tracking-wider text-light">
-                        🏆 Global Leaderboard (<span className="text-primary capitalize">{activeGame}</span>)
-                    </h3>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left font-mono text-xs">
-                        <thead>
-                            <tr className="border-b border-white/10 text-slate-400 font-bold uppercase">
-                                <th className="pb-2 pl-2 w-16">Rank</th>
-                                <th className="pb-2">Player</th>
-                                <th className="pb-2 pr-2 text-right">Score</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {globalScores.map((entry, index) => (
-                                <tr key={entry.id} className="border-b border-white/5 hover:bg-white/5">
-                                    <td className="py-2.5 pl-2 font-orbitron text-slate-300 flex items-center gap-1">
-                                        {index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`}
-                                    </td>
-                                    <td className="py-2.5 font-bold text-light">{entry.name}</td>
-                                    <td className="py-2.5 pr-2 text-right text-primary font-bold">{entry.score}</td>
+            {showLeaderboard && (
+                <div className="glass p-5 rounded-2xl border border-white/10 bg-black/50">
+                    <div className="flex items-center gap-2 mb-4">
+                        <Trophy className="text-primary" size={18} />
+                        <h3 className="font-orbitron text-sm font-bold uppercase tracking-wider text-light">
+                            🏆 Global Leaderboard (<span className="text-primary capitalize">{activeGame}</span>)
+                        </h3>
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left font-mono text-xs">
+                            <thead>
+                                <tr className="border-b border-white/10 text-slate-400 font-bold uppercase">
+                                    <th className="pb-2 pl-2 w-16">Rank</th>
+                                    <th className="pb-2">Player</th>
+                                    <th className="pb-2 pr-2 text-right">Score</th>
                                 </tr>
-                            ))}
-                            {globalScores.length === 0 && (
-                                <tr>
-                                    <td colSpan={3} className="py-8 text-center text-slate-400 italic">
-                                        No high scores yet. Play to set one!
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {globalScores.map((entry, index) => (
+                                    <tr key={entry.id} className="border-b border-white/5 hover:bg-white/5">
+                                        <td className="py-2.5 pl-2 font-orbitron text-slate-300 flex items-center gap-1">
+                                            {index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`}
+                                        </td>
+                                        <td className="py-2.5 font-bold text-light">{entry.name}</td>
+                                        <td className="py-2.5 pr-2 text-right text-primary font-bold">{entry.score}</td>
+                                    </tr>
+                                ))}
+                                {globalScores.length === 0 && (
+                                    <tr>
+                                        <td colSpan={3} className="py-8 text-center text-slate-400 italic">
+                                            No high scores yet. Play to set one!
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };

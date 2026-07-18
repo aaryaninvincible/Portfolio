@@ -53,6 +53,7 @@ export type StoreProject = {
   title: string;
   description: string;
   price: number;
+  category?: string;
   demoUrl?: string;
   imageUrl: string;
   screenshots?: string[]; // list of screenshot urls

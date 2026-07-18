@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { ShoppingCart, ShoppingBag, X, Plus, Minus, Trash2, ExternalLink, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ShoppingCart, ShoppingBag, X, Trash2, ExternalLink, CheckCircle2, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
 import { subscribeToStoreProducts, createOrder, uploadAsset } from '../lib/realtime';
 import type { StoreProject } from '../types';
@@ -225,6 +225,10 @@ export const BuyProjectsPage: React.FC = () => {
   const [orderId, setOrderId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Sorting and Filtering States
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc'>('default');
+
   // Carousel screenshots index tracker
   const [activeScreenshot, setActiveScreenshot] = useState<Record<string, number>>({});
 
@@ -235,21 +239,63 @@ export const BuyProjectsPage: React.FC = () => {
   const products = useMemo(() => {
     const merged = [...dbProducts];
     const dbTitles = new Set(dbProducts.map(p => p.title.toLowerCase()));
+    
     fallbackStoreProjects.forEach(fp => {
       if (!dbTitles.has(fp.title.toLowerCase())) {
-        merged.push(fp);
+        let category = 'Utilities';
+        const id = fp.id.toLowerCase();
+        
+        if (id.includes('clone') || id.includes('spotify') || id.includes('youtube') || id.includes('myntra') || id.includes('chat') || id.includes('store') || id.includes('portal')) {
+          category = 'Full Stack';
+        } else if (id.includes('ai') || id.includes('analyzer') || id.includes('synapse')) {
+          category = 'AI / ML';
+        } else if (id.includes('game') || id.includes('wordle') || id.includes('dino') || id.includes('dodge') || id.includes('snake') || id.includes('2048')) {
+          category = 'Games';
+        } else if (id.includes('system') || id.includes('tracker') || id.includes('database') || id.includes('billing')) {
+          category = 'Systems';
+        }
+        
+        merged.push({ ...fp, category });
       }
     });
-    return merged;
+
+    return merged.map(p => ({
+      ...p,
+      category: p.category || 'Utilities'
+    }));
   }, [dbProducts]);
+
+  const categories = useMemo(() => {
+    const cats = new Set<string>();
+    products.forEach(p => {
+      if (p.category) cats.add(p.category);
+    });
+    return ['all', ...Array.from(cats)];
+  }, [products]);
+
+  const filteredAndSortedProducts = useMemo(() => {
+    let result = [...products];
+
+    // Category Filter
+    if (selectedCategory !== 'all') {
+      result = result.filter(p => p.category?.toLowerCase() === selectedCategory.toLowerCase());
+    }
+
+    // Sort By Price
+    if (sortBy === 'price-asc') {
+      result.sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'price-desc') {
+      result.sort((a, b) => b.price - a.price);
+    }
+
+    return result;
+  }, [products, selectedCategory, sortBy]);
 
   const addToCart = (product: StoreProject) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {
-        return prev.map((item) =>
-          item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
+        return prev;
       }
       return [...prev, { product, quantity: 1 }];
     });
@@ -261,22 +307,8 @@ export const BuyProjectsPage: React.FC = () => {
     setCart((prev) => prev.filter((item) => item.product.id !== productId));
   };
 
-  const updateQuantity = (productId: string, delta: number) => {
-    setCart((prev) =>
-      prev
-        .map((item) => {
-          if (item.product.id === productId) {
-            const qty = item.quantity + delta;
-            return { ...item, quantity: qty };
-          }
-          return item;
-        })
-        .filter((item) => item.quantity > 0)
-    );
-  };
-
   const getSubtotal = () => {
-    return cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    return cart.reduce((total, item) => total + item.product.price, 0);
   };
 
   const handleNextStep = () => {
@@ -296,7 +328,7 @@ export const BuyProjectsPage: React.FC = () => {
   const upiName = 'Aryan Raikwar';
   
   // Format items description for payment reference
-  const itemNames = cart.map(c => `${c.product.title} x${c.quantity}`).join(', ');
+  const itemNames = cart.map(c => c.product.title).join(', ');
   const upiPaymentUri = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${subtotal}&tn=${encodeURIComponent(itemNames.substring(0, 40))}&cu=INR`;
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
@@ -327,7 +359,7 @@ export const BuyProjectsPage: React.FC = () => {
           phone: phone,
           projectId: item.product.id,
           projectTitle: item.product.title,
-          price: item.product.price * item.quantity,
+          price: item.product.price,
           upiTxnId: upiTxnId,
           paymentScreenshotUrl: screenshotUrl,
           status: 'pending'
@@ -379,21 +411,55 @@ export const BuyProjectsPage: React.FC = () => {
           className="glass border-primary/30 text-primary px-6 py-3.5 rounded-xl flex items-center gap-3 font-orbitron text-sm font-bold tracking-wider hover:border-primary hover:shadow-[0_0_20px_rgba(255,115,0,0.25)] transition-all"
         >
           <ShoppingCart size={18} className="animate-pulse" />
-          <span>Cart ({cart.reduce((s, i) => s + i.quantity, 0)})</span>
-          <span className="text-white font-bold ml-1 font-mono">₹{cart.reduce((s, i) => s + i.product.price * i.quantity, 0)}</span>
+          <span>Cart ({cart.length})</span>
+          <span className="text-white font-bold ml-1 font-mono">₹{subtotal}</span>
         </button>
       </div>
 
-      {products.length === 0 ? (
+      {/* Filters and Sorting Controls */}
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white/5 border border-white/10 p-4 rounded-xl font-mono text-[11px]">
+        <div className="flex flex-wrap gap-2 items-center">
+          <span className="text-slate-400">Category:</span>
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-3 py-1.5 rounded-lg border uppercase tracking-wider transition-colors ${
+                selectedCategory === cat
+                  ? 'bg-primary/20 border-primary text-primary font-bold shadow-[0_0_8px_rgba(255,115,0,0.2)]'
+                  : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/20'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-slate-400">Sort:</span>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as any)}
+            className="bg-black/80 border border-white/10 rounded-lg px-3 py-1.5 text-light focus:outline-none focus:border-primary cursor-pointer font-mono"
+          >
+            <option value="default">Default</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+
+      {filteredAndSortedProducts.length === 0 ? (
         <GlassCard className="p-12 text-center text-slate-300 font-mono">
-          No projects listed for sale yet. Check back soon or visit Admin Panel to list.
+          No projects match the selected filters.
         </GlassCard>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => {
+          {filteredAndSortedProducts.map((product) => {
             const hasScreenshots = product.screenshots && product.screenshots.length > 0;
             const currentIdx = activeScreenshot[product.id] || 0;
             const allImages = hasScreenshots ? [product.imageUrl, ...product.screenshots!] : [product.imageUrl];
+            const isInCart = cart.some(item => item.product.id === product.id);
 
             return (
               <GlassCard key={product.id} className="flex flex-col h-full group overflow-hidden relative">
@@ -435,8 +501,11 @@ export const BuyProjectsPage: React.FC = () => {
 
                 <div className="p-6 flex flex-col flex-grow space-y-4">
                   <div className="flex justify-between items-start">
-                    <h3 className="font-orbitron text-xl text-primary font-bold">{product.title}</h3>
-                    <span className="font-mono font-bold text-accent text-lg">₹{product.price}</span>
+                    <div>
+                      <span className="text-[10px] font-bold text-accent uppercase tracking-wider font-mono bg-accent/10 px-2 py-0.5 rounded border border-accent/20">{product.category}</span>
+                      <h3 className="font-orbitron text-lg text-primary font-bold mt-2">{product.title}</h3>
+                    </div>
+                    <span className="font-mono font-bold text-light text-lg">₹{product.price}</span>
                   </div>
 
                   <p className="text-slate-300 text-xs font-mono leading-relaxed flex-grow">{product.description}</p>
@@ -452,12 +521,21 @@ export const BuyProjectsPage: React.FC = () => {
                         Live Demo <ExternalLink size={12} />
                       </a>
                     )}
-                    <button
-                      onClick={() => addToCart(product)}
-                      className="flex-grow bg-primary text-black hover:bg-primary/95 px-4 py-2 rounded-lg text-xs font-bold font-orbitron uppercase tracking-wider inline-flex items-center justify-center gap-1.5 shadow-[0_0_10px_rgba(255,115,0,0.15)] hover:shadow-[0_0_15px_rgba(255,115,0,0.3)] transition-all"
-                    >
-                      <ShoppingBag size={13} /> Buy Project
-                    </button>
+                    {isInCart ? (
+                      <button
+                        onClick={() => setIsCartOpen(true)}
+                        className="flex-grow glass border-primary/40 text-primary hover:bg-primary/5 px-4 py-2 rounded-lg text-xs font-bold font-orbitron uppercase tracking-wider inline-flex items-center justify-center gap-1.5 transition-all"
+                      >
+                        <Check size={13} /> In Cart (Open)
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => addToCart(product)}
+                        className="flex-grow bg-primary text-black hover:bg-primary/95 px-4 py-2 rounded-lg text-xs font-bold font-orbitron uppercase tracking-wider inline-flex items-center justify-center gap-1.5 shadow-[0_0_10px_rgba(255,115,0,0.15)] hover:shadow-[0_0_15px_rgba(255,115,0,0.3)] transition-all"
+                      >
+                        <ShoppingBag size={13} /> Add to Cart
+                      </button>
+                    )}
                   </div>
                 </div>
               </GlassCard>
@@ -515,16 +593,7 @@ export const BuyProjectsPage: React.FC = () => {
                               <h4 className="font-bold text-light text-sm">{item.product.title}</h4>
                               <p className="text-accent text-xs font-bold mt-1">₹{item.product.price}</p>
                               
-                              {/* Quantity selectors */}
-                              <div className="flex items-center gap-2 mt-2">
-                                <button onClick={() => updateQuantity(item.product.id, -1)} className="w-6 h-6 rounded bg-white/10 hover:bg-primary/20 hover:text-white flex items-center justify-center text-xs">
-                                  <Minus size={10} />
-                                </button>
-                                <span className="text-xs text-light w-4 text-center">{item.quantity}</span>
-                                <button onClick={() => updateQuantity(item.product.id, 1)} className="w-6 h-6 rounded bg-white/10 hover:bg-primary/20 hover:text-white flex items-center justify-center text-xs">
-                                  <Plus size={10} />
-                                </button>
-                              </div>
+                              <span className="text-[10px] text-slate-400 mt-1 block">Full Source Code License</span>
                             </div>
                             <button
                               onClick={() => removeFromCart(item.product.id)}

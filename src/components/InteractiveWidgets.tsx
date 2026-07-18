@@ -66,7 +66,7 @@ export const InteractiveWidgets: React.FC = () => {
            <p className="text-sm text-slate-300 font-mono leading-relaxed mb-6 relative z-10">
              Automated workflows to build, test, and deploy code securely with seamless version control and rapid iterations.
            </p>
-           <div className="flex gap-2 relative z-10">
+           <div className="flex items-end gap-2 h-10 relative z-10">
              {[1, 2, 3, 4, 5].map(i => (
                <motion.div 
                  key={i}

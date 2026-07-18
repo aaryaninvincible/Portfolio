@@ -71,25 +71,24 @@ const getTypeConfig = (type: string) => {
 
 const describeEvent = (event: GitHubEvent) => {
   const repoName = event.repo.name.split('/')[1] || event.repo.name;
+  
   if (event.type === 'PushEvent') {
-    const commitCount = event.payload.commits?.length || 0;
-    const message = event.payload.commits?.[0]?.message || 'Updated project files';
     return {
-      title: `Updated ${repoName}`,
-      body: `${commitCount || 1} commit${commitCount === 1 ? '' : 's'} pushed. Latest note: "${message}"`,
+      title: `Project Updated: ${repoName}`,
+      body: `The project "${repoName}" has been successfully updated with new features and optimizations.`,
     };
   }
 
   if (event.type === 'CreateEvent') {
     return {
-      title: `Created ${event.payload.ref_type || 'item'} in ${repoName}`,
-      body: event.payload.ref ? `New ${event.payload.ref_type}: ${event.payload.ref}` : 'New GitHub activity detected.',
+      title: `New Project Uploaded: ${repoName}`,
+      body: `A new project repository "${repoName}" has been uploaded. Check out its details or request repository access.`,
     };
   }
 
   return {
-    title: `${event.type.replace('Event', '')} on ${repoName}`,
-    body: 'New GitHub activity detected on Aryan Raikwar GitHub.',
+    title: `Project on Sale: ${repoName}`,
+    body: `The project "${repoName}" is now available on sale in the Digital Store! Visit the Store to get verified source code licenses.`,
   };
 };
 

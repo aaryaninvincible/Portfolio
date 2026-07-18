@@ -3,11 +3,14 @@ import { Download, FileText, Maximize2, Trophy, ExternalLink } from 'lucide-reac
 import { GlassCard } from '../components/GlassCard';
 import { subscribeToResume, subscribeToCertificates } from '../lib/realtime';
 import { linkedInCertificates } from '../data/profile';
+import { CertificateModal } from '../components/CertificateModal';
 import type { Certificate, ResumeProfile } from '../types';
 
 export const ResumePage: React.FC = () => {
   const [resume, setResume] = useState<ResumeProfile | null>(null);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const unsubResume = subscribeToResume(setResume);
@@ -77,10 +80,8 @@ export const ResumePage: React.FC = () => {
                 key={certificate.id} 
                 className="overflow-hidden flex flex-col h-full cursor-pointer hover:border-accent/40 transition-all duration-300"
                 onClick={() => {
-                  const targetUrl = certificate.pdfUrl || certificate.imageUrl;
-                  if (targetUrl) {
-                    window.open(targetUrl, '_blank');
-                  }
+                  setSelectedCert(certificate);
+                  setIsModalOpen(true);
                 }}
               >
                 {certificate.imageUrl ? (
@@ -108,14 +109,16 @@ export const ResumePage: React.FC = () => {
                       {[certificate.issuer, certificate.date].filter(Boolean).join(' - ')}
                     </p>
                     {(certificate.pdfUrl || certificate.imageUrl) && (
-                      <a 
-                        href={certificate.pdfUrl || certificate.imageUrl} 
-                        target="_blank" 
-                        rel="noreferrer" 
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedCert(certificate);
+                          setIsModalOpen(true);
+                        }}
                         className="text-xs font-bold text-accent hover:text-white inline-flex items-center gap-1 transition-colors"
                       >
                         View <ExternalLink size={12} />
-                      </a>
+                      </button>
                     )}
                   </div>
                 </div>
@@ -126,6 +129,12 @@ export const ResumePage: React.FC = () => {
           <GlassCard className="p-8 text-center text-slate-300">Certificates will appear here after upload.</GlassCard>
         )}
       </section>
+
+      <CertificateModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        certificate={selectedCert}
+      />
     </div>
   );
 };

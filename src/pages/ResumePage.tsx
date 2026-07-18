@@ -73,7 +73,16 @@ export const ResumePage: React.FC = () => {
         {visibleCertificates.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {visibleCertificates.map((certificate) => (
-              <GlassCard key={certificate.id} className="overflow-hidden flex flex-col h-full">
+              <GlassCard 
+                key={certificate.id} 
+                className="overflow-hidden flex flex-col h-full cursor-pointer hover:border-accent/40 transition-all duration-300"
+                onClick={() => {
+                  const targetUrl = certificate.pdfUrl || certificate.imageUrl;
+                  if (targetUrl) {
+                    window.open(targetUrl, '_blank');
+                  }
+                }}
+              >
                 {certificate.imageUrl ? (
                   certificate.imageUrl.toLowerCase().endsWith('.pdf') ? (
                     <div className="flex h-56 flex-col items-center justify-center border-b border-white/10 bg-black/50 px-6 text-center gap-2">

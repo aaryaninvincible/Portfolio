@@ -74,6 +74,7 @@ export const MiniGames: React.FC = () => {
             }
 
             function flap() {
+                if (document.getElementById('scoreSubmitOverlay')) return;
                 safeFocus('flappy');
                 if (!started || over) {
                     start();
@@ -214,6 +215,7 @@ export const MiniGames: React.FC = () => {
             }
 
             function jump() {
+                if (document.getElementById('scoreSubmitOverlay')) return;
                 safeFocus('dino');
                 if (!started || over) {
                     start();
@@ -399,15 +401,25 @@ export const MiniGames: React.FC = () => {
             function pressRight(on: boolean) { safeFocus('dodge'); moveRight = on; }
 
             startBtn?.addEventListener('click', start); pauseBtn?.addEventListener('click', togglePause);
-            leftBtn?.addEventListener('pointerdown', () => pressLeft(true)); leftBtn?.addEventListener('pointerup', () => pressLeft(false));
-            rightBtn?.addEventListener('pointerdown', () => pressRight(true)); rightBtn?.addEventListener('pointerup', () => pressRight(false));
+            
+            leftBtn?.addEventListener('pointerdown', (e) => { e.preventDefault(); pressLeft(true); });
+            leftBtn?.addEventListener('pointerup', () => pressLeft(false));
+            leftBtn?.addEventListener('pointerleave', () => pressLeft(false));
+            leftBtn?.addEventListener('pointercancel', () => pressLeft(false));
+
+            rightBtn?.addEventListener('pointerdown', (e) => { e.preventDefault(); pressRight(true); });
+            rightBtn?.addEventListener('pointerup', () => pressRight(false));
+            rightBtn?.addEventListener('pointerleave', () => pressRight(false));
+            rightBtn?.addEventListener('pointercancel', () => pressRight(false));
 
             dodgeCanvas.addEventListener('pointerdown', (e) => {
+                if (document.getElementById('scoreSubmitOverlay')) return;
                 safeFocus('dodge'); const rect = dodgeCanvas.getBoundingClientRect(); const x = e.clientX - rect.left;
                 player.x = Math.max(0, Math.min(W - player.w, (x / rect.width) * W - player.w / 2));
                 if (!started || over) start(); else if (paused) resume();
             });
             dodgeCanvas.addEventListener('pointermove', (e) => {
+                if (document.getElementById('scoreSubmitOverlay')) return;
                 if (!running) return; const rect = dodgeCanvas.getBoundingClientRect(); const x = e.clientX - rect.left;
                 player.x = Math.max(0, Math.min(W - player.w, (x / rect.width) * W - player.w / 2));
             });
@@ -448,6 +460,7 @@ export const MiniGames: React.FC = () => {
             }
 
             function start() {
+                if (document.getElementById('scoreSubmitOverlay')) return;
                 safeFocus('snake'); reset(); running = true; setShowSubmit(false);
                 last = performance.now(); afId = requestAnimationFrame(loop);
                 animationFrames.push(afId);
@@ -524,6 +537,16 @@ export const MiniGames: React.FC = () => {
             function down() { if (dir.y === 0) { nextDir = { x: 0, y: gridSize }; playSound('jump'); } }
             function left() { if (dir.x === 0) { nextDir = { x: -gridSize, y: 0 }; playSound('jump'); } }
             function right() { if (dir.x === 0) { nextDir = { x: gridSize, y: 0 }; playSound('jump'); } }
+
+            const upBtn = document.getElementById('snakeUp');
+            const downBtn = document.getElementById('snakeDown');
+            const leftBtn = document.getElementById('snakeLeft');
+            const rightBtn = document.getElementById('snakeRight');
+
+            upBtn?.addEventListener('click', () => { safeFocus('snake'); up(); });
+            downBtn?.addEventListener('click', () => { safeFocus('snake'); down(); });
+            leftBtn?.addEventListener('click', () => { safeFocus('snake'); left(); });
+            rightBtn?.addEventListener('click', () => { safeFocus('snake'); right(); });
 
             startBtn?.addEventListener('click', start); pauseBtn?.addEventListener('click', togglePause);
             reset(); draw();
@@ -697,11 +720,23 @@ export const MiniGames: React.FC = () => {
                         <button id="snakeStart" className="px-6 py-2 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
                         <button id="snakePause" className="px-6 py-2 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
                     </div>
+                    {/* Mobile Controls */}
+                    <div className="md:hidden grid grid-cols-3 gap-2 mt-4 w-36 justify-items-center">
+                        <div />
+                        <button id="snakeUp" className="h-10 w-10 bg-accent/20 text-accent border border-accent rounded-lg flex items-center justify-center font-bold">↑</button>
+                        <div />
+                        <button id="snakeLeft" className="h-10 w-10 bg-accent/20 text-accent border border-accent rounded-lg flex items-center justify-center font-bold">←</button>
+                        <div className="h-10 w-10 flex items-center justify-center text-xs font-mono text-slate-500">🎮</div>
+                        <button id="snakeRight" className="h-10 w-10 bg-accent/20 text-accent border border-accent rounded-lg flex items-center justify-center font-bold">→</button>
+                        <div />
+                        <button id="snakeDown" className="h-10 w-10 bg-accent/20 text-accent border border-accent rounded-lg flex items-center justify-center font-bold">↓</button>
+                        <div />
+                    </div>
                 </div>
 
                 {/* Submit Score Modal overlay if game over */}
                 {showSubmit && lastScore > 0 && (
-                    <div className="absolute inset-0 bg-black/95 flex flex-col items-center justify-center p-6 z-30">
+                    <div id="scoreSubmitOverlay" className="absolute inset-0 bg-black/95 flex flex-col items-center justify-center p-6 z-30">
                         <Trophy size={48} className="text-accent animate-bounce mb-3" />
                         <h3 className="font-orbitron text-xl font-bold text-light mb-1">New Score: {lastScore}!</h3>
                         <p className="text-xs text-slate-400 mb-5 text-center font-mono">Submit to the global live leaderboard</p>

@@ -81,14 +81,17 @@ const storyPanels = [
   {
     title: 'Idea to MVP',
     copy: 'Fast prototypes for BTech, MTech, startup, and freelance software needs.',
+    imageUrl: '/banner_mvp.png',
   },
   {
     title: 'Build + Integrate',
     copy: 'React, Firebase, Node, AI/ML, IoT dashboards, admin panels, and automations.',
+    imageUrl: '/banner_build.png',
   },
   {
     title: 'Demo Ready',
     copy: 'Clean project pages with media, use cases, live demos, and approval-based repo access.',
+    imageUrl: '/banner_demo.png',
   },
 ];
 
@@ -223,12 +226,15 @@ export const HomePage: React.FC = () => {
             transition={{ delay: index * 0.12 }}
           >
             <GlassCard className="p-8 h-full">
-              <div className="mb-8 h-40 rounded-xl border border-white/10 bg-black/50 overflow-hidden">
-                <motion.div
-                  className="h-full w-full bg-[linear-gradient(120deg,rgba(255,115,0,0.15),rgba(255,150,0,0.35),rgba(255,85,0,0.15))]"
-                  whileInView={{ x: ['-20%', '20%', '-10%'], scale: [1, 1.12, 1.05] }}
-                  transition={{ duration: 2.8, repeat: Infinity, repeatType: 'mirror' }}
+              <div className="mb-8 h-40 rounded-xl border border-white/10 bg-black/50 overflow-hidden relative group">
+                <motion.img
+                  src={panel.imageUrl}
+                  alt={panel.title}
+                  className="h-full w-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.4 }}
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
               </div>
               <h2 className="font-orbitron text-2xl text-light mb-3">{panel.title}</h2>
               <p className="text-slate-300 leading-relaxed">{panel.copy}</p>

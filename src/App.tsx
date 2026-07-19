@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
 
 import { Navbar } from './components/Navbar';
-import { CursorFollower } from './components/CursorFollower';
 import { ParticleBackground } from './components/ParticleBackground';
 import { SeaFooter } from './components/SeaFooter';
 import { ScrollControls } from './components/ScrollControls';

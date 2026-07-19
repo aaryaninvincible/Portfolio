@@ -165,7 +165,17 @@ export const HomePage: React.FC = () => {
   }, [adminProjects, githubProjects]);
 
   const featuredProjects = projects.filter((project) => project.featured || project.source === 'github').slice(0, 9);
-  const visibleCertificates = certificates.length > 0 ? certificates : linkedInCertificates;
+  
+  const allCertificates = certificates.length > 0 ? certificates : linkedInCertificates;
+  const bestCertIds = [
+    'coursera-google-ai', 
+    'linkedin-krishi-verse-web-dev', 
+    'python-by-meta', 
+    'google-analytics', 
+    'mastercard-cybersecurity', 
+    'linkedin-accenture-data-analytics'
+  ];
+  const visibleCertificates = allCertificates.filter(cert => bestCertIds.includes(cert.id)).slice(0, 6);
 
   const handleContact = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -764,6 +774,11 @@ export const HomePage: React.FC = () => {
         ) : (
           <GlassCard className="p-8 text-center text-slate-300">Certificates will appear here after upload from admin.</GlassCard>
         )}
+        <div className="flex justify-center pt-8">
+          <a href="/certifications" className="glass px-8 py-3 rounded-lg text-primary font-bold hover:bg-white/10 transition-colors inline-flex items-center gap-2">
+            View All Certifications <ExternalLink size={18} />
+          </a>
+        </div>
       </section>
 
       <section id="achievements" className="space-y-10">

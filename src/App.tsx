@@ -5,7 +5,7 @@ import { Volume2, VolumeX } from 'lucide-react';
 
 import { Navbar } from './components/Navbar';
 import { CursorFollower } from './components/CursorFollower';
-import { CodeCurtain } from './components/CodeCurtain';
+import { ParticleBackground } from './components/ParticleBackground';
 import { SeaFooter } from './components/SeaFooter';
 import { ScrollControls } from './components/ScrollControls';
 import { SplashLoader } from './components/SplashLoader';
@@ -16,6 +16,7 @@ import { BuyProjectsPage } from './pages/BuyProjectsPage';
 import { AllWorkPage } from './pages/AllWorkPage';
 import { AdminPage } from './pages/AdminPage';
 import { ResumePage } from './pages/ResumePage';
+import { CertificationsPage } from './pages/CertificationsPage';
 
 const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
@@ -145,7 +146,7 @@ const AppContent: React.FC = () => {
     <>
       <FullscreenAlert />
       <SplashLoader />
-      <CodeCurtain />
+      <ParticleBackground />
       <CursorFollower />
       <Navbar />
       <main className="min-h-screen z-10 relative">
@@ -157,6 +158,7 @@ const AppContent: React.FC = () => {
             <Route path="/buy-projects" element={<BuyProjectsPage />} />
             <Route path="/all-work" element={<AllWorkPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/certifications" element={<CertificationsPage />} />
           </Routes>
         </PageTransition>
       </main>

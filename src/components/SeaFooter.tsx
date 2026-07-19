@@ -193,11 +193,29 @@ export const SeaFooter: React.FC = () => {
         }
       }
 
+      // Lightning animation
+      if ((window as any)._weather === 'RAIN' && Math.random() < 0.005) {
+        (window as any)._lightningTime = now;
+      }
+
+      let currentExposure = (window as any)._baseExposure || 0.5;
+      if ((window as any)._weather === 'RAIN' && (window as any)._lightningTime) {
+        const elapsed = now - (window as any)._lightningTime;
+        if (elapsed < 400) {
+          // Double flash pattern
+          if (elapsed < 60 || (elapsed > 120 && elapsed < 180)) {
+            currentExposure += 2.0; // bright flash!
+          }
+        }
+      }
+      seaRenderer.toneMappingExposure = currentExposure;
+
       seaRenderer.render(seaScene, seaCamera);
     }
 
     (window as any)._seaSpeed = 1.0;
     (window as any)._isDrifting = true;
+    (window as any)._weather = 'CLEAR';
 
     initSea();
 
@@ -223,27 +241,27 @@ export const SeaFooter: React.FC = () => {
     
     if (val < 20) {
       elevation = -2; label = "NIGHT";
-      inst.seaRenderer.toneMappingExposure = 0.1;
+      (window as any)._baseExposure = 0.1;
       inst.water.material.uniforms['sunColor'].value.setHex(0x222244);
       inst.water.material.uniforms['waterColor'].value.setHex(0x000508);
     } else if (val < 45) {
       elevation = 5 + (val-20); label = "MORNING";
-      inst.seaRenderer.toneMappingExposure = 0.3;
+      (window as any)._baseExposure = 0.3;
       inst.water.material.uniforms['sunColor'].value.setHex(0xffeebb);
       inst.water.material.uniforms['waterColor'].value.setHex(0x001e0f);
     } else if (val < 65) {
       elevation = 45; label = "MIDDAY";
-      inst.seaRenderer.toneMappingExposure = 0.5;
+      (window as any)._baseExposure = 0.5;
       inst.water.material.uniforms['sunColor'].value.setHex(0xffffff);
       inst.water.material.uniforms['waterColor'].value.setHex(0x001e0f);
     } else if (val < 85) {
       elevation = Math.max(0.5, 10 - (val-65)*0.5); label = "GOLDEN HOUR";
-      inst.seaRenderer.toneMappingExposure = 0.4;
+      (window as any)._baseExposure = 0.4;
       inst.water.material.uniforms['sunColor'].value.setHex(0xff8833);
       inst.water.material.uniforms['waterColor'].value.setHex(0x001e0f);
     } else {
       elevation = -1; label = "DUSK";
-      inst.seaRenderer.toneMappingExposure = 0.2;
+      (window as any)._baseExposure = 0.2;
       inst.water.material.uniforms['sunColor'].value.setHex(0x884422);
       inst.water.material.uniforms['waterColor'].value.setHex(0x000a12);
     }
@@ -263,6 +281,7 @@ export const SeaFooter: React.FC = () => {
   useEffect(() => {
     const inst = (window as any)._seaInstances;
     if (!inst) return;
+    (window as any)._weather = weather;
     if (weather === 'RAIN') {
       inst.rain.visible = true;
       inst.water.material.uniforms[ 'distortionScale' ].value = 5.0;

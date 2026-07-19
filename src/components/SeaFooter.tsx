@@ -186,7 +186,7 @@ export const SeaFooter: React.FC = () => {
 
 
   return (
-    <div className="fixed bottom-0 left-0 w-full h-[35vh] z-[9] overflow-hidden pointer-events-none font-sans">
+    <div className="relative w-full h-[35vh] z-[9] overflow-hidden pointer-events-none font-sans">
       <style>{`
         .sea-ui {
           position: absolute;

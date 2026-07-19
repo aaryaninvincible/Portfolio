@@ -289,9 +289,7 @@ prewarm();
 
 // ─── Draw ─────────────────────────────────────────────────────────────────────
 function draw() {
-  // Pure dark background — no gradient that could hide chars
-  ctx.fillStyle = '#0d0d12';
-  ctx.fillRect(0, 0, W, H);
+  ctx.clearRect(0, 0, W, H);
 
   const sz = fontSize();
   const mr2 = M_RADIUS * M_RADIUS;

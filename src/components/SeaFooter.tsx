@@ -310,7 +310,7 @@ export const SeaFooter: React.FC = () => {
       }
 
       // Flap birds wings and move them
-      if (birds && birds.length > 0) {
+      if (birds && birds.length > 0 && birdsGroup && birdsGroup.visible) {
         birds.forEach((bird) => {
           bird.position.x += bird._speed * (window as any)._seaSpeed;
           if (bird.position.x > 300) {
@@ -359,7 +359,7 @@ export const SeaFooter: React.FC = () => {
 
     initSea();
 
-    (window as any)._seaInstances = { seaRenderer, sky, water, sun, rain, shipGroup, seaScene, splashes, clouds, stars, moon };
+    (window as any)._seaInstances = { seaRenderer, sky, water, sun, rain, shipGroup, seaScene, splashes, clouds, stars, moon, birdsGroup };
 
     return () => {
       isSeaActive = false;
@@ -459,6 +459,11 @@ export const SeaFooter: React.FC = () => {
         inst.clouds.material.color.setHex(0x222228);
         inst.clouds.material.opacity = 0.45;
       }
+
+      // Hide birds during storm
+      if (inst.birdsGroup) {
+        inst.birdsGroup.visible = false;
+      }
     } else {
       inst.rain.visible = false;
       inst.water.material.uniforms[ 'distortionScale' ].value = 3.7;
@@ -476,6 +481,11 @@ export const SeaFooter: React.FC = () => {
       if (inst.clouds) {
         inst.clouds.material.color.setHex(0xffffff);
         inst.clouds.material.opacity = 0.15;
+      }
+
+      // Show birds again
+      if (inst.birdsGroup) {
+        inst.birdsGroup.visible = true;
       }
 
       // Restore timeOfDay based sun/water colors
@@ -580,22 +590,20 @@ export const SeaFooter: React.FC = () => {
           }
         }
         hr.rain-drop {
-          width: 1.5px;
-          height: 65px;
-          background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.45));
+          width: 0px;
+          height: 0px;
+          border: 1px solid transparent;
           position: absolute;
-          top: -100px;
-          border: none;
+          top: -120px;
           animation-name: rain-fall-animation;
-          animation-timing-function: linear;
+          animation-timing-function: ease-in;
           animation-iteration-count: infinite;
           pointer-events: none;
           z-index: 5;
-          transform: skewX(-15deg);
         }
         @keyframes rain-fall-animation {
           0% {
-            top: -100px;
+            top: -120px;
           }
           100% {
             top: 100vh;
@@ -608,18 +616,26 @@ export const SeaFooter: React.FC = () => {
       {/* DOM-based Rain Overlay */}
       {weather === 'RAIN' && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
-          {Array.from({ length: 80 }).map((_, i) => {
-            const left = Math.random() * 100;
+          {Array.from({ length: 150 }).map((_, i) => {
+            const left = Math.random() * 120 - 10;
+            const opacity = 0.15 + Math.random() * 0.65;
             const duration = 0.4 + Math.random() * 0.4;
-            const delay = Math.random() * 4;
+            const delay = Math.random() * -5; // negative delay to pre-scatter the drops
+            const borderWidth = 0.5 + Math.random() * 1.5;
+            const dropLength = 25 + Math.random() * 35;
             return (
               <hr
                 key={i}
                 className="rain-drop"
                 style={{
                   left: `${left}%`,
+                  opacity: opacity,
+                  borderLeftWidth: `${borderWidth}px`,
+                  borderRightWidth: `${borderWidth}px`,
+                  borderBottom: `${dropLength}px solid rgba(171, 194, 233, ${opacity})`,
                   animationDuration: `${duration}s`,
-                  animationDelay: `${delay}s`
+                  animationDelay: `${delay}s`,
+                  transform: 'skewX(-15deg)'
                 }}
               />
             );

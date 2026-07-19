@@ -23,7 +23,7 @@ export const SeaFooter: React.FC = () => {
     const seaContainer = containerRef.current;
     let seaScene: any, seaCamera: any, seaRenderer: any;
     let water: any, sun: any, sky: any;
-    let rain: any, shipGroup: any, splashes: any;
+    let shipGroup: any, splashes: any;
     let clouds: any, cloudGroup: any, stars: any, moon: any, birdsGroup: any, birds: any[] = [];
     let seaTime = 0;
     let lastTime = performance.now();
@@ -77,34 +77,7 @@ export const SeaFooter: React.FC = () => {
       skyUniforms[ 'mieCoefficient' ].value = 0.005;
       skyUniforms[ 'mieDirectionalG' ].value = 0.8;
 
-      // Rain Particles using LineSegments for realistic streaks
-      const RAIN_COUNT = 1500; // 1500 lines = 3000 points
-      const rainGeo = new THREE.BufferGeometry();
-      const rainPositions = new Float32Array(RAIN_COUNT * 2 * 3);
-      for(let i=0; i<RAIN_COUNT; i++){
-        const x = (Math.random() - 0.5) * 400;
-        const y = Math.random() * 200;
-        const z = (Math.random() - 0.5) * 200;
-        
-        // Start vertex of line
-        rainPositions[i*6] = x;
-        rainPositions[i*6+1] = y;
-        rainPositions[i*6+2] = z;
-        
-        // End vertex of line (slightly below)
-        rainPositions[i*6+3] = x;
-        rainPositions[i*6+4] = y - 5;
-        rainPositions[i*6+5] = z;
-      }
-      rainGeo.setAttribute('position', new THREE.BufferAttribute(rainPositions, 3));
-      const rainMat = new THREE.LineBasicMaterial({
-        color: 0xcccccc,
-        transparent: true,
-        opacity: 0.5
-      });
-      rain = new THREE.LineSegments(rainGeo, rainMat);
-      rain.visible = false;
-      seaScene.add(rain);
+
 
       // Soft Volumetric Clouds Group
       cloudGroup = new THREE.Group();
@@ -359,7 +332,7 @@ export const SeaFooter: React.FC = () => {
 
     initSea();
 
-    (window as any)._seaInstances = { seaRenderer, sky, water, sun, rain, shipGroup, seaScene, splashes, clouds, stars, moon, birdsGroup };
+    (window as any)._seaInstances = { seaRenderer, sky, water, sun, shipGroup, seaScene, splashes, clouds, stars, moon, birdsGroup };
 
     return () => {
       isSeaActive = false;
@@ -439,7 +412,6 @@ export const SeaFooter: React.FC = () => {
     if (!inst) return;
     (window as any)._weather = weather;
     if (weather === 'RAIN') {
-      inst.rain.visible = true;
       inst.water.material.uniforms[ 'distortionScale' ].value = 6.0;
       (window as any)._seaSpeed = 1.8;
       inst.sky.material.uniforms[ 'turbidity' ].value = 25;
@@ -465,7 +437,6 @@ export const SeaFooter: React.FC = () => {
         inst.birdsGroup.visible = false;
       }
     } else {
-      inst.rain.visible = false;
       inst.water.material.uniforms[ 'distortionScale' ].value = 3.7;
       (window as any)._seaSpeed = 1.0;
       inst.sky.material.uniforms[ 'turbidity' ].value = 10;
@@ -612,10 +583,10 @@ export const SeaFooter: React.FC = () => {
           }
         }
         .star {
-          box-shadow: 0px 0px 4px 1.5px rgba(255, 255, 255, 0.8);
+          box-shadow: 0px 0px 1px 1px rgba(255, 255, 255, 0.4);
           position: absolute;
-          width: 1.5px;
-          height: 1.5px;
+          width: 1px;
+          height: 1px;
           border-radius: 50%;
           background-color: white;
           pointer-events: none;
@@ -623,10 +594,10 @@ export const SeaFooter: React.FC = () => {
         }
         @keyframes twinkle-animation {
           0% {
-            opacity: 0.15;
+            opacity: 0.2;
           }
           100% {
-            opacity: 0.95;
+            opacity: 1.0;
           }
         }
       `}</style>

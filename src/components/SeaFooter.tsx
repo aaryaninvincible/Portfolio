@@ -74,6 +74,7 @@ export const SeaFooter: React.FC = () => {
       skyUniforms[ 'mieDirectionalG' ].value = 0.8;
 
       // Rain Particles
+      const RAIN_COUNT = 3000;
       const rainGeo = new THREE.BufferGeometry();
       const rainPositions = new Float32Array(RAIN_COUNT * 3);
       for(let i=0; i<RAIN_COUNT; i++){
@@ -83,10 +84,10 @@ export const SeaFooter: React.FC = () => {
       }
       rainGeo.setAttribute('position', new THREE.BufferAttribute(rainPositions, 3));
       const rainMat = new THREE.PointsMaterial({
-        color: 0xaaaaaa,
-        size: 0.8,
+        color: 0xcccccc,
+        size: 1.5,
         transparent: true,
-        opacity: 0.6
+        opacity: 0.8
       });
       rain = new THREE.Points(rainGeo, rainMat);
       rain.visible = false;
@@ -95,18 +96,18 @@ export const SeaFooter: React.FC = () => {
       // Simple Ship
       shipGroup = new THREE.Group();
       const hull = new THREE.Mesh(
-        new THREE.BoxGeometry(10, 2, 3),
-        new THREE.MeshStandardMaterial({ color: 0x222222 })
+        new THREE.BoxGeometry(15, 3, 4),
+        new THREE.MeshStandardMaterial({ color: 0x2a1d0d })
       );
-      hull.position.y = 1;
+      hull.position.y = 1.5;
       const sail = new THREE.Mesh(
-        new THREE.ConeGeometry(3, 10, 4),
-        new THREE.MeshStandardMaterial({ color: 0xdddddd, side: THREE.DoubleSide })
+        new THREE.ConeGeometry(4, 15, 6),
+        new THREE.MeshStandardMaterial({ color: 0xffffff, side: THREE.DoubleSide })
       );
-      sail.position.y = 7;
+      sail.position.y = 10;
       shipGroup.add(hull);
       shipGroup.add(sail);
-      shipGroup.position.set(-300, 0, -150);
+      shipGroup.position.set(-300, 0, -100);
       seaScene.add(shipGroup);
 
       // Ambient light for ship
@@ -151,8 +152,8 @@ export const SeaFooter: React.FC = () => {
 
       if ((window as any)._rain && (window as any)._rain.visible) {
         const positions = (window as any)._rain.geometry.attributes.position.array;
-        for(let i=1; i<RAIN_COUNT*3; i+=3) {
-          positions[i] -= 3; // fall speed
+        for(let i=1; i<positions.length; i+=3) {
+          positions[i] -= 8; // fall speed
           if (positions[i] < 0) {
             positions[i] = 300;
           }
@@ -200,28 +201,28 @@ export const SeaFooter: React.FC = () => {
     if (val < 20) {
       elevation = -2; label = "NIGHT";
       inst.seaRenderer.toneMappingExposure = 0.1;
-      inst.water.material.uniforms['sunColor'].value = new THREE.Color(0x222244);
-      inst.water.material.uniforms['waterColor'].value = new THREE.Color(0x000508);
+      inst.water.material.uniforms['sunColor'].value.setHex(0x222244);
+      inst.water.material.uniforms['waterColor'].value.setHex(0x000508);
     } else if (val < 45) {
       elevation = 5 + (val-20); label = "MORNING";
       inst.seaRenderer.toneMappingExposure = 0.3;
-      inst.water.material.uniforms['sunColor'].value = new THREE.Color(0xffeebb);
-      inst.water.material.uniforms['waterColor'].value = new THREE.Color(0x001e0f);
+      inst.water.material.uniforms['sunColor'].value.setHex(0xffeebb);
+      inst.water.material.uniforms['waterColor'].value.setHex(0x001e0f);
     } else if (val < 65) {
       elevation = 45; label = "MIDDAY";
       inst.seaRenderer.toneMappingExposure = 0.5;
-      inst.water.material.uniforms['sunColor'].value = new THREE.Color(0xffffff);
-      inst.water.material.uniforms['waterColor'].value = new THREE.Color(0x001e0f);
+      inst.water.material.uniforms['sunColor'].value.setHex(0xffffff);
+      inst.water.material.uniforms['waterColor'].value.setHex(0x001e0f);
     } else if (val < 85) {
       elevation = Math.max(0.5, 10 - (val-65)*0.5); label = "GOLDEN HOUR";
       inst.seaRenderer.toneMappingExposure = 0.4;
-      inst.water.material.uniforms['sunColor'].value = new THREE.Color(0xff8833);
-      inst.water.material.uniforms['waterColor'].value = new THREE.Color(0x0a1e0f);
+      inst.water.material.uniforms['sunColor'].value.setHex(0xff8833);
+      inst.water.material.uniforms['waterColor'].value.setHex(0x001e0f);
     } else {
       elevation = -1; label = "DUSK";
       inst.seaRenderer.toneMappingExposure = 0.2;
-      inst.water.material.uniforms['sunColor'].value = new THREE.Color(0x884422);
-      inst.water.material.uniforms['waterColor'].value = new THREE.Color(0x000a12);
+      inst.water.material.uniforms['sunColor'].value.setHex(0x884422);
+      inst.water.material.uniforms['waterColor'].value.setHex(0x000a12);
     }
     
     setTimeLabel(label);
@@ -241,8 +242,8 @@ export const SeaFooter: React.FC = () => {
     if (!inst) return;
     if (weather === 'RAIN') {
       inst.rain.visible = true;
-      inst.water.material.uniforms[ 'distortionScale' ].value = 8.0;
-      (window as any)._seaSpeed = 2.0;
+      inst.water.material.uniforms[ 'distortionScale' ].value = 5.0;
+      (window as any)._seaSpeed = 1.5;
       inst.sky.material.uniforms[ 'turbidity' ].value = 20;
     } else {
       inst.rain.visible = false;

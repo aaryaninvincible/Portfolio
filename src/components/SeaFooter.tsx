@@ -71,23 +71,32 @@ export const SeaFooter: React.FC = () => {
       skyUniforms[ 'mieCoefficient' ].value = 0.005;
       skyUniforms[ 'mieDirectionalG' ].value = 0.8;
 
-      // Rain Particles
-      const RAIN_COUNT = 3000;
+      // Rain Particles using LineSegments for realistic streaks
+      const RAIN_COUNT = 1500; // 1500 lines = 3000 points
       const rainGeo = new THREE.BufferGeometry();
-      const rainPositions = new Float32Array(RAIN_COUNT * 3);
+      const rainPositions = new Float32Array(RAIN_COUNT * 2 * 3);
       for(let i=0; i<RAIN_COUNT; i++){
-        rainPositions[i*3] = (Math.random() - 0.5) * 400; // X
-        rainPositions[i*3+1] = Math.random() * 200;       // Y
-        rainPositions[i*3+2] = (Math.random() - 0.5) * 200; // Z
+        const x = (Math.random() - 0.5) * 400;
+        const y = Math.random() * 200;
+        const z = (Math.random() - 0.5) * 200;
+        
+        // Start vertex of line
+        rainPositions[i*6] = x;
+        rainPositions[i*6+1] = y;
+        rainPositions[i*6+2] = z;
+        
+        // End vertex of line (slightly below)
+        rainPositions[i*6+3] = x;
+        rainPositions[i*6+4] = y - 5;
+        rainPositions[i*6+5] = z;
       }
       rainGeo.setAttribute('position', new THREE.BufferAttribute(rainPositions, 3));
-      const rainMat = new THREE.PointsMaterial({
+      const rainMat = new THREE.LineBasicMaterial({
         color: 0xcccccc,
-        size: 1.5,
         transparent: true,
-        opacity: 0.8
+        opacity: 0.5
       });
-      rain = new THREE.Points(rainGeo, rainMat);
+      rain = new THREE.LineSegments(rainGeo, rainMat);
       rain.visible = false;
       seaScene.add(rain);
 
@@ -150,10 +159,25 @@ export const SeaFooter: React.FC = () => {
 
       if ((window as any)._rain && (window as any)._rain.visible) {
         const positions = (window as any)._rain.geometry.attributes.position.array;
-        for(let i=1; i<positions.length; i+=3) {
-          positions[i] -= 8; // fall speed
-          if (positions[i] < 0) {
-            positions[i] = 200;
+        for(let i=0; i<1500; i++) {
+          const idxStart = i * 6;
+          const idxEnd = i * 6 + 3;
+          
+          positions[idxStart+1] -= 10; // Fall speed Y
+          positions[idxEnd+1] -= 10;
+          
+          // Reset when falling below sea level
+          if (positions[idxStart+1] < 0) {
+            positions[idxStart+1] = 200;
+            positions[idxEnd+1] = 195;
+            
+            // Randomize X and Z slightly on reset
+            const newX = (Math.random() - 0.5) * 400;
+            const newZ = (Math.random() - 0.5) * 200;
+            positions[idxStart] = newX;
+            positions[idxEnd] = newX;
+            positions[idxStart+2] = newZ;
+            positions[idxEnd+2] = newZ;
           }
         }
         (window as any)._rain.geometry.attributes.position.needsUpdate = true;

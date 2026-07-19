@@ -86,12 +86,17 @@ export const ParticleBackground: React.FC = () => {
 
             draw() {
                 if (!ctx) return;
+                // Outer glow pass (fast semi-transparent circle)
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * 2.5, 0, Math.PI * 2);
+                ctx.fillStyle = this.color.replace('0.6', '0.15');
+                ctx.fill();
+
+                // Inner core pass
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fillStyle = this.color;
                 ctx.fill();
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = this.color;
             }
         }
 

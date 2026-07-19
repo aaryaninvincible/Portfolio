@@ -172,11 +172,12 @@ export const SeaFooter: React.FC = () => {
       seaRenderer.render(seaScene, seaCamera);
     }
 
+    (window as any)._seaSpeed = 1.0;
+    (window as any)._isDrifting = true;
+
     initSea();
 
     (window as any)._seaInstances = { seaRenderer, sky, water, sun, rain, shipGroup };
-    (window as any)._seaSpeed = 1.0;
-    (window as any)._isDrifting = false;
 
     return () => {
       isSeaActive = false;
@@ -282,7 +283,7 @@ export const SeaFooter: React.FC = () => {
 
 
   return (
-    <div className="relative w-full h-[70vh] z-[9] overflow-hidden pointer-events-none font-sans group">
+    <div className="relative w-full h-[100vh] z-[9] overflow-hidden pointer-events-none font-sans group">
       <style>{`
         .sea-ui {
           position: absolute;

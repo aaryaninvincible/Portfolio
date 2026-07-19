@@ -5,8 +5,9 @@ declare const THREE: any;
 export const SeaFooter: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [fps, setFps] = useState(60);
-  const [seaState, setSeaState] = useState(29);
   const [drifting, setDrifting] = useState(false);
+  const [testTimeIndex, setTestTimeIndex] = useState(0); // 0: Auto, 1: Morning, 2: Midday, 3: Golden, 4: Dusk, 5: Night
+  const [weather, setWeather] = useState<'CLEAR' | 'RAIN'>('CLEAR');
   const [timeLabel, setTimeLabel] = useState('GOLDEN HOUR');
   const [timeOfDay, setTimeOfDay] = useState(75);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -17,11 +18,14 @@ export const SeaFooter: React.FC = () => {
     const seaContainer = containerRef.current;
     let seaScene: any, seaCamera: any, seaRenderer: any;
     let water: any, sun: any, sky: any;
+    let rain: any, shipGroup: any;
     let seaTime = 0;
     let lastTime = performance.now();
     let frameCount = 0;
     let isSeaActive = true;
     let animationFrameId: number;
+
+    const RAIN_COUNT = 1500;
 
     function initSea() {
       seaRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -32,6 +36,7 @@ export const SeaFooter: React.FC = () => {
       seaContainer.appendChild(seaRenderer.domElement);
 
       seaScene = new THREE.Scene();
+      seaScene.fog = new THREE.FogExp2(0x001e0f, 0.001);
 
       seaCamera = new THREE.PerspectiveCamera(55, seaContainer.clientWidth / seaContainer.clientHeight, 1, 20000);
       seaCamera.position.set(0, 30, 100);
@@ -68,6 +73,46 @@ export const SeaFooter: React.FC = () => {
       skyUniforms[ 'mieCoefficient' ].value = 0.005;
       skyUniforms[ 'mieDirectionalG' ].value = 0.8;
 
+      // Rain Particles
+      const rainGeo = new THREE.BufferGeometry();
+      const rainPositions = new Float32Array(RAIN_COUNT * 3);
+      for(let i=0; i<RAIN_COUNT; i++){
+        rainPositions[i*3] = (Math.random() - 0.5) * 600;
+        rainPositions[i*3+1] = Math.random() * 300;
+        rainPositions[i*3+2] = (Math.random() - 0.5) * 600;
+      }
+      rainGeo.setAttribute('position', new THREE.BufferAttribute(rainPositions, 3));
+      const rainMat = new THREE.PointsMaterial({
+        color: 0xaaaaaa,
+        size: 0.8,
+        transparent: true,
+        opacity: 0.6
+      });
+      rain = new THREE.Points(rainGeo, rainMat);
+      rain.visible = false;
+      seaScene.add(rain);
+
+      // Simple Ship
+      shipGroup = new THREE.Group();
+      const hull = new THREE.Mesh(
+        new THREE.BoxGeometry(10, 2, 3),
+        new THREE.MeshStandardMaterial({ color: 0x222222 })
+      );
+      hull.position.y = 1;
+      const sail = new THREE.Mesh(
+        new THREE.ConeGeometry(3, 10, 4),
+        new THREE.MeshStandardMaterial({ color: 0xdddddd, side: THREE.DoubleSide })
+      );
+      sail.position.y = 7;
+      shipGroup.add(hull);
+      shipGroup.add(sail);
+      shipGroup.position.set(-300, 0, -150);
+      seaScene.add(shipGroup);
+
+      // Ambient light for ship
+      const ambientLight = new THREE.AmbientLight(0x404040);
+      seaScene.add(ambientLight);
+
       window.addEventListener('resize', onSeaWindowResize);
       seaAnimate();
     }
@@ -91,10 +136,8 @@ export const SeaFooter: React.FC = () => {
         lastTime = now;
       }
 
-      // We read state from a ref or just closure? In React, state in closure can be stale.
-      // But we can update uniforms via a separate useEffect on state change.
-      // For now, time increment
-      seaTime += 0.01 * (window as any)._seaSpeed;
+      // Time increment - Fixed roughly for 60fps
+      seaTime += (1.0 / 60.0) * (window as any)._seaSpeed;
       
       if (water) {
         water.material.uniforms[ 'time' ].value += 1.0 / 60.0 * (window as any)._seaSpeed;
@@ -106,16 +149,34 @@ export const SeaFooter: React.FC = () => {
         seaCamera.position.y = 30; // reset
       }
 
+      if ((window as any)._rain && (window as any)._rain.visible) {
+        const positions = (window as any)._rain.geometry.attributes.position.array;
+        for(let i=1; i<RAIN_COUNT*3; i+=3) {
+          positions[i] -= 3; // fall speed
+          if (positions[i] < 0) {
+            positions[i] = 300;
+          }
+        }
+        (window as any)._rain.geometry.attributes.position.needsUpdate = true;
+      }
+
+      if ((window as any)._ship) {
+        (window as any)._ship.position.x += 0.1 * (window as any)._seaSpeed;
+        (window as any)._ship.position.y = Math.sin(seaTime * 3) * 0.8;
+        (window as any)._ship.rotation.z = Math.sin(seaTime * 2) * 0.05;
+        (window as any)._ship.rotation.x = Math.sin(seaTime * 1.5) * 0.05;
+        if ((window as any)._ship.position.x > 300) {
+          (window as any)._ship.position.x = -300;
+        }
+      }
+
       seaRenderer.render(seaScene, seaCamera);
     }
 
-    // Removed static initial real time setup since we have a dynamic one now
-
     initSea();
 
-    // expose instances to the component for state effects
-    (window as any)._seaInstances = { seaRenderer, sky, water, sun };
-    (window as any)._seaSpeed = 0.2 + (29 / 100) * 1.5;
+    (window as any)._seaInstances = { seaRenderer, sky, water, sun, rain, shipGroup };
+    (window as any)._seaSpeed = 1.0;
     (window as any)._isDrifting = false;
 
     return () => {
@@ -139,18 +200,28 @@ export const SeaFooter: React.FC = () => {
     if (val < 20) {
       elevation = -2; label = "NIGHT";
       inst.seaRenderer.toneMappingExposure = 0.1;
+      inst.water.material.uniforms['sunColor'].value = new THREE.Color(0x222244);
+      inst.water.material.uniforms['waterColor'].value = new THREE.Color(0x000508);
     } else if (val < 45) {
       elevation = 5 + (val-20); label = "MORNING";
       inst.seaRenderer.toneMappingExposure = 0.3;
+      inst.water.material.uniforms['sunColor'].value = new THREE.Color(0xffeebb);
+      inst.water.material.uniforms['waterColor'].value = new THREE.Color(0x001e0f);
     } else if (val < 65) {
       elevation = 45; label = "MIDDAY";
       inst.seaRenderer.toneMappingExposure = 0.5;
+      inst.water.material.uniforms['sunColor'].value = new THREE.Color(0xffffff);
+      inst.water.material.uniforms['waterColor'].value = new THREE.Color(0x001e0f);
     } else if (val < 85) {
       elevation = Math.max(0.5, 10 - (val-65)*0.5); label = "GOLDEN HOUR";
       inst.seaRenderer.toneMappingExposure = 0.4;
+      inst.water.material.uniforms['sunColor'].value = new THREE.Color(0xff8833);
+      inst.water.material.uniforms['waterColor'].value = new THREE.Color(0x0a1e0f);
     } else {
       elevation = -1; label = "DUSK";
       inst.seaRenderer.toneMappingExposure = 0.2;
+      inst.water.material.uniforms['sunColor'].value = new THREE.Color(0x884422);
+      inst.water.material.uniforms['waterColor'].value = new THREE.Color(0x000a12);
     }
     
     setTimeLabel(label);
@@ -164,13 +235,22 @@ export const SeaFooter: React.FC = () => {
     inst.water.material.uniforms[ 'sunDirection' ].value.copy(inst.sun).normalize();
   }, [timeOfDay]);
 
-  // Update Water state
+  // Update Weather state
   useEffect(() => {
     const inst = (window as any)._seaInstances;
     if (!inst) return;
-    inst.water.material.uniforms[ 'distortionScale' ].value = 1 + (seaState / 100) * 9;
-    (window as any)._seaSpeed = 0.2 + (seaState / 100) * 1.5;
-  }, [seaState]);
+    if (weather === 'RAIN') {
+      inst.rain.visible = true;
+      inst.water.material.uniforms[ 'distortionScale' ].value = 8.0;
+      (window as any)._seaSpeed = 2.0;
+      inst.sky.material.uniforms[ 'turbidity' ].value = 20;
+    } else {
+      inst.rain.visible = false;
+      inst.water.material.uniforms[ 'distortionScale' ].value = 3.7;
+      (window as any)._seaSpeed = 1.0;
+      inst.sky.material.uniforms[ 'turbidity' ].value = 10;
+    }
+  }, [weather]);
 
   // Update Drifting
   useEffect(() => {
@@ -183,16 +263,23 @@ export const SeaFooter: React.FC = () => {
       const now = new Date();
       setCurrentTime(now);
       
-      const hour = now.getHours();
-      const minute = now.getMinutes();
-      const second = now.getSeconds();
+      let val = 0;
+      if (testTimeIndex === 0) {
+        // Auto
+        const hour = now.getHours();
+        const minute = now.getMinutes();
+        const second = now.getSeconds();
+        val = (hour + minute / 60 + second / 3600) / 24 * 100;
+      } else if (testTimeIndex === 1) val = 30; // Morning
+      else if (testTimeIndex === 2) val = 55; // Midday
+      else if (testTimeIndex === 3) val = 75; // Golden Hour
+      else if (testTimeIndex === 4) val = 90; // Dusk
+      else if (testTimeIndex === 5) val = 10; // Night
       
-      // Map 24 hours to 0-100 scale for timeOfDay
-      const val = (hour + minute / 60 + second / 3600) / 24 * 100;
       setTimeOfDay(val);
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [testTimeIndex]);
 
 
   return (
@@ -203,7 +290,7 @@ export const SeaFooter: React.FC = () => {
           bottom: 15px;
           top: auto;
           left: 15px;
-          width: 280px;
+          width: 320px;
           background: rgba(30, 25, 30, 0.5);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
@@ -218,35 +305,10 @@ export const SeaFooter: React.FC = () => {
         }
         @media (min-width: 640px) {
           .sea-ui {
-            width: 320px;
             padding: 24px;
             transform: scale(0.75);
             bottom: 30px;
-            top: auto;
           }
-        }
-        input[type=range] {
-          -webkit-appearance: none;
-          width: 100%;
-          background: transparent;
-        }
-        input[type=range]:focus { outline: none; }
-        input[type=range]::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          height: 14px;
-          width: 14px;
-          border-radius: 50%;
-          background: #7fffd4;
-          cursor: pointer;
-          margin-top: -6px;
-          box-shadow: 0 0 12px rgba(127,255,212,0.6);
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-          width: 100%;
-          height: 2px;
-          cursor: pointer;
-          background: rgba(255,255,255,0.15);
-          border-radius: 1px;
         }
       `}</style>
       
@@ -266,18 +328,20 @@ export const SeaFooter: React.FC = () => {
         <div className="text-[9px] tracking-[3px] text-white/50 mb-1.5 uppercase font-semibold">Realtime Ocean</div>
         <div className="text-2xl font-bold tracking-[2px] mb-1.5">OPEN SEA</div>
         <div className="text-[11px] text-white/40 mb-6 font-mono tracking-wide">Gerstner swell · FBM micro-surface</div>
-        
-        <div className="mb-5">
-          <div className="flex justify-between text-[10px] mb-3 tracking-[2px] text-white/60 uppercase font-semibold">
-            <span>Sea State</span>
-            <span className="text-[#7fffd4] font-bold">{seaState}</span>
-          </div>
-          <input 
-            type="range" 
-            min="0" max="100" 
-            value={seaState} 
-            onChange={e => setSeaState(Number(e.target.value))}
-          />
+
+        <div className="mb-5 flex gap-2">
+          <button 
+            onClick={() => setTestTimeIndex((prev) => (prev + 1) % 6)}
+            className="flex-1 px-3 py-2 rounded-md text-[10px] tracking-[1.5px] uppercase font-semibold transition-all border border-[#7fffd4]/30 text-[#7fffd4] hover:bg-[#7fffd4]/10"
+          >
+            Time: {testTimeIndex === 0 ? 'AUTO' : testTimeIndex === 1 ? 'MORNING' : testTimeIndex === 2 ? 'MIDDAY' : testTimeIndex === 3 ? 'GOLDEN' : testTimeIndex === 4 ? 'DUSK' : 'NIGHT'}
+          </button>
+          <button 
+            onClick={() => setWeather(weather === 'CLEAR' ? 'RAIN' : 'CLEAR')}
+            className="flex-1 px-3 py-2 rounded-md text-[10px] tracking-[1.5px] uppercase font-semibold transition-all border border-[#7fffd4]/30 text-[#7fffd4] hover:bg-[#7fffd4]/10"
+          >
+            Weather: {weather}
+          </button>
         </div>
 
         <div className="mb-5">

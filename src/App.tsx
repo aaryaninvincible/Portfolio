@@ -5,7 +5,9 @@ import { Volume2, VolumeX } from 'lucide-react';
 
 import { Navbar } from './components/Navbar';
 import { CursorFollower } from './components/CursorFollower';
-import { ParticleBackground } from './components/ParticleBackground';
+import { CodeCurtain } from './components/CodeCurtain';
+import { SeaFooter } from './components/SeaFooter';
+import { ScrollControls } from './components/ScrollControls';
 import { SplashLoader } from './components/SplashLoader';
 
 import { HomePage } from './pages/HomePage';
@@ -143,7 +145,7 @@ const AppContent: React.FC = () => {
     <>
       <FullscreenAlert />
       <SplashLoader />
-      <ParticleBackground />
+      <CodeCurtain />
       <CursorFollower />
       <Navbar />
       <main className="min-h-screen z-10 relative">
@@ -158,6 +160,8 @@ const AppContent: React.FC = () => {
           </Routes>
         </PageTransition>
       </main>
+      <SeaFooter />
+      <ScrollControls />
       <MusicWidget />
     </>
   );

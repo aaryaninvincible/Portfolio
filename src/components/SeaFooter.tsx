@@ -18,7 +18,7 @@ export const SeaFooter: React.FC = () => {
     const seaContainer = containerRef.current;
     let seaScene: any, seaCamera: any, seaRenderer: any;
     let water: any, sun: any, sky: any;
-    let rain: any, shipGroup: any;
+    let rain: any, shipGroup: any, splashes: any;
     let seaTime = 0;
     let lastTime = performance.now();
     let frameCount = 0;
@@ -121,6 +121,26 @@ export const SeaFooter: React.FC = () => {
       const ambientLight = new THREE.AmbientLight(0x404040);
       seaScene.add(ambientLight);
 
+      // Splash particles on the water surface
+      const SPLASH_COUNT = 150;
+      const splashGeo = new THREE.BufferGeometry();
+      const splashPositions = new Float32Array(SPLASH_COUNT * 3);
+      for (let i = 0; i < SPLASH_COUNT; i++) {
+        splashPositions[i * 3] = (Math.random() - 0.5) * 400;
+        splashPositions[i * 3 + 1] = 0.5; // just above water level
+        splashPositions[i * 3 + 2] = (Math.random() - 0.5) * 200;
+      }
+      splashGeo.setAttribute('position', new THREE.BufferAttribute(splashPositions, 3));
+      const splashMat = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 1.5,
+        transparent: true,
+        opacity: 0.5
+      });
+      splashes = new THREE.Points(splashGeo, splashMat);
+      splashes.visible = false;
+      seaScene.add(splashes);
+
       window.addEventListener('resize', onSeaWindowResize);
       seaAnimate();
     }
@@ -158,29 +178,23 @@ export const SeaFooter: React.FC = () => {
       }
 
       if ((window as any)._rain && (window as any)._rain.visible) {
-        const positions = (window as any)._rain.geometry.attributes.position.array;
-        for(let i=0; i<1500; i++) {
-          const idxStart = i * 6;
-          const idxEnd = i * 6 + 3;
-          
-          positions[idxStart+1] -= 10; // Fall speed Y
-          positions[idxEnd+1] -= 10;
-          
-          // Reset when falling below sea level
-          if (positions[idxStart+1] < 0) {
-            positions[idxStart+1] = 200;
-            positions[idxEnd+1] = 195;
-            
-            // Randomize X and Z slightly on reset
-            const newX = (Math.random() - 0.5) * 400;
-            const newZ = (Math.random() - 0.5) * 200;
-            positions[idxStart] = newX;
-            positions[idxEnd] = newX;
-            positions[idxStart+2] = newZ;
-            positions[idxEnd+2] = newZ;
+        // We're using DOM rain for visual droplets now as requested,
+        // but we still animate splashes on the sea surface in WebGL!
+        if ((window as any)._splashes) {
+          (window as any)._splashes.visible = true;
+          const positions = (window as any)._splashes.geometry.attributes.position.array;
+          for (let i = 0; i < 150; i++) {
+            if (Math.random() < 0.15) {
+              positions[i * 3] = (Math.random() - 0.5) * 400;
+              positions[i * 3 + 2] = (Math.random() - 0.5) * 200;
+            }
           }
+          (window as any)._splashes.geometry.attributes.position.needsUpdate = true;
         }
-        (window as any)._rain.geometry.attributes.position.needsUpdate = true;
+      } else {
+        if ((window as any)._splashes) {
+          (window as any)._splashes.visible = false;
+        }
       }
 
       if ((window as any)._ship) {
@@ -219,7 +233,7 @@ export const SeaFooter: React.FC = () => {
 
     initSea();
 
-    (window as any)._seaInstances = { seaRenderer, sky, water, sun, rain, shipGroup };
+    (window as any)._seaInstances = { seaRenderer, sky, water, sun, rain, shipGroup, seaScene, splashes };
 
     return () => {
       isSeaActive = false;
@@ -284,14 +298,34 @@ export const SeaFooter: React.FC = () => {
     (window as any)._weather = weather;
     if (weather === 'RAIN') {
       inst.rain.visible = true;
-      inst.water.material.uniforms[ 'distortionScale' ].value = 5.0;
-      (window as any)._seaSpeed = 1.5;
-      inst.sky.material.uniforms[ 'turbidity' ].value = 20;
+      inst.water.material.uniforms[ 'distortionScale' ].value = 6.0;
+      (window as any)._seaSpeed = 1.8;
+      inst.sky.material.uniforms[ 'turbidity' ].value = 25;
+      inst.sky.material.uniforms[ 'rayleigh' ].value = 0.3; // dark grey sky
+      inst.sky.material.uniforms[ 'mieCoefficient' ].value = 0.05;
+
+      if (inst.seaScene && inst.seaScene.fog) {
+        inst.seaScene.fog.color.setHex(0x0a0c10);
+        inst.seaScene.fog.density = 0.005; // thicker storm fog
+      }
+
+      inst.water.material.uniforms['waterColor'].value.setHex(0x020408);
+      inst.water.material.uniforms['sunColor'].value.setHex(0x333333); // dull grey reflection
     } else {
       inst.rain.visible = false;
       inst.water.material.uniforms[ 'distortionScale' ].value = 3.7;
       (window as any)._seaSpeed = 1.0;
       inst.sky.material.uniforms[ 'turbidity' ].value = 10;
+      inst.sky.material.uniforms[ 'rayleigh' ].value = 2;
+      inst.sky.material.uniforms[ 'mieCoefficient' ].value = 0.005;
+
+      if (inst.seaScene && inst.seaScene.fog) {
+        inst.seaScene.fog.color.setHex(0x001e0f);
+        inst.seaScene.fog.density = 0.001;
+      }
+
+      // Restore timeOfDay based sun/water colors
+      setTimeOfDay(prev => prev + 0.0001);
     }
   }, [weather]);
 
@@ -353,9 +387,53 @@ export const SeaFooter: React.FC = () => {
             bottom: 30px;
           }
         }
+        hr.rain-drop {
+          width: 50px;
+          border-color: transparent;
+          border-right-color: rgba(255, 255, 255, 0.4);
+          border-right-width: 1px;
+          position: absolute;
+          bottom: 100%;
+          transform-origin: 100% 50%;
+          animation-name: rain-animation;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          pointer-events: none;
+          z-index: 5;
+        }
+        @keyframes rain-animation {
+          from {
+            transform: rotate(105deg) translateX(0);
+          }
+          to {
+            transform: rotate(105deg) translateX(calc(100vh + 20px));
+          }
+        }
       `}</style>
       
       <div ref={containerRef} className="absolute top-0 left-0 w-full h-full pointer-events-auto" />
+
+      {/* DOM-based Rain Overlay */}
+      {weather === 'RAIN' && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
+          {Array.from({ length: 80 }).map((_, i) => {
+            const left = Math.random() * 100;
+            const duration = 0.4 + Math.random() * 0.4;
+            const delay = Math.random() * 4;
+            return (
+              <hr
+                key={i}
+                className="rain-drop"
+                style={{
+                  left: `${left}%`,
+                  animationDuration: `${duration}s`,
+                  animationDelay: `${delay}s`
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
       
       {/* Text Overlay */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none z-10 px-4 transition-opacity duration-1000">

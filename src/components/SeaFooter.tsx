@@ -114,26 +114,26 @@ export const SeaFooter: React.FC = () => {
       const cloudCtx = cloudCanvas.getContext('2d');
       if (cloudCtx) {
         const grad = cloudCtx.createRadialGradient(64, 64, 0, 64, 64, 64);
-        grad.addColorStop(0, 'rgba(255, 255, 255, 0.6)');
-        grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.2)');
-        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        grad.addColorStop(0, 'rgba(230, 230, 240, 0.7)');
+        grad.addColorStop(0.5, 'rgba(180, 180, 190, 0.25)');
+        grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
         cloudCtx.fillStyle = grad;
         cloudCtx.fillRect(0, 0, 128, 128);
       }
       const cloudTexture = new THREE.CanvasTexture(cloudCanvas);
       const cloudMat = new THREE.PointsMaterial({
-        size: 350,
+        size: 180,
         map: cloudTexture,
         transparent: true,
-        opacity: 0.15,
+        opacity: 0.12,
         depthWrite: false
       });
       const cloudGeo = new THREE.BufferGeometry();
-      const cloudPositions = new Float32Array(15 * 3);
-      for(let i = 0; i < 15; i++) {
-        cloudPositions[i*3] = (Math.random() - 0.5) * 800;
-        cloudPositions[i*3+1] = 80 + Math.random() * 40; // high up
-        cloudPositions[i*3+2] = -150 - Math.random() * 250;
+      const cloudPositions = new Float32Array(35 * 3);
+      for(let i = 0; i < 35; i++) {
+        cloudPositions[i*3] = (Math.random() - 0.5) * 1000;
+        cloudPositions[i*3+1] = 70 + Math.random() * 30; // lower down
+        cloudPositions[i*3+2] = -200 - Math.random() * 300;
       }
       cloudGeo.setAttribute('position', new THREE.BufferAttribute(cloudPositions, 3));
       clouds = new THREE.Points(cloudGeo, cloudMat);
@@ -161,15 +161,15 @@ export const SeaFooter: React.FC = () => {
       stars = new THREE.Points(starGeo, starMat);
       seaScene.add(stars);
 
-      // Moon Mesh
-      const moonGeo = new THREE.SphereGeometry(12, 16, 16);
+      // Moon Mesh (Fully opaque bright white moon)
+      const moonGeo = new THREE.SphereGeometry(14, 32, 32);
       const moonMat = new THREE.MeshBasicMaterial({
-        color: 0xeeffff,
+        color: 0xffffff,
         transparent: true,
         opacity: 0.0
       });
       moon = new THREE.Mesh(moonGeo, moonMat);
-      moon.position.set(-150, 160, -400);
+      moon.position.set(-100, 140, -350);
       seaScene.add(moon);
 
       // Flying Birds Group
@@ -381,11 +381,11 @@ export const SeaFooter: React.FC = () => {
     
     if (val < 20) {
       elevation = -2; label = "NIGHT";
-      (window as any)._baseExposure = 0.12;
-      inst.water.material.uniforms['sunColor'].value.setHex(0x557788); // Moonlight reflection color
+      (window as any)._baseExposure = 0.15;
+      inst.water.material.uniforms['sunColor'].value.setHex(0xffffff); // Bright silver moonlight reflection
       inst.water.material.uniforms['waterColor'].value.setHex(0x000508);
-      if (inst.stars) inst.stars.material.opacity = 0.8;
-      if (inst.moon) inst.moon.material.opacity = 0.85;
+      if (inst.stars) inst.stars.material.opacity = 0.0; // Hide WebGL stars, using DOM stars instead
+      if (inst.moon) inst.moon.material.opacity = 0.95;
     } else if (val < 45) {
       elevation = 5 + (val-20); label = "MORNING";
       (window as any)._baseExposure = 0.3;
@@ -412,7 +412,7 @@ export const SeaFooter: React.FC = () => {
       (window as any)._baseExposure = 0.2;
       inst.water.material.uniforms['sunColor'].value.setHex(0x884422);
       inst.water.material.uniforms['waterColor'].value.setHex(0x000a12);
-      if (inst.stars) inst.stars.material.opacity = 0.3; // stars starting to emerge
+      if (inst.stars) inst.stars.material.opacity = 0.0;
       if (inst.moon) inst.moon.material.opacity = 0.0;
     }
     
@@ -590,23 +590,43 @@ export const SeaFooter: React.FC = () => {
           }
         }
         hr.rain-drop {
-          width: 0px;
-          height: 0px;
-          border: 1px solid transparent;
+          width: 50px;
+          border-color: transparent;
+          border-right-color: rgba(171, 194, 233, 0.7);
+          border-right-width: 50px;
           position: absolute;
-          top: -120px;
-          animation-name: rain-fall-animation;
-          animation-timing-function: ease-in;
+          bottom: 100%;
+          transform-origin: 100% 50%;
+          animation-name: rain-animation;
+          animation-timing-function: linear;
           animation-iteration-count: infinite;
           pointer-events: none;
           z-index: 5;
         }
-        @keyframes rain-fall-animation {
+        @keyframes rain-animation {
+          from {
+            transform: rotate(105deg) translateX(0);
+          }
+          to {
+            transform: rotate(105deg) translateX(calc(100vh + 80px));
+          }
+        }
+        .star {
+          box-shadow: 0px 0px 4px 1.5px rgba(255, 255, 255, 0.8);
+          position: absolute;
+          width: 1.5px;
+          height: 1.5px;
+          border-radius: 50%;
+          background-color: white;
+          pointer-events: none;
+          animation: twinkle-animation infinite alternate ease-in-out;
+        }
+        @keyframes twinkle-animation {
           0% {
-            top: -120px;
+            opacity: 0.15;
           }
           100% {
-            top: 100vh;
+            opacity: 0.95;
           }
         }
       `}</style>
@@ -616,26 +636,42 @@ export const SeaFooter: React.FC = () => {
       {/* DOM-based Rain Overlay */}
       {weather === 'RAIN' && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
-          {Array.from({ length: 150 }).map((_, i) => {
-            const left = Math.random() * 120 - 10;
-            const opacity = 0.15 + Math.random() * 0.65;
-            const duration = 0.4 + Math.random() * 0.4;
+          {Array.from({ length: 130 }).map((_, i) => {
+            const left = Math.random() * 130 - 15;
+            const duration = 0.45 + Math.random() * 0.45;
             const delay = Math.random() * -5; // negative delay to pre-scatter the drops
-            const borderWidth = 0.5 + Math.random() * 1.5;
-            const dropLength = 25 + Math.random() * 35;
             return (
               <hr
                 key={i}
                 className="rain-drop"
                 style={{
                   left: `${left}%`,
-                  opacity: opacity,
-                  borderLeftWidth: `${borderWidth}px`,
-                  borderRightWidth: `${borderWidth}px`,
-                  borderBottom: `${dropLength}px solid rgba(171, 194, 233, ${opacity})`,
                   animationDuration: `${duration}s`,
-                  animationDelay: `${delay}s`,
-                  transform: 'skewX(-15deg)'
+                  animationDelay: `${delay}s`
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
+
+      {/* DOM-based Twinkling Starfield Overlay */}
+      {timeLabel === 'NIGHT' && weather === 'CLEAR' && (
+        <div id="stars" className="absolute inset-0 overflow-hidden pointer-events-none z-[4]">
+          {Array.from({ length: 200 }).map((_, i) => {
+            const top = Math.random() * 65; // keep in upper sky
+            const left = Math.random() * 100;
+            const duration = 0.8 + Math.random() * 1.2;
+            const delay = Math.random() * -5;
+            return (
+              <figure
+                key={i}
+                className="star"
+                style={{
+                  top: `${top}%`,
+                  left: `${left}%`,
+                  animationDuration: `${duration}s`,
+                  animationDelay: `${delay}s`
                 }}
               />
             );

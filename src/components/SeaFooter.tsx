@@ -5,7 +5,7 @@ declare const THREE: any;
 export const SeaFooter: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [fps, setFps] = useState(60);
-  const [drifting, setDrifting] = useState(false);
+  const [drifting, setDrifting] = useState(true);
   const [testTimeIndex, setTestTimeIndex] = useState(0); // 0: Auto, 1: Morning, 2: Midday, 3: Golden, 4: Dusk, 5: Night
   const [weather, setWeather] = useState<'CLEAR' | 'RAIN'>('CLEAR');
   const [timeLabel, setTimeLabel] = useState('GOLDEN HOUR');
@@ -24,8 +24,6 @@ export const SeaFooter: React.FC = () => {
     let frameCount = 0;
     let isSeaActive = true;
     let animationFrameId: number;
-
-    const RAIN_COUNT = 1500;
 
     function initSea() {
       seaRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -78,9 +76,9 @@ export const SeaFooter: React.FC = () => {
       const rainGeo = new THREE.BufferGeometry();
       const rainPositions = new Float32Array(RAIN_COUNT * 3);
       for(let i=0; i<RAIN_COUNT; i++){
-        rainPositions[i*3] = (Math.random() - 0.5) * 600;
-        rainPositions[i*3+1] = Math.random() * 300;
-        rainPositions[i*3+2] = (Math.random() - 0.5) * 600;
+        rainPositions[i*3] = (Math.random() - 0.5) * 400; // X
+        rainPositions[i*3+1] = Math.random() * 200;       // Y
+        rainPositions[i*3+2] = (Math.random() - 0.5) * 200; // Z
       }
       rainGeo.setAttribute('position', new THREE.BufferAttribute(rainPositions, 3));
       const rainMat = new THREE.PointsMaterial({
@@ -107,7 +105,7 @@ export const SeaFooter: React.FC = () => {
       sail.position.y = 10;
       shipGroup.add(hull);
       shipGroup.add(sail);
-      shipGroup.position.set(-300, 0, -100);
+      shipGroup.position.set(-200, 0, 0); // Brought closer
       seaScene.add(shipGroup);
 
       // Ambient light for ship
@@ -155,7 +153,7 @@ export const SeaFooter: React.FC = () => {
         for(let i=1; i<positions.length; i+=3) {
           positions[i] -= 8; // fall speed
           if (positions[i] < 0) {
-            positions[i] = 300;
+            positions[i] = 200;
           }
         }
         (window as any)._rain.geometry.attributes.position.needsUpdate = true;
@@ -166,8 +164,8 @@ export const SeaFooter: React.FC = () => {
         (window as any)._ship.position.y = Math.sin(seaTime * 3) * 0.8;
         (window as any)._ship.rotation.z = Math.sin(seaTime * 2) * 0.05;
         (window as any)._ship.rotation.x = Math.sin(seaTime * 1.5) * 0.05;
-        if ((window as any)._ship.position.x > 300) {
-          (window as any)._ship.position.x = -300;
+        if ((window as any)._ship.position.x > 200) {
+          (window as any)._ship.position.x = -200;
         }
       }
 

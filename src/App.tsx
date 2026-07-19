@@ -62,7 +62,7 @@ const FullscreenAlert: React.FC = () => {
 
 // ─── Music widget with volume ─────────────────────────────────────────────────
 const MusicWidget: React.FC = () => {
-  const [unmuted, setUnmuted] = useState(true);   // unmuted by default
+  const [unmuted, setUnmuted] = useState(false);   // muted by default to satisfy browser autoplay policy
   const [volume, setVolume]   = useState(10);      // 0–100, default 10%
   const [isHidden, setIsHidden] = useState(false);
   const iframeRef = React.useRef<HTMLIFrameElement>(null);

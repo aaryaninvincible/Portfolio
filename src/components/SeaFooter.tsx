@@ -40,7 +40,7 @@ export const SeaFooter: React.FC = () => {
       seaContainer.appendChild(seaRenderer.domElement);
 
       seaScene = new THREE.Scene();
-      seaScene.fog = new THREE.FogExp2(0x001e0f, 0.001);
+      seaScene.fog = new THREE.FogExp2(0x0c1420, 0.001);
 
       seaCamera = new THREE.PerspectiveCamera(55, seaContainer.clientWidth / seaContainer.clientHeight, 1, 20000);
       seaCamera.position.set(0, 30, 100);
@@ -59,7 +59,7 @@ export const SeaFooter: React.FC = () => {
           }),
           sunDirection: new THREE.Vector3(),
           sunColor: 0xffffff,
-          waterColor: 0x001e0f,
+          waterColor: 0x0c1420,
           distortionScale: 3.7,
           fog: seaScene.fog !== undefined
         }
@@ -139,7 +139,8 @@ export const SeaFooter: React.FC = () => {
       const moonMat = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         transparent: true,
-        opacity: 0.0
+        opacity: 0.0,
+        fog: false // Disable fog so the moon remains pure bright white
       });
       moon = new THREE.Mesh(moonGeo, moonMat);
       moon.position.set(-100, 140, -350);
@@ -353,38 +354,38 @@ export const SeaFooter: React.FC = () => {
     let label = "DAY";
     
     if (val < 20) {
-      elevation = -2; label = "NIGHT";
+      elevation = -18; label = "NIGHT"; // Point sun further down to make sky dark blue
       (window as any)._baseExposure = 0.15;
       inst.water.material.uniforms['sunColor'].value.setHex(0xffffff); // Bright silver moonlight reflection
-      inst.water.material.uniforms['waterColor'].value.setHex(0x000508);
-      if (inst.stars) inst.stars.material.opacity = 0.0; // Hide WebGL stars, using DOM stars instead
+      inst.water.material.uniforms['waterColor'].value.setHex(0x01050a); // Deep blue-black water
+      if (inst.stars) inst.stars.material.opacity = 0.0;
       if (inst.moon) inst.moon.material.opacity = 0.95;
     } else if (val < 45) {
       elevation = 5 + (val-20); label = "MORNING";
       (window as any)._baseExposure = 0.3;
       inst.water.material.uniforms['sunColor'].value.setHex(0xffeebb);
-      inst.water.material.uniforms['waterColor'].value.setHex(0x001e0f);
+      inst.water.material.uniforms['waterColor'].value.setHex(0x0c1828); // Slate blue water
       if (inst.stars) inst.stars.material.opacity = 0.0;
       if (inst.moon) inst.moon.material.opacity = 0.0;
     } else if (val < 65) {
       elevation = 45; label = "MIDDAY";
       (window as any)._baseExposure = 0.5;
       inst.water.material.uniforms['sunColor'].value.setHex(0xffffff);
-      inst.water.material.uniforms['waterColor'].value.setHex(0x001e0f);
+      inst.water.material.uniforms['waterColor'].value.setHex(0x10243c); // Royal dark blue water
       if (inst.stars) inst.stars.material.opacity = 0.0;
       if (inst.moon) inst.moon.material.opacity = 0.0;
     } else if (val < 85) {
       elevation = Math.max(0.5, 10 - (val-65)*0.5); label = "GOLDEN HOUR";
       (window as any)._baseExposure = 0.4;
       inst.water.material.uniforms['sunColor'].value.setHex(0xff8833);
-      inst.water.material.uniforms['waterColor'].value.setHex(0x001e0f);
+      inst.water.material.uniforms['waterColor'].value.setHex(0x0e1c30); // Darker blue-grey water
       if (inst.stars) inst.stars.material.opacity = 0.0;
       if (inst.moon) inst.moon.material.opacity = 0.0;
     } else {
       elevation = -1; label = "DUSK";
       (window as any)._baseExposure = 0.2;
       inst.water.material.uniforms['sunColor'].value.setHex(0x884422);
-      inst.water.material.uniforms['waterColor'].value.setHex(0x000a12);
+      inst.water.material.uniforms['waterColor'].value.setHex(0x050a14); // Deep dusk blue-black water
       if (inst.stars) inst.stars.material.opacity = 0.0;
       if (inst.moon) inst.moon.material.opacity = 0.0;
     }
@@ -419,12 +420,12 @@ export const SeaFooter: React.FC = () => {
       inst.sky.material.uniforms[ 'mieCoefficient' ].value = 0.05;
 
       if (inst.seaScene && inst.seaScene.fog) {
-        inst.seaScene.fog.color.setHex(0x0a0c10);
+        inst.seaScene.fog.color.setHex(0x050a12); // dark slate blue-grey fog in rain
         inst.seaScene.fog.density = 0.005; // thicker storm fog
       }
 
-      inst.water.material.uniforms['waterColor'].value.setHex(0x020408);
-      inst.water.material.uniforms['sunColor'].value.setHex(0x333333); // dull grey reflection
+      inst.water.material.uniforms['waterColor'].value.setHex(0x03060a);
+      inst.water.material.uniforms['sunColor'].value.setHex(0x222222); // dull grey reflection
 
       // Dark clouds in rain
       if (inst.clouds) {
@@ -444,7 +445,7 @@ export const SeaFooter: React.FC = () => {
       inst.sky.material.uniforms[ 'mieCoefficient' ].value = 0.005;
 
       if (inst.seaScene && inst.seaScene.fog) {
-        inst.seaScene.fog.color.setHex(0x001e0f);
+        inst.seaScene.fog.color.setHex(0x0c1420); // normal slate blue-grey fog
         inst.seaScene.fog.density = 0.001;
       }
 
@@ -630,7 +631,7 @@ export const SeaFooter: React.FC = () => {
       {timeLabel === 'NIGHT' && weather === 'CLEAR' && (
         <div id="stars" className="absolute inset-0 overflow-hidden pointer-events-none z-[4]">
           {Array.from({ length: 200 }).map((_, i) => {
-            const top = Math.random() * 65; // keep in upper sky
+            const top = Math.random() * 42; // strictly keep in upper sky, above ocean line
             const left = Math.random() * 100;
             const duration = 0.8 + Math.random() * 1.2;
             const delay = Math.random() * -5;

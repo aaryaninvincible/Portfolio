@@ -9,6 +9,7 @@ export const SeaFooter: React.FC = () => {
   const [drifting, setDrifting] = useState(false);
   const [timeLabel, setTimeLabel] = useState('GOLDEN HOUR');
   const [timeOfDay, setTimeOfDay] = useState(75);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     if (!containerRef.current || typeof THREE === 'undefined') return;
@@ -108,15 +109,7 @@ export const SeaFooter: React.FC = () => {
       seaRenderer.render(seaScene, seaCamera);
     }
 
-    // Set initial real time
-    const hour = new Date().getHours();
-    let initialTimeVal = 75; // Default golden hour
-    if (hour >= 6 && hour < 9) initialTimeVal = 30; // Morning
-    else if (hour >= 9 && hour < 16) initialTimeVal = 55; // Midday
-    else if (hour >= 16 && hour < 19) initialTimeVal = 75; // Golden hour
-    else if (hour >= 19 && hour < 21) initialTimeVal = 90; // Dusk
-    else initialTimeVal = 10; // Night
-    setTimeOfDay(initialTimeVal);
+    // Removed static initial real time setup since we have a dynamic one now
 
     initSea();
 
@@ -183,6 +176,23 @@ export const SeaFooter: React.FC = () => {
   useEffect(() => {
     (window as any)._isDrifting = drifting;
   }, [drifting]);
+
+  // Live Clock & Sync
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = new Date();
+      setCurrentTime(now);
+      
+      const hour = now.getHours();
+      const minute = now.getMinutes();
+      const second = now.getSeconds();
+      
+      // Map 24 hours to 0-100 scale for timeOfDay
+      const val = (hour + minute / 60 + second / 3600) / 24 * 100;
+      setTimeOfDay(val);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
 
   return (
@@ -271,16 +281,19 @@ export const SeaFooter: React.FC = () => {
         </div>
 
         <div className="mb-5">
-          <div className="flex justify-between text-[10px] mb-3 tracking-[2px] text-white/60 uppercase font-semibold">
-            <span>Time of Day</span>
+          <div className="flex justify-between text-[10px] mb-1 tracking-[2px] text-white/60 uppercase font-semibold">
+            <span>Local Time</span>
             <span className="text-[#7fffd4] font-bold">{timeLabel}</span>
           </div>
-          <input 
-            type="range" 
-            min="0" max="100" 
-            value={timeOfDay} 
-            onChange={e => setTimeOfDay(Number(e.target.value))}
-          />
+          <div className="text-3xl font-black font-orbitron tracking-widest text-white/90 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+            {currentTime.toLocaleTimeString([], { hour12: false })}
+          </div>
+          <div className="h-0.5 w-full bg-white/10 mt-3 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-[#7fffd4] shadow-[0_0_10px_rgba(127,255,212,0.8)] transition-all duration-1000"
+              style={{ width: `${timeOfDay}%` }}
+            />
+          </div>
         </div>
 
         <div className="flex justify-between items-center mt-2">

@@ -65,7 +65,19 @@ const FullscreenAlert: React.FC = () => {
 const MusicWidget: React.FC = () => {
   const [unmuted, setUnmuted] = useState(true);   // unmuted by default
   const [volume, setVolume]   = useState(10);      // 0–100, default 10%
+  const [isHidden, setIsHidden] = useState(false);
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const height = document.documentElement.scrollHeight - window.innerHeight;
+      setIsHidden(height > 0 && scrollY >= height - 300);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Send volume to YouTube iframe via postMessage
   const setYtVolume = (v: number) => {
@@ -84,7 +96,7 @@ const MusicWidget: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-6 left-6 z-[45] flex items-center gap-2">
+    <div className={`fixed bottom-6 left-6 z-[45] flex items-center gap-2 transition-all duration-500 ${isHidden ? 'opacity-0 translate-y-10 pointer-events-none' : 'opacity-100'}`}>
       <button
         onClick={() => setUnmuted(!unmuted)}
         className="glass flex items-center gap-2 rounded-full px-4 py-2.5 text-xs font-bold font-orbitron tracking-widest uppercase text-primary border-primary/30 hover:border-primary hover:shadow-[0_0_15px_rgba(255,115,0,0.3)] transition-all"
@@ -147,7 +159,6 @@ const AppContent: React.FC = () => {
       <FullscreenAlert />
       <SplashLoader />
       <ParticleBackground />
-      <CursorFollower />
       <Navbar />
       <main className="min-h-screen z-10 relative">
         <PageTransition>

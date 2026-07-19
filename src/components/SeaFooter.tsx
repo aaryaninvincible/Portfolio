@@ -186,11 +186,12 @@ export const SeaFooter: React.FC = () => {
 
 
   return (
-    <div className="relative w-full h-[35vh] z-[9] overflow-hidden pointer-events-none font-sans">
+    <div className="relative w-full h-[70vh] z-[9] overflow-hidden pointer-events-none font-sans group">
       <style>{`
         .sea-ui {
           position: absolute;
-          top: 15px;
+          bottom: 15px;
+          top: auto;
           left: 15px;
           width: 280px;
           background: rgba(30, 25, 30, 0.5);
@@ -202,14 +203,16 @@ export const SeaFooter: React.FC = () => {
           color: rgba(255,255,255,0.9);
           pointer-events: auto;
           box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-          transform: scale(0.9);
-          transform-origin: top left;
+          transform: scale(0.7);
+          transform-origin: bottom left;
         }
         @media (min-width: 640px) {
           .sea-ui {
             width: 320px;
-            padding: 28px;
-            transform: scale(1);
+            padding: 24px;
+            transform: scale(0.75);
+            bottom: 30px;
+            top: auto;
           }
         }
         input[type=range] {
@@ -238,6 +241,16 @@ export const SeaFooter: React.FC = () => {
       `}</style>
       
       <div ref={containerRef} className="absolute top-0 left-0 w-full h-full pointer-events-auto" />
+      
+      {/* Text Overlay */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none z-10 px-4 transition-opacity duration-1000">
+        <h2 className="text-4xl md:text-6xl lg:text-8xl font-black text-white/90 font-orbitron tracking-widest drop-shadow-[0_0_30px_rgba(255,255,255,0.4)] mb-6">
+          I LOVE SUNSETS
+        </h2>
+        <p className="text-sm md:text-lg lg:text-xl font-mono text-white/80 max-w-2xl leading-relaxed tracking-wide drop-shadow-md">
+          "Sunsets are proof that no matter what happens, every day can end beautifully."
+        </p>
+      </div>
       
       <div className="sea-ui">
         <div className="text-[9px] tracking-[3px] text-white/50 mb-1.5 uppercase font-semibold">Realtime Ocean</div>

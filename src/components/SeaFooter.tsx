@@ -11,6 +11,11 @@ export const SeaFooter: React.FC = () => {
   const [timeLabel, setTimeLabel] = useState('GOLDEN HOUR');
   const [timeOfDay, setTimeOfDay] = useState(75);
   const [currentTime, setCurrentTime] = useState(new Date());
+  
+  // Dynamic Quote overlays
+  const [quoteTitle, setQuoteTitle] = useState('I LOVE SUNSETS');
+  const [quoteText, setQuoteText] = useState('"Sunsets are proof that no matter what happens, every day can end beautifully."');
+  const [showQuote, setShowQuote] = useState(true);
 
   useEffect(() => {
     if (!containerRef.current || typeof THREE === 'undefined') return;
@@ -19,6 +24,7 @@ export const SeaFooter: React.FC = () => {
     let seaScene: any, seaCamera: any, seaRenderer: any;
     let water: any, sun: any, sky: any;
     let rain: any, shipGroup: any, splashes: any;
+    let clouds: any, cloudGroup: any, stars: any, moon: any, birdsGroup: any, birds: any[] = [];
     let seaTime = 0;
     let lastTime = performance.now();
     let frameCount = 0;
@@ -99,6 +105,100 @@ export const SeaFooter: React.FC = () => {
       rain = new THREE.LineSegments(rainGeo, rainMat);
       rain.visible = false;
       seaScene.add(rain);
+
+      // Soft Volumetric Clouds Group
+      cloudGroup = new THREE.Group();
+      const cloudCanvas = document.createElement('canvas');
+      cloudCanvas.width = 128;
+      cloudCanvas.height = 128;
+      const cloudCtx = cloudCanvas.getContext('2d');
+      if (cloudCtx) {
+        const grad = cloudCtx.createRadialGradient(64, 64, 0, 64, 64, 64);
+        grad.addColorStop(0, 'rgba(255, 255, 255, 0.6)');
+        grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.2)');
+        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        cloudCtx.fillStyle = grad;
+        cloudCtx.fillRect(0, 0, 128, 128);
+      }
+      const cloudTexture = new THREE.CanvasTexture(cloudCanvas);
+      const cloudMat = new THREE.PointsMaterial({
+        size: 350,
+        map: cloudTexture,
+        transparent: true,
+        opacity: 0.15,
+        depthWrite: false
+      });
+      const cloudGeo = new THREE.BufferGeometry();
+      const cloudPositions = new Float32Array(15 * 3);
+      for(let i = 0; i < 15; i++) {
+        cloudPositions[i*3] = (Math.random() - 0.5) * 800;
+        cloudPositions[i*3+1] = 80 + Math.random() * 40; // high up
+        cloudPositions[i*3+2] = -150 - Math.random() * 250;
+      }
+      cloudGeo.setAttribute('position', new THREE.BufferAttribute(cloudPositions, 3));
+      clouds = new THREE.Points(cloudGeo, cloudMat);
+      cloudGroup.add(clouds);
+      seaScene.add(cloudGroup);
+
+      // Starfield (for night)
+      const starGeo = new THREE.BufferGeometry();
+      const starPositions = new Float32Array(300 * 3);
+      for (let i = 0; i < 300; i++) {
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(Math.random());
+        const radius = 2500;
+        starPositions[i*3] = radius * Math.sin(phi) * Math.cos(theta);
+        starPositions[i*3+1] = radius * Math.cos(phi) + 100;
+        starPositions[i*3+2] = -Math.abs(radius * Math.sin(phi) * Math.sin(theta)); // keep in front/sides
+      }
+      starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+      const starMat = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 1.8,
+        transparent: true,
+        opacity: 0.0 // invisible during day
+      });
+      stars = new THREE.Points(starGeo, starMat);
+      seaScene.add(stars);
+
+      // Moon Mesh
+      const moonGeo = new THREE.SphereGeometry(12, 16, 16);
+      const moonMat = new THREE.MeshBasicMaterial({
+        color: 0xeeffff,
+        transparent: true,
+        opacity: 0.0
+      });
+      moon = new THREE.Mesh(moonGeo, moonMat);
+      moon.position.set(-150, 160, -400);
+      seaScene.add(moon);
+
+      // Flying Birds Group
+      birdsGroup = new THREE.Group();
+      for (let i = 0; i < 6; i++) {
+        const bird = new THREE.Group();
+        const wingL = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-1.8, 0, 0), new THREE.Vector3(0, 0.6, 0)]),
+          new THREE.LineBasicMaterial({ color: 0x111111 })
+        );
+        const wingR = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0.6, 0), new THREE.Vector3(1.8, 0, 0)]),
+          new THREE.LineBasicMaterial({ color: 0x111111 })
+        );
+        bird.add(wingL);
+        bird.add(wingR);
+        bird.position.set(
+          (Math.random() - 0.5) * 300,
+          45 + Math.random() * 25,
+          -80 - Math.random() * 120
+        );
+        (bird as any)._wingL = wingL;
+        (bird as any)._wingR = wingR;
+        (bird as any)._speed = 0.4 + Math.random() * 0.4;
+        (bird as any)._flapSpeed = 8 + Math.random() * 4;
+        birdsGroup.add(bird);
+        birds.push(bird);
+      }
+      seaScene.add(birdsGroup);
 
       // Simple Ship
       shipGroup = new THREE.Group();
@@ -197,13 +297,39 @@ export const SeaFooter: React.FC = () => {
         }
       }
 
-      if ((window as any)._ship) {
-        (window as any)._ship.position.x += 0.1 * (window as any)._seaSpeed;
-        (window as any)._ship.position.y = Math.sin(seaTime * 3) * 0.8;
-        (window as any)._ship.rotation.z = Math.sin(seaTime * 2) * 0.05;
-        (window as any)._ship.rotation.x = Math.sin(seaTime * 1.5) * 0.05;
-        if ((window as any)._ship.position.x > 200) {
-          (window as any)._ship.position.x = -200;
+      // Drift clouds
+      if (clouds) {
+        const positions = clouds.geometry.attributes.position.array;
+        for (let i = 0; i < 15; i++) {
+          positions[i*3] += 0.06 * (window as any)._seaSpeed;
+          if (positions[i*3] > 400) {
+            positions[i*3] = -400;
+          }
+        }
+        clouds.geometry.attributes.position.needsUpdate = true;
+      }
+
+      // Flap birds wings and move them
+      if (birds && birds.length > 0) {
+        birds.forEach((bird) => {
+          bird.position.x += bird._speed * (window as any)._seaSpeed;
+          if (bird.position.x > 300) {
+            bird.position.x = -300;
+            bird.position.y = 45 + Math.random() * 25;
+          }
+          const flap = Math.sin(seaTime * bird._flapSpeed);
+          bird._wingL.rotation.z = flap * 0.45;
+          bird._wingR.rotation.z = -flap * 0.45;
+        });
+      }
+
+      if (shipGroup) {
+        shipGroup.position.x += 0.1 * (window as any)._seaSpeed;
+        shipGroup.position.y = Math.sin(seaTime * 3) * 0.8;
+        shipGroup.rotation.z = Math.sin(seaTime * 2) * 0.05;
+        shipGroup.rotation.x = Math.sin(seaTime * 1.5) * 0.05;
+        if (shipGroup.position.x > 200) {
+          shipGroup.position.x = -200;
         }
       }
 
@@ -233,7 +359,7 @@ export const SeaFooter: React.FC = () => {
 
     initSea();
 
-    (window as any)._seaInstances = { seaRenderer, sky, water, sun, rain, shipGroup, seaScene, splashes };
+    (window as any)._seaInstances = { seaRenderer, sky, water, sun, rain, shipGroup, seaScene, splashes, clouds, stars, moon };
 
     return () => {
       isSeaActive = false;
@@ -255,29 +381,39 @@ export const SeaFooter: React.FC = () => {
     
     if (val < 20) {
       elevation = -2; label = "NIGHT";
-      (window as any)._baseExposure = 0.1;
-      inst.water.material.uniforms['sunColor'].value.setHex(0x222244);
+      (window as any)._baseExposure = 0.12;
+      inst.water.material.uniforms['sunColor'].value.setHex(0x557788); // Moonlight reflection color
       inst.water.material.uniforms['waterColor'].value.setHex(0x000508);
+      if (inst.stars) inst.stars.material.opacity = 0.8;
+      if (inst.moon) inst.moon.material.opacity = 0.85;
     } else if (val < 45) {
       elevation = 5 + (val-20); label = "MORNING";
       (window as any)._baseExposure = 0.3;
       inst.water.material.uniforms['sunColor'].value.setHex(0xffeebb);
       inst.water.material.uniforms['waterColor'].value.setHex(0x001e0f);
+      if (inst.stars) inst.stars.material.opacity = 0.0;
+      if (inst.moon) inst.moon.material.opacity = 0.0;
     } else if (val < 65) {
       elevation = 45; label = "MIDDAY";
       (window as any)._baseExposure = 0.5;
       inst.water.material.uniforms['sunColor'].value.setHex(0xffffff);
       inst.water.material.uniforms['waterColor'].value.setHex(0x001e0f);
+      if (inst.stars) inst.stars.material.opacity = 0.0;
+      if (inst.moon) inst.moon.material.opacity = 0.0;
     } else if (val < 85) {
       elevation = Math.max(0.5, 10 - (val-65)*0.5); label = "GOLDEN HOUR";
       (window as any)._baseExposure = 0.4;
       inst.water.material.uniforms['sunColor'].value.setHex(0xff8833);
       inst.water.material.uniforms['waterColor'].value.setHex(0x001e0f);
+      if (inst.stars) inst.stars.material.opacity = 0.0;
+      if (inst.moon) inst.moon.material.opacity = 0.0;
     } else {
       elevation = -1; label = "DUSK";
       (window as any)._baseExposure = 0.2;
       inst.water.material.uniforms['sunColor'].value.setHex(0x884422);
       inst.water.material.uniforms['waterColor'].value.setHex(0x000a12);
+      if (inst.stars) inst.stars.material.opacity = 0.3; // stars starting to emerge
+      if (inst.moon) inst.moon.material.opacity = 0.0;
     }
     
     setTimeLabel(label);
@@ -285,7 +421,13 @@ export const SeaFooter: React.FC = () => {
     const phi = THREE.MathUtils.degToRad(90 - elevation);
     const theta = THREE.MathUtils.degToRad(180);
 
-    inst.sun.setFromSphericalCoords(1, phi, theta);
+    // If it's night, align reflection with the moon's direction instead of the sun
+    if (val < 20) {
+      const moonPhi = THREE.MathUtils.degToRad(90 - 30); // moon elevation 30
+      inst.sun.setFromSphericalCoords(1, moonPhi, theta);
+    } else {
+      inst.sun.setFromSphericalCoords(1, phi, theta);
+    }
 
     inst.sky.material.uniforms[ 'sunPosition' ].value.copy(inst.sun);
     inst.water.material.uniforms[ 'sunDirection' ].value.copy(inst.sun).normalize();
@@ -311,6 +453,12 @@ export const SeaFooter: React.FC = () => {
 
       inst.water.material.uniforms['waterColor'].value.setHex(0x020408);
       inst.water.material.uniforms['sunColor'].value.setHex(0x333333); // dull grey reflection
+
+      // Dark clouds in rain
+      if (inst.clouds) {
+        inst.clouds.material.color.setHex(0x222228);
+        inst.clouds.material.opacity = 0.45;
+      }
     } else {
       inst.rain.visible = false;
       inst.water.material.uniforms[ 'distortionScale' ].value = 3.7;
@@ -324,10 +472,17 @@ export const SeaFooter: React.FC = () => {
         inst.seaScene.fog.density = 0.001;
       }
 
+      // Normal clouds
+      if (inst.clouds) {
+        inst.clouds.material.color.setHex(0xffffff);
+        inst.clouds.material.opacity = 0.15;
+      }
+
       // Restore timeOfDay based sun/water colors
       setTimeOfDay(prev => prev + 0.0001);
     }
   }, [weather]);
+
 
   // Update Drifting
   useEffect(() => {
@@ -358,6 +513,43 @@ export const SeaFooter: React.FC = () => {
     return () => clearInterval(timer);
   }, [testTimeIndex]);
 
+  // Handle Quote display, transitions and auto-fading
+  useEffect(() => {
+    let title = 'I LOVE SUNSETS';
+    let quote = '"Sunsets are proof that no matter what happens, every day can end beautifully."';
+
+    if (weather === 'RAIN') {
+      title = 'DANCING IN THE RAIN';
+      quote = '"Some people feel the rain. Others just get wet."';
+    } else {
+      if (timeLabel === 'NIGHT') {
+        title = 'STARRY NIGHT';
+        quote = '"The stars are the street lights of eternity."';
+      } else if (timeLabel === 'MORNING') {
+        title = 'RISE AND SHINE';
+        quote = '"Every morning brings new potential, but only if you choose to find it."';
+      } else if (timeLabel === 'MIDDAY') {
+        title = 'MIDDAY GLOW';
+        quote = '"Keep your face to the sunshine and you cannot see a shadow."';
+      } else if (timeLabel === 'DUSK') {
+        title = 'DUSK SILENCE';
+        quote = '"Dusk is just an illusion because the sun is either above the horizon or below it."';
+      } else if (timeLabel === 'GOLDEN HOUR') {
+        title = 'GOLDEN HOUR';
+        quote = '"Sunsets are proof that no matter what happens, every day can end beautifully."';
+      }
+    }
+
+    setQuoteTitle(title);
+    setQuoteText(quote);
+    setShowQuote(true);
+
+    const timer = setTimeout(() => {
+      setShowQuote(false);
+    }, 6000); // Hide after 6 seconds
+
+    return () => clearTimeout(timer);
+  }, [timeLabel, weather]);
 
   return (
     <div className="relative w-full h-[100vh] z-[9] overflow-hidden pointer-events-none font-sans group">
@@ -388,25 +580,25 @@ export const SeaFooter: React.FC = () => {
           }
         }
         hr.rain-drop {
-          width: 50px;
-          border-color: transparent;
-          border-right-color: rgba(255, 255, 255, 0.4);
-          border-right-width: 1px;
+          width: 1.5px;
+          height: 65px;
+          background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.45));
           position: absolute;
-          bottom: 100%;
-          transform-origin: 100% 50%;
-          animation-name: rain-animation;
+          top: -100px;
+          border: none;
+          animation-name: rain-fall-animation;
           animation-timing-function: linear;
           animation-iteration-count: infinite;
           pointer-events: none;
           z-index: 5;
+          transform: skewX(-15deg);
         }
-        @keyframes rain-animation {
-          from {
-            transform: rotate(105deg) translateX(0);
+        @keyframes rain-fall-animation {
+          0% {
+            top: -100px;
           }
-          to {
-            transform: rotate(105deg) translateX(calc(100vh + 20px));
+          100% {
+            top: 100vh;
           }
         }
       `}</style>
@@ -436,12 +628,18 @@ export const SeaFooter: React.FC = () => {
       )}
       
       {/* Text Overlay */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none z-10 px-4 transition-opacity duration-1000">
+      <div 
+        className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none z-10 px-4 transition-all duration-1000"
+        style={{ 
+          opacity: showQuote ? 1 : 0, 
+          transform: showQuote ? 'translateY(0)' : 'translateY(-25px)' 
+        }}
+      >
         <h2 className="text-4xl md:text-6xl lg:text-8xl font-black text-white/90 font-orbitron tracking-widest drop-shadow-[0_0_30px_rgba(255,255,255,0.4)] mb-6">
-          I LOVE SUNSETS
+          {quoteTitle}
         </h2>
         <p className="text-sm md:text-lg lg:text-xl font-mono text-white/80 max-w-2xl leading-relaxed tracking-wide drop-shadow-md">
-          "Sunsets are proof that no matter what happens, every day can end beautifully."
+          {quoteText}
         </p>
       </div>
       

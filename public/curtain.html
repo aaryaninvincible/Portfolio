@@ -9,15 +9,35 @@
     html, body {
       width: 100%; height: 100%;
       overflow: hidden;
-      background: #0d0d12;
+      background: #000000;
     }
-    canvas { display: block; position: fixed; top: 0; left: 0; cursor: crosshair; }
+    canvas { display: block; position: fixed; top: 0; left: 0; cursor: crosshair; z-index: 2; background: transparent; }
     /* hide all scrollbars */
     ::-webkit-scrollbar { display: none; }
     * { scrollbar-width: none; }
+    .behind-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: clamp(1.8rem, 6vw, 4rem);
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.08);
+      text-shadow: 0 0 15px rgba(255, 115, 0, 0.5), 0 0 30px rgba(255, 115, 0, 0.2);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      pointer-events: none;
+      user-select: none;
+      z-index: 1;
+      text-align: center;
+      width: 100%;
+      padding: 0 20px;
+    }
   </style>
 </head>
 <body>
+<div class="behind-text">aaryaninvincible</div>
 <canvas id="c"></canvas>
 <script>
 "use strict";

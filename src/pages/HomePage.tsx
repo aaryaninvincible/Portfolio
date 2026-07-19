@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bot,
   CheckCircle2,
@@ -143,6 +143,7 @@ export const HomePage: React.FC = () => {
   const [requestStatus, setRequestStatus] = useState('');
 
   const [isMobile, setIsMobile] = useState(false);
+  const [showScrollPopup, setShowScrollPopup] = useState(false);
 
   useEffect(() => {
     const unsubProjects = subscribeToProjects(setAdminProjects);
@@ -158,10 +159,20 @@ export const HomePage: React.FC = () => {
     checkMobile();
     window.addEventListener('resize', checkMobile);
 
+    const timerShow = setTimeout(() => {
+      setShowScrollPopup(true);
+    }, 4000);
+
+    const timerHide = setTimeout(() => {
+      setShowScrollPopup(false);
+    }, 12000);
+
     return () => {
       unsubProjects();
       unsubCertificates();
       window.removeEventListener('resize', checkMobile);
+      clearTimeout(timerShow);
+      clearTimeout(timerHide);
     };
   }, []);
 
@@ -945,6 +956,34 @@ export const HomePage: React.FC = () => {
           <CheckCircle2 size={16} /> {new Date().getFullYear()} Aryan Zone / aaryaninvincible.
         </p>
       </footer>
+
+      <AnimatePresence>
+        {showScrollPopup && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="fixed bottom-6 right-6 z-[100] max-w-sm glass border border-[#ff7300]/40 rounded-xl p-4 shadow-[0_10px_30px_rgba(255,115,0,0.15)] flex gap-3 items-center pointer-events-auto"
+          >
+            <div className="w-10 h-10 rounded-full bg-[#ff7300]/25 flex items-center justify-center text-primary animate-bounce">
+              ✨
+            </div>
+            <div className="flex-1">
+              <h4 className="text-sm font-bold text-light font-orbitron">Discover Creativity</h4>
+              <p className="text-xs text-slate-300 font-mono mt-0.5 leading-relaxed">
+                Scroll to the bottom to see a beautiful creativity by Aryan!
+              </p>
+            </div>
+            <button 
+              onClick={() => setShowScrollPopup(false)}
+              className="text-slate-400 hover:text-white transition-colors"
+            >
+              ✕
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

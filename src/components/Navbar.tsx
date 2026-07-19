@@ -14,6 +14,7 @@ const navLinks = [
 export const Navbar: React.FC = () => {
     const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [hideNavbar, setHideNavbar] = useState(false);
     const { scrollYProgress } = useScroll();
     const scaleX = useSpring(scrollYProgress, {
         stiffness: 100,
@@ -25,9 +26,20 @@ export const Navbar: React.FC = () => {
         setIsMobileMenuOpen(false);
     }, [location.pathname]);
 
+    useEffect(() => {
+        const handleScroll = () => {
+            // Near the bottom of the page (near 100vh SeaFooter)
+            const nearBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 300;
+            setHideNavbar(nearBottom);
+        };
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     return (
         <>
-            <header className="fixed w-full top-0 z-50 glass border-b border-white/10 shadow-lg">
+            <header className={`fixed w-full top-0 z-50 glass border-b border-white/10 shadow-lg transition-all duration-500 ${hideNavbar ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
                     <Link to="/" className="flex items-center gap-2">
                         <img src="/logo.png" alt="AR Logo" className="h-8 w-auto" />
@@ -86,7 +98,7 @@ export const Navbar: React.FC = () => {
             </header>
             {/* Scroll Progress Bar */}
             <motion.div 
-                className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent z-[60] origin-left"
+                className={`fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent z-[60] origin-left transition-opacity duration-500 ${hideNavbar ? 'opacity-0' : 'opacity-100'}`}
                 style={{ scaleX }}
             />
         </>

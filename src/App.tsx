@@ -62,7 +62,7 @@ const FullscreenAlert: React.FC = () => {
 
 // ─── Music widget with volume ─────────────────────────────────────────────────
 const MusicWidget: React.FC = () => {
-  const [unmuted, setUnmuted] = useState(false);   // muted by default to satisfy browser autoplay policy
+  const [unmuted, setUnmuted] = useState(true);    // Play by default (handles initial load autoplay)
   const [volume, setVolume]   = useState(10);      // 0–100, default 10%
   const [isHidden, setIsHidden] = useState(false);
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
@@ -76,6 +76,23 @@ const MusicWidget: React.FC = () => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const forcePlayOnInteraction = () => {
+      setUnmuted(true);
+      window.removeEventListener('click', forcePlayOnInteraction);
+      window.removeEventListener('keydown', forcePlayOnInteraction);
+      window.removeEventListener('touchstart', forcePlayOnInteraction);
+    };
+    window.addEventListener('click', forcePlayOnInteraction, { once: true });
+    window.addEventListener('keydown', forcePlayOnInteraction, { once: true });
+    window.addEventListener('touchstart', forcePlayOnInteraction, { once: true });
+    return () => {
+      window.removeEventListener('click', forcePlayOnInteraction);
+      window.removeEventListener('keydown', forcePlayOnInteraction);
+      window.removeEventListener('touchstart', forcePlayOnInteraction);
+    };
   }, []);
 
   // Send volume to YouTube iframe via postMessage

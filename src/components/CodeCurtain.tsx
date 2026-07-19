@@ -109,7 +109,7 @@ export const CodeCurtain: React.FC = () => {
       const g = off.getContext('2d');
       if (g) {
         g.scale(DPR, DPR);
-        g.font = \`bold \${sz}px "Courier New", monospace\`;
+        g.font = `bold ${sz}px "Courier New", monospace`;
         g.textAlign = 'center';
         g.textBaseline = 'middle';
         g.fillStyle = 'rgba(210,220,240,0.86)';

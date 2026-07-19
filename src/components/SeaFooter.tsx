@@ -93,13 +93,13 @@ export const SeaFooter: React.FC = () => {
       // We read state from a ref or just closure? In React, state in closure can be stale.
       // But we can update uniforms via a separate useEffect on state change.
       // For now, time increment
-      seaTime += 0.01 * window._seaSpeed;
+      seaTime += 0.01 * (window as any)._seaSpeed;
       
       if (water) {
-        water.material.uniforms[ 'time' ].value += 1.0 / 60.0 * window._seaSpeed;
+        water.material.uniforms[ 'time' ].value += 1.0 / 60.0 * (window as any)._seaSpeed;
       }
 
-      if (window._isDrifting) {
+      if ((window as any)._isDrifting) {
         seaCamera.position.y = 30 + Math.sin(seaTime * 2) * 2;
       } else {
         seaCamera.position.y = 30; // reset
@@ -121,9 +121,9 @@ export const SeaFooter: React.FC = () => {
     initSea();
 
     // expose instances to the component for state effects
-    window._seaInstances = { seaRenderer, sky, water, sun };
-    window._seaSpeed = 0.2 + (29 / 100) * 1.5;
-    window._isDrifting = false;
+    (window as any)._seaInstances = { seaRenderer, sky, water, sun };
+    (window as any)._seaSpeed = 0.2 + (29 / 100) * 1.5;
+    (window as any)._isDrifting = false;
 
     return () => {
       isSeaActive = false;

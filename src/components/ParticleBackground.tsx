@@ -48,12 +48,12 @@ export const ParticleBackground: React.FC = () => {
             constructor() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                const colors = ['rgba(255, 156, 35, 0.6)', 'rgba(255, 247, 98, 0.6)', 'rgba(151, 185, 16, 0.6)'];
+                const colors = ['#ff7300', '#00f3ff', '#ffd700', '#ff9900'];
                 this.color = colors[Math.floor(Math.random() * colors.length)];
-                this.size = Math.random() * 3 + 1;
-                this.speedX = Math.random() * 1 - 0.5;
-                this.speedY = Math.random() * 1 - 0.5;
-                this.density = (Math.random() * 30) + 1;
+                this.size = Math.random() * 1.4 + 0.8;
+                this.speedX = Math.random() * 0.6 - 0.3;
+                this.speedY = Math.random() * 0.6 - 0.3;
+                this.density = (Math.random() * 20) + 1;
             }
 
             update() {
@@ -63,7 +63,7 @@ export const ParticleBackground: React.FC = () => {
                 const dx = mouseX - this.x;
                 const dy = mouseY - this.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
-                const maxDistance = 150;
+                const maxDistance = 140;
 
                 if (distance < maxDistance) {
                     const forceDirectionX = dx / distance;
@@ -86,13 +86,13 @@ export const ParticleBackground: React.FC = () => {
 
             draw() {
                 if (!ctx) return;
-                // Outer glow pass (fast semi-transparent circle)
+                // Subtle outer glow aura
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size * 2.5, 0, Math.PI * 2);
-                ctx.fillStyle = this.color.replace('0.6', '0.15');
+                ctx.arc(this.x, this.y, this.size * 1.6, 0, Math.PI * 2);
+                ctx.fillStyle = this.color === '#00f3ff' ? 'rgba(0, 243, 255, 0.15)' : 'rgba(255, 115, 0, 0.15)';
                 ctx.fill();
 
-                // Inner core pass
+                // Core particle
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fillStyle = this.color;
@@ -105,8 +105,8 @@ export const ParticleBackground: React.FC = () => {
         const init = () => {
             particles = [];
             const isMobile = width < 768;
-            const targetCount = isMobile ? 22 : 45;
-            const particleCount = Math.min(targetCount, Math.floor((width * height) / 25000));
+            const targetCount = isMobile ? 30 : 55;
+            const particleCount = Math.min(targetCount, Math.floor((width * height) / 18000));
             for (let i = 0; i < particleCount; i++) {
                 particles.push(new Particle());
             }
@@ -132,11 +132,11 @@ export const ParticleBackground: React.FC = () => {
                     const dy = particles[a].y - particles[b].y;
                     const distSq = dx * dx + dy * dy;
 
-                    if (distSq < 6400) { // 80px squared radius
+                    if (distSq < 8100) { // 90px radius
                         const distance = Math.sqrt(distSq);
                         ctx.beginPath();
-                        ctx.strokeStyle = `rgba(255, 115, 0, ${0.18 - (distance / 80) * 0.18})`;
-                        ctx.lineWidth = 1;
+                        ctx.strokeStyle = `rgba(255, 115, 0, ${0.18 - (distance / 90) * 0.18})`;
+                        ctx.lineWidth = 0.8;
                         ctx.moveTo(particles[a].x, particles[a].y);
                         ctx.lineTo(particles[b].x, particles[b].y);
                         ctx.stroke();
@@ -159,12 +159,11 @@ export const ParticleBackground: React.FC = () => {
 
     return (
         <>
-            <div className="fixed inset-0 -z-30 bg-darker overflow-hidden pointer-events-none select-none">
-                <div className="absolute w-[80vw] sm:w-[60vw] h-[80vw] sm:h-[60vw] rounded-full blur-[80px] opacity-40 animate-blob top-[-10vw] left-[-10vw] bg-[radial-gradient(circle,rgba(255,115,0,0.3)_0%,transparent_70%)] [animation-duration:25s] [animation-delay:-5s]"></div>
-                <div className="absolute w-[80vw] sm:w-[60vw] h-[80vw] sm:h-[60vw] rounded-full blur-[80px] opacity-40 animate-blob bottom-[-10vw] right-[-20vw] bg-[radial-gradient(circle,rgba(0,243,255,0.25)_0%,transparent_70%)]"></div>
+            <div className="fixed inset-0 z-0 bg-black overflow-hidden pointer-events-none select-none">
+                <div className="absolute w-[80vw] sm:w-[60vw] h-[80vw] sm:h-[60vw] rounded-full blur-[90px] opacity-35 animate-blob top-[-10vw] left-[-10vw] bg-[radial-gradient(circle,rgba(255,115,0,0.35)_0%,transparent_70%)] [animation-duration:25s] [animation-delay:-5s]"></div>
+                <div className="absolute w-[80vw] sm:w-[60vw] h-[80vw] sm:h-[60vw] rounded-full blur-[90px] opacity-35 animate-blob bottom-[-10vw] right-[-20vw] bg-[radial-gradient(circle,rgba(0,243,255,0.3)_0%,transparent_70%)]"></div>
             </div>
-            <div className="fixed inset-0 -z-20 backdrop-blur-[60px] bg-gradient-to-br from-white/5 to-white/0 pointer-events-none"></div>
-            <canvas ref={canvasRef} className="fixed inset-0 -z-10 pointer-events-none opacity-80" />
+            <canvas ref={canvasRef} className="fixed inset-0 z-[1] pointer-events-none opacity-100" />
         </>
     );
 };

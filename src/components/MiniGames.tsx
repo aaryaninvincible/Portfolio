@@ -1188,59 +1188,91 @@ export const MiniGames: React.FC = () => {
                         )}
                         {/* Flappy Card */}
                         <div className={`w-full flex flex-col items-center ${activeGame === 'flappy' ? '' : 'hidden'}`}>
-                            <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
+                            <div className={`flex justify-between w-full mb-3 text-xs font-mono text-slate-400 ${isFullScreen ? 'max-w-[720px] md:max-w-[900px]' : 'max-w-[360px]'}`}>
                                 <span>TAP / SPACE to flap</span>
-                                <span id="flappyScore" className="text-secondary font-bold">Score: 0</span>
+                                <span id="flappyScore" className="text-secondary font-bold text-sm">Score: 0</span>
                             </div>
-                            <canvas id="flappyCanvas" className="border border-white/10 rounded-xl cursor-crosshair bg-black w-full max-w-[360px]" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
-                            <div className="flex gap-4 mt-4 w-full max-w-[360px] justify-center">
-                                <button id="flappyStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
-                                <button id="flappyPause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
+                            <canvas
+                                id="flappyCanvas"
+                                className={`border border-white/10 rounded-xl cursor-crosshair bg-black transition-all ${
+                                    isFullScreen ? 'w-full max-w-[720px] md:max-w-[900px] h-[55vh] max-h-[520px] shadow-[0_0_30px_rgba(255,115,0,0.3)]' : 'w-full max-w-[360px]'
+                                }`}
+                                width="360"
+                                height="220"
+                                style={{ touchAction: 'none' }}
+                            ></canvas>
+                            <div className={`flex gap-4 mt-4 w-full justify-center ${isFullScreen ? 'max-w-[720px] md:max-w-[900px]' : 'max-w-[360px]'}`}>
+                                <button id="flappyStart" className="px-6 py-3 text-xs sm:text-sm uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-xl hover:shadow-[0_0_20px_rgba(255,115,0,0.6)] transition-all">Start</button>
+                                <button id="flappyPause" className="px-6 py-3 text-xs sm:text-sm uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-xl hover:bg-white/10 transition-all">Pause</button>
                             </div>
-                            <button id="flappyTap" className="w-full max-w-[360px] mt-3 py-3 text-xs sm:text-sm uppercase tracking-widest font-black font-orbitron bg-gradient-to-r from-primary to-accent text-black rounded-xl shadow-[0_0_15px_rgba(255,115,0,0.4)] active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-2">⚡ TAP TO FLAP BIRD</button>
+                            <button id="flappyTap" className={`w-full mt-3 py-3.5 text-xs sm:text-base uppercase tracking-widest font-black font-orbitron bg-gradient-to-r from-primary to-accent text-black rounded-xl shadow-[0_0_20px_rgba(255,115,0,0.4)] active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-2 ${isFullScreen ? 'max-w-[720px] md:max-w-[900px]' : 'max-w-[360px]'}`}>⚡ TAP TO FLAP BIRD</button>
                         </div>
 
                         {/* Dino Card */}
                         <div className={`w-full flex flex-col items-center ${activeGame === 'dino' ? '' : 'hidden'}`}>
-                            <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
+                            <div className={`flex justify-between w-full mb-3 text-xs font-mono text-slate-400 ${isFullScreen ? 'max-w-[720px] md:max-w-[900px]' : 'max-w-[360px]'}`}>
                                 <span>TAP / SPACE to jump</span>
-                                <span id="dinoScore" className="text-accent font-bold">Score: 0</span>
+                                <span id="dinoScore" className="text-accent font-bold text-sm">Score: 0</span>
                             </div>
-                            <canvas id="dinoCanvas" className="border border-white/10 rounded-xl cursor-crosshair bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
-                            <div className="flex gap-4 mt-4 w-full max-w-[360px] justify-center">
-                                <button id="dinoStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
-                                <button id="dinoPause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
+                            <canvas
+                                id="dinoCanvas"
+                                className={`border border-white/10 rounded-xl cursor-crosshair bg-black transition-all ${
+                                    isFullScreen ? 'w-full max-w-[720px] md:max-w-[900px] h-[55vh] max-h-[520px] shadow-[0_0_30px_rgba(0,243,255,0.3)]' : 'w-full max-w-[360px]'
+                                }`}
+                                width="360"
+                                height="220"
+                                style={{ touchAction: 'none' }}
+                            ></canvas>
+                            <div className={`flex gap-4 mt-4 w-full justify-center ${isFullScreen ? 'max-w-[720px] md:max-w-[900px]' : 'max-w-[360px]'}`}>
+                                <button id="dinoStart" className="px-6 py-3 text-xs sm:text-sm uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-xl hover:shadow-[0_0_20px_rgba(255,115,0,0.6)] transition-all">Start</button>
+                                <button id="dinoPause" className="px-6 py-3 text-xs sm:text-sm uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-xl hover:bg-white/10 transition-all">Pause</button>
                             </div>
-                            <button id="dinoJump" className="w-full max-w-[360px] mt-3 py-3 text-xs sm:text-sm uppercase tracking-widest font-black font-orbitron bg-gradient-to-r from-accent to-secondary text-black rounded-xl shadow-[0_0_15px_rgba(0,243,255,0.4)] active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-2">🦕 TAP TO JUMP DINO</button>
+                            <button id="dinoJump" className={`w-full mt-3 py-3.5 text-xs sm:text-base uppercase tracking-widest font-black font-orbitron bg-gradient-to-r from-accent to-secondary text-black rounded-xl shadow-[0_0_20px_rgba(0,243,255,0.4)] active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-2 ${isFullScreen ? 'max-w-[720px] md:max-w-[900px]' : 'max-w-[360px]'}`}>🦕 TAP TO JUMP DINO</button>
                         </div>
 
                         {/* Dodge Card */}
                         <div className={`w-full flex flex-col items-center ${activeGame === 'dodge' ? '' : 'hidden'}`}>
-                            <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
+                            <div className={`flex justify-between w-full mb-3 text-xs font-mono text-slate-400 ${isFullScreen ? 'max-w-[720px] md:max-w-[900px]' : 'max-w-[360px]'}`}>
                                 <span>ARROWS / TAP buttons</span>
-                                <span id="dodgeScore" className="text-primary font-bold">Score: 0</span>
+                                <span id="dodgeScore" className="text-primary font-bold text-sm">Score: 0</span>
                             </div>
-                            <canvas id="dodgeCanvas" className="border border-white/10 rounded-xl bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
-                            <div className="flex gap-4 mt-4 w-full max-w-[360px] justify-center">
-                                <button id="dodgeStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
-                                <button id="dodgePause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
+                            <canvas
+                                id="dodgeCanvas"
+                                className={`border border-white/10 rounded-xl bg-black transition-all ${
+                                    isFullScreen ? 'w-full max-w-[720px] md:max-w-[900px] h-[55vh] max-h-[520px] shadow-[0_0_30px_rgba(255,115,0,0.3)]' : 'w-full max-w-[360px]'
+                                }`}
+                                width="360"
+                                height="220"
+                                style={{ touchAction: 'none' }}
+                            ></canvas>
+                            <div className={`flex gap-4 mt-4 w-full justify-center ${isFullScreen ? 'max-w-[720px] md:max-w-[900px]' : 'max-w-[360px]'}`}>
+                                <button id="dodgeStart" className="px-6 py-3 text-xs sm:text-sm uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-xl hover:shadow-[0_0_20px_rgba(255,115,0,0.6)] transition-all">Start</button>
+                                <button id="dodgePause" className="px-6 py-3 text-xs sm:text-sm uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-xl hover:bg-white/10 transition-all">Pause</button>
                             </div>
-                            <div className="flex gap-3 w-full max-w-[360px] justify-center mt-3">
-                                <button id="dodgeLeft" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-primary/20 text-primary border border-primary/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">◀ LEFT</button>
-                                <button id="dodgeRight" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-primary/20 text-primary border border-primary/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">RIGHT ▶</button>
+                            <div className={`flex gap-3 w-full justify-center mt-3 ${isFullScreen ? 'max-w-[720px] md:max-w-[900px]' : 'max-w-[360px]'}`}>
+                                <button id="dodgeLeft" className="flex-1 py-3.5 text-xs sm:text-base font-black font-orbitron bg-primary/20 text-primary border border-primary/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">◀ LEFT</button>
+                                <button id="dodgeRight" className="flex-1 py-3.5 text-xs sm:text-base font-black font-orbitron bg-primary/20 text-primary border border-primary/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">RIGHT ▶</button>
                             </div>
                         </div>
 
                         {/* Snake Card */}
                         <div className={`w-full flex flex-col items-center ${activeGame === 'snake' ? '' : 'hidden'}`}>
-                            <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
+                            <div className={`flex justify-between w-full mb-3 text-xs font-mono text-slate-400 ${isFullScreen ? 'max-w-[720px] md:max-w-[900px]' : 'max-w-[360px]'}`}>
                                 <span>SWIPE or TAP D-Pad</span>
-                                <span id="snakeScore" className="text-secondary font-bold">Score: 0</span>
+                                <span id="snakeScore" className="text-secondary font-bold text-sm">Score: 0</span>
                             </div>
-                            <canvas id="snakeCanvas" className="border border-white/10 rounded-xl bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
-                            <div className="flex gap-4 mt-4 w-full max-w-[360px] justify-center">
-                                <button id="snakeStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
-                                <button id="snakePause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
+                            <canvas
+                                id="snakeCanvas"
+                                className={`border border-white/10 rounded-xl bg-black transition-all ${
+                                    isFullScreen ? 'w-full max-w-[720px] md:max-w-[900px] h-[55vh] max-h-[520px] shadow-[0_0_30px_rgba(112,0,255,0.3)]' : 'w-full max-w-[360px]'
+                                }`}
+                                width="360"
+                                height="220"
+                                style={{ touchAction: 'none' }}
+                            ></canvas>
+                            <div className={`flex gap-4 mt-4 w-full justify-center ${isFullScreen ? 'max-w-[720px] md:max-w-[900px]' : 'max-w-[360px]'}`}>
+                                <button id="snakeStart" className="px-6 py-3 text-xs sm:text-sm uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-xl hover:shadow-[0_0_20px_rgba(255,115,0,0.6)] transition-all">Start</button>
+                                <button id="snakePause" className="px-6 py-3 text-xs sm:text-sm uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-xl hover:bg-white/10 transition-all">Pause</button>
                             </div>
                             <div className="grid grid-cols-3 gap-2 mt-4 w-44 justify-items-center touch-none select-none">
                                 <div />
@@ -1257,18 +1289,26 @@ export const MiniGames: React.FC = () => {
 
                         {/* Breaker Card */}
                         <div className={`w-full flex flex-col items-center ${activeGame === 'breaker' ? '' : 'hidden'}`}>
-                            <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
+                            <div className={`flex justify-between w-full mb-3 text-xs font-mono text-slate-400 ${isFullScreen ? 'max-w-[720px] md:max-w-[900px]' : 'max-w-[360px]'}`}>
                                 <span>DRAG / TAP to move paddle</span>
-                                <span id="breakerScore" className="text-primary font-bold">Score: 0</span>
+                                <span id="breakerScore" className="text-primary font-bold text-sm">Score: 0</span>
                             </div>
-                            <canvas id="breakerCanvas" className="border border-white/10 rounded-xl bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
-                            <div className="flex gap-3 mt-4 w-full max-w-[360px] justify-center">
-                                <button id="breakerStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
-                                <button id="breakerPause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
+                            <canvas
+                                id="breakerCanvas"
+                                className={`border border-white/10 rounded-xl bg-black transition-all ${
+                                    isFullScreen ? 'w-full max-w-[720px] md:max-w-[900px] h-[55vh] max-h-[520px] shadow-[0_0_30px_rgba(255,115,0,0.3)]' : 'w-full max-w-[360px]'
+                                }`}
+                                width="360"
+                                height="220"
+                                style={{ touchAction: 'none' }}
+                            ></canvas>
+                            <div className={`flex gap-3 mt-4 w-full justify-center ${isFullScreen ? 'max-w-[720px] md:max-w-[900px]' : 'max-w-[360px]'}`}>
+                                <button id="breakerStart" className="px-6 py-3 text-xs sm:text-sm uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-xl hover:shadow-[0_0_20px_rgba(255,115,0,0.6)] transition-all">Start</button>
+                                <button id="breakerPause" className="px-6 py-3 text-xs sm:text-sm uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-xl hover:bg-white/10 transition-all">Pause</button>
                             </div>
-                            <div className="flex gap-3 w-full max-w-[360px] justify-center mt-3">
-                                <button id="breakerLeft" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-accent/20 text-accent border border-accent/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">◀ LEFT</button>
-                                <button id="breakerRight" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-accent/20 text-accent border border-accent/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">RIGHT ▶</button>
+                            <div className={`flex gap-3 w-full justify-center mt-3 ${isFullScreen ? 'max-w-[720px] md:max-w-[900px]' : 'max-w-[360px]'}`}>
+                                <button id="breakerLeft" className="flex-1 py-3.5 text-xs sm:text-base font-black font-orbitron bg-accent/20 text-accent border border-accent/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">◀ LEFT</button>
+                                <button id="breakerRight" className="flex-1 py-3.5 text-xs sm:text-base font-black font-orbitron bg-accent/20 text-accent border border-accent/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">RIGHT ▶</button>
                             </div>
                         </div>
 

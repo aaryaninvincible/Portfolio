@@ -4,35 +4,24 @@
 
 @layer base {
   :root,
-  [data-theme='amoled'] {
-    --color-primary: 255 115 0;
-    --color-secondary: 255 85 0;
-    --color-accent: 255 150 0;
-    --color-dark: 5 5 5;
-    --color-darker: 0 0 0;
-    --color-light: 248 250 252;
-    --glass-bg: rgba(10, 10, 10, 0.85);
-    --glass-border: rgba(255, 115, 0, 0.2);
-  }
-
-  
+  [data-theme='amoled'],
   [data-theme='dark'] {
     --color-primary: 255 115 0;
     --color-secondary: 255 85 0;
     --color-accent: 255 150 0;
-    --color-dark: 10 10 10;
-    --color-darker: 5 5 5;
+    --color-dark: 0 0 0;
+    --color-darker: 0 0 0;
     --color-light: 248 250 252;
-    --glass-bg: rgba(15, 15, 15, 0.85);
+    --glass-bg: rgba(0, 0, 0, 0.92);
     --glass-border: rgba(255, 115, 0, 0.2);
   }
 
-
-
-  html {
+  html,
+  body {
+    background-color: #000000 !important;
+    color: #f8fafc;
     scroll-behavior: smooth;
     overflow-x: hidden;
-    /* hide scrollbar - Firefox */
     scrollbar-width: none;
   }
 
@@ -44,7 +33,7 @@
   }
 
   body {
-    @apply bg-darker text-light font-mono overflow-x-hidden;
+    @apply bg-black text-light font-mono overflow-x-hidden;
     overflow-y: scroll;   /* allow scroll but bar is invisible */
     scrollbar-width: none;
   }
@@ -54,8 +43,6 @@
   select {
     color-scheme: dark;
   }
-
-
 }
 
 @layer utilities {

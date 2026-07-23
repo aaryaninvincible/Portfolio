@@ -238,7 +238,7 @@ export const HomePage: React.FC = () => {
                     body {
                         margin: 0;
                         overflow: hidden;
-                        background-color: #010103;
+                        background-color: #000000;
                         font-family: 'Inter', -apple-system, sans-serif;
                         color: #fff;
                     }
@@ -681,7 +681,7 @@ export const HomePage: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
           {featuredProjects.map((project, index) => (
             <GlassCard key={project.id} className="group flex flex-col h-full">
               <div className="h-48 bg-black/60 relative overflow-hidden flex items-center justify-center border-b border-white/5">
@@ -733,7 +733,7 @@ export const HomePage: React.FC = () => {
           <h2 className="text-3xl md:text-5xl font-orbitron">Verified Learning</h2>
         </div>
         {visibleCertificates.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {visibleCertificates.map((certificate) => (
               <GlassCard 
                 key={certificate.id} 
@@ -806,7 +806,7 @@ export const HomePage: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-3 sm:gap-6">
           {/* Instagram Card */}
           <GlassCard className="p-8 relative overflow-hidden group flex flex-col justify-between border-E1306C/30 hover:border-[#E1306C]/60 transition-all duration-500">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#E1306C]/20 to-purple-600/10 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform" />

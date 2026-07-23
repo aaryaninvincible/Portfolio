@@ -18,9 +18,35 @@ export const MiniGames: React.FC = () => {
     const [showLeaderboard, setShowLeaderboard] = useState<boolean>(false);
 
     const activeGameRef = useRef(activeGame);
+    const gameContainerRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         activeGameRef.current = activeGame;
     }, [activeGame]);
+
+    const toggleFullScreen = () => {
+        if (!isFullScreen) {
+            setIsFullScreen(true);
+            if (gameContainerRef.current && gameContainerRef.current.requestFullscreen) {
+                gameContainerRef.current.requestFullscreen().catch(() => {});
+            }
+        } else {
+            setIsFullScreen(false);
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(() => {});
+            }
+        }
+    };
+
+    useEffect(() => {
+        const handleFSChange = () => {
+            if (!document.fullscreenElement && isFullScreen) {
+                setIsFullScreen(false);
+            }
+        };
+        document.addEventListener('fullscreenchange', handleFSChange);
+        return () => document.removeEventListener('fullscreenchange', handleFSChange);
+    }, [isFullScreen]);
 
     // Subscribe to global scores when active game changes
     useEffect(() => {
@@ -1101,7 +1127,7 @@ export const MiniGames: React.FC = () => {
                         <span>{isMuted ? 'Muted' : 'Mute'}</span>
                     </button>
                     <button
-                        onClick={() => setIsFullScreen(!isFullScreen)}
+                        onClick={toggleFullScreen}
                         className={`glass rounded-lg px-4 py-2 text-xs font-mono flex items-center justify-center gap-2 border-white/10 hover:border-accent/40 transition-all ${
                             isFullScreen ? 'bg-accent/20 border-accent text-accent font-bold' : 'text-slate-300 hover:text-white'
                         }`}
@@ -1145,16 +1171,19 @@ export const MiniGames: React.FC = () => {
 
                 {/* Center Column: Game Canvas */}
                 <div className="lg:col-span-6 flex flex-col items-center w-full">
-                    <div className={`glass p-4 sm:p-6 rounded-2xl border border-white/10 bg-black/80 relative overflow-hidden flex flex-col items-center w-full ${
-                        isFullScreen ? 'fixed inset-0 z-[9999] bg-black/95 p-4 sm:p-8 overflow-y-auto flex flex-col items-center justify-center rounded-none border-none' : ''
-                    }`}>
+                    <div
+                        ref={gameContainerRef}
+                        className={`glass p-4 sm:p-6 rounded-2xl border border-white/10 bg-black/80 relative overflow-hidden flex flex-col items-center w-full transition-all ${
+                            isFullScreen ? 'fixed inset-0 z-[9999] bg-black/95 p-4 sm:p-8 overflow-y-auto flex flex-col items-center justify-center rounded-none border-none scale-100' : ''
+                        }`}
+                    >
                         {isFullScreen && (
                             <button
-                                onClick={() => setIsFullScreen(false)}
-                                className="absolute top-4 right-4 z-50 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-mono text-xs flex items-center gap-1.5 transition-all"
+                                onClick={toggleFullScreen}
+                                className="absolute top-4 right-4 z-50 p-3 rounded-full bg-white/15 hover:bg-primary hover:text-black text-white font-mono text-xs flex items-center gap-1.5 transition-all shadow-lg border border-white/20"
                             >
-                                <X size={18} />
-                                <span>Exit</span>
+                                <X size={20} />
+                                <span className="font-bold">Exit Fullscreen</span>
                             </button>
                         )}
                         {/* Flappy Card */}
@@ -1308,7 +1337,7 @@ export const MiniGames: React.FC = () => {
 
             {/* Mobile & Toggle Leaderboard */}
             {showLeaderboard && (
-                <div className="glass p-5 rounded-2xl border border-white/10 bg-black/50 w-full max-w-[360px]">
+                <div className="glass p-5 rounded-2xl border border-white/10 bg-black/50 w-full max-w-[360px] lg:hidden">
                     <div className="flex items-center gap-2 mb-4">
                         <Trophy className="text-primary" size={18} />
                         <h3 className="font-orbitron text-sm font-bold uppercase tracking-wider text-light">

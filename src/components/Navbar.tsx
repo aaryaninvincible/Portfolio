@@ -72,17 +72,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCommandPalette, onOpenTerm
                             <span>{liveVisitors} Live Online</span>
                         </div>
                     </div>
-                    <nav className="hidden md:flex gap-6">
+                    <nav className="hidden md:flex items-center gap-3 lg:gap-5">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.path}
                                 to={link.path}
-                                className={`font-mono transition-colors relative group py-1 ${location.pathname === link.path ? 'text-primary' : 'text-light hover:text-primary'
-                                    }`}
+                                className={`font-mono text-xs lg:text-sm whitespace-nowrap transition-colors relative group py-1 ${
+                                    location.pathname === link.path ? 'text-primary font-bold' : 'text-light hover:text-primary'
+                                }`}
                             >
                                 {link.name}
-                                <span className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ${location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
-                                    }`} />
+                                <span className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ${
+                                    location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
+                                }`} />
                             </Link>
                         ))}
                     </nav>

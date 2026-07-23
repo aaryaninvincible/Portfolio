@@ -113,7 +113,6 @@ export const HomePage: React.FC = () => {
   const [githubProjects, setGithubProjects] = useState<PortfolioProject[]>([]);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
 
-  const [isMobile, setIsMobile] = useState(false);
   const [showScrollPopup, setShowScrollPopup] = useState(false);
 
   useEffect(() => {
@@ -123,12 +122,6 @@ export const HomePage: React.FC = () => {
     fetchGitHubProjects()
       .then(setGithubProjects)
       .catch(() => setGithubProjects([]));
-
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
 
     const timerShow = setTimeout(() => {
       setShowScrollPopup(true);
@@ -141,7 +134,6 @@ export const HomePage: React.FC = () => {
     return () => {
       unsubProjects();
       unsubCertificates();
-      window.removeEventListener('resize', checkMobile);
       clearTimeout(timerShow);
       clearTimeout(timerHide);
     };
@@ -234,20 +226,9 @@ export const HomePage: React.FC = () => {
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
       >
-        {isMobile ? (
-          <GlassCard className="w-full h-[320px] overflow-hidden rounded-2xl border border-white/10 shadow-[0_0_50px_rgba(255,115,0,0.15)] relative flex flex-col items-center justify-center bg-[#010103] p-6 text-center" disableTilt>
-            <div className="w-36 h-36 rounded-full bg-black relative shadow-[0_0_60px_20px_rgba(255,115,0,0.65),0_0_100px_40px_rgba(255,45,0,0.45)] border border-orange-500/20 flex items-center justify-center mb-6">
-              <div className="w-28 h-28 rounded-full bg-black shadow-inner" />
-            </div>
-            <h3 className="font-orbitron text-xl text-light mb-2">Stable Singularity</h3>
-            <p className="text-xs text-slate-400 font-mono max-w-xs leading-relaxed">
-              Relativistic 3D simulation optimized for desktop view.
-            </p>
-          </GlassCard>
-        ) : (
-          <GlassCard className="w-full h-[550px] overflow-hidden rounded-2xl border border-white/10 shadow-[0_0_50px_rgba(255,115,0,0.15)] relative" disableTilt>
-            <iframe
-              srcDoc={`
+        <GlassCard className="w-full h-[380px] sm:h-[550px] overflow-hidden rounded-2xl border border-white/10 shadow-[0_0_50px_rgba(255,115,0,0.15)] relative" disableTilt>
+          <iframe
+            srcDoc={`
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -618,7 +599,6 @@ export const HomePage: React.FC = () => {
               title="Stable Singularity"
             />
           </GlassCard>
-        )}
       </motion.div>
 
       <InteractiveWidgets />
@@ -634,53 +614,60 @@ export const HomePage: React.FC = () => {
         <MusicPlaylistWidget />
       </section>
 
-      <section id="about" className="grid lg:grid-cols-2 gap-12 items-start">
-        <div className="space-y-8">
-          <span className="section-kicker">About</span>
-          <h2 className="text-3xl md:text-5xl font-orbitron">Software that ships</h2>
-          <p className="text-slate-300 font-mono text-lg leading-relaxed">
+      <section id="about" className="space-y-8 max-w-4xl mx-auto">
+        <div className="text-center space-y-4">
+          <span className="section-kicker">About Me</span>
+          <h2 className="text-3xl md:text-5xl font-orbitron font-black text-light">Software That <span className="text-gradient">Ships</span></h2>
+          <p className="text-slate-300 font-mono text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
             I work across frontend, backend, Firebase, AI/ML, IoT, and automation. I can help with free learning
             projects, paid freelance builds, BTech/MTech final year projects, demos, documentation, and deployment.
           </p>
-          <div className="space-y-6 overflow-hidden relative w-full max-w-full">
-            <style>{`
-              @keyframes scrollLeft {
-                0% { transform: translateX(0); }
-                100% { transform: translateX(-50%); }
-              }
-              .animate-scroll {
-                animation: scrollLeft 25s linear infinite;
-                width: max-content;
-              }
-              .animate-scroll:hover {
-                animation-play-state: paused;
-              }
-            `}</style>
-            
-            {skillCategories.map((category, idx) => (
-              <div key={category.title} className="w-full">
-                <h4 className="text-secondary font-orbitron text-sm mb-3 uppercase tracking-wider pl-2 border-l-2 border-primary/30 ml-2">{category.title}</h4>
-                {/* Marquee Container */}
-                <div className="flex gap-3 animate-scroll py-2 pl-2" style={{ animationDirection: idx % 2 !== 0 ? 'reverse' : 'normal' }}>
-                  {/* Duplicate the items multiple times for seamless scrolling */}
-                  {[...category.skills, ...category.skills, ...category.skills, ...category.skills].map((skill, i) => (
-                    <div key={`${skill}-${i}`} className="glass px-4 py-2 shrink-0 rounded-lg border-white/5 hover:border-primary/40 hover:text-primary transition-colors cursor-default">
-                      <span className="font-bold text-light text-xs whitespace-nowrap tracking-wide">{skill}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
 
-        <GlassCard className="p-8" disableTilt>
-          <h3 className="font-orbitron text-2xl mb-4 text-light flex items-center gap-2">
-            <Bot className="text-primary" /> Gaming Highlights
-          </h3>
-          <p className="font-mono text-slate-300 text-sm leading-relaxed mb-6">
-            Three quick 2D games built for mobile and desktop play.
+        <div className="space-y-6 overflow-hidden relative w-full max-w-full pt-4">
+          <style>{`
+            @keyframes scrollLeft {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(-50%); }
+            }
+            .animate-scroll {
+              animation: scrollLeft 25s linear infinite;
+              width: max-content;
+            }
+            .animate-scroll:hover {
+              animation-play-state: paused;
+            }
+          `}</style>
+          
+          {skillCategories.map((category, idx) => (
+            <div key={category.title} className="w-full">
+              <h4 className="text-secondary font-orbitron text-xs sm:text-sm mb-3 uppercase tracking-wider pl-2 border-l-2 border-primary/30 ml-2">{category.title}</h4>
+              {/* Marquee Container */}
+              <div className="flex gap-3 animate-scroll py-2 pl-2" style={{ animationDirection: idx % 2 !== 0 ? 'reverse' : 'normal' }}>
+                {[...category.skills, ...category.skills, ...category.skills, ...category.skills].map((skill, i) => (
+                  <div key={`${skill}-${i}`} className="glass px-4 py-2 shrink-0 rounded-lg border-white/5 hover:border-primary/40 hover:text-primary transition-colors cursor-default">
+                    <span className="font-bold text-light text-xs whitespace-nowrap tracking-wide">{skill}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Standalone Centered Gaming Arcade Section ── */}
+      <section id="arcade" className="space-y-8 max-w-4xl mx-auto text-center">
+        <div className="text-center space-y-3">
+          <span className="section-kicker">Retro Arcade</span>
+          <h2 className="text-3xl md:text-5xl font-orbitron font-black text-light flex items-center justify-center gap-3">
+            <Bot className="text-primary" /> Gaming <span className="text-gradient">Highlights</span>
+          </h2>
+          <p className="text-slate-300 font-mono text-sm max-w-lg mx-auto">
+            Four interactive 2D games with live global leaderboards built for mobile and desktop play.
           </p>
+        </div>
+
+        <GlassCard className="p-4 sm:p-8 max-w-3xl mx-auto border border-white/10 flex flex-col items-center justify-center" disableTilt>
           <MiniGames />
         </GlassCard>
       </section>
@@ -935,30 +922,21 @@ export const HomePage: React.FC = () => {
           </p>
         </div>
 
-        {isMobile ? (
-          <div className="h-[280px] w-full flex flex-col items-center justify-center bg-[#0d0d12]/90 border border-white/5 rounded-2xl text-center px-6">
-            <code className="text-primary font-bold text-lg mb-2">{"{ neural_matrix_fabric }"}</code>
-            <p className="text-xs text-slate-400 font-mono max-w-xs leading-relaxed">
-              Interactive cloth simulation is optimized for desktop view to preserve battery life and performance.
-            </p>
+        <GlassCard className="overflow-hidden p-0 border border-white/10 rounded-2xl relative" disableTilt>
+          {/* Overlay label */}
+          <div className="absolute top-3 right-3 z-10 glass border-white/10 px-3 py-1 rounded-full font-mono text-[10px] text-slate-400 pointer-events-none select-none">
+            🖱 hover · drag to stretch
           </div>
-        ) : (
-          <GlassCard className="overflow-hidden p-0 border border-white/10 rounded-2xl relative" disableTilt>
-            {/* Overlay label */}
-            <div className="absolute top-3 right-3 z-10 glass border-white/10 px-3 py-1 rounded-full font-mono text-[10px] text-slate-400 pointer-events-none select-none">
-              🖱 hover · drag to stretch
-            </div>
 
-            <iframe
-              src="/curtain.html"
-              title="Code Curtain"
-              className="w-full border-0"
-              style={{ height: '420px' }}
-              sandbox="allow-scripts"
-              loading="lazy"
-            />
-          </GlassCard>
-        )}
+          <iframe
+            src="/curtain.html"
+            title="Code Curtain"
+            className="w-full border-0"
+            style={{ height: '380px' }}
+            sandbox="allow-scripts"
+            loading="lazy"
+          />
+        </GlassCard>
       </motion.section>
 
       <footer className="text-center pt-16 border-t border-white/10">

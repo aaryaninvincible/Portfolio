@@ -159,9 +159,9 @@ export const ParticleBackground: React.FC = () => {
 
     return (
         <>
-            <div className="fixed inset-0 -z-30 bg-darker overflow-hidden">
-                <div className="absolute w-[60vw] h-[60vw] rounded-full blur-[80px] opacity-60 animate-blob top-[-10vw] left-[-10vw] bg-[radial-gradient(circle,var(--tw-colors-primary)_0%,transparent_70%)] [animation-duration:25s] [animation-delay:-5s]"></div>
-                <div className="absolute w-[60vw] h-[60vw] rounded-full blur-[80px] opacity-60 animate-blob bottom-[-10vw] right-[-20vw] bg-[radial-gradient(circle,var(--tw-colors-secondary)_0%,transparent_70%)]"></div>
+            <div className="fixed inset-0 -z-30 bg-darker overflow-hidden pointer-events-none select-none">
+                <div className="absolute w-[80vw] sm:w-[60vw] h-[80vw] sm:h-[60vw] rounded-full blur-[80px] opacity-40 animate-blob top-[-10vw] left-[-10vw] bg-[radial-gradient(circle,rgba(255,115,0,0.3)_0%,transparent_70%)] [animation-duration:25s] [animation-delay:-5s]"></div>
+                <div className="absolute w-[80vw] sm:w-[60vw] h-[80vw] sm:h-[60vw] rounded-full blur-[80px] opacity-40 animate-blob bottom-[-10vw] right-[-20vw] bg-[radial-gradient(circle,rgba(0,243,255,0.25)_0%,transparent_70%)]"></div>
             </div>
             <div className="fixed inset-0 -z-20 backdrop-blur-[60px] bg-gradient-to-br from-white/5 to-white/0 pointer-events-none"></div>
             <canvas ref={canvasRef} className="fixed inset-0 -z-10 pointer-events-none opacity-80" />

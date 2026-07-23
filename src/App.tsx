@@ -151,7 +151,7 @@ const MusicWidget: React.FC = () => {
 
   return (
     <div
-      className={`fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-[45] flex items-center gap-2 max-w-[calc(100vw-5rem)] transition-all duration-500 ${
+      className={`fixed bottom-3 left-3 sm:bottom-6 sm:left-6 z-[45] flex items-center gap-2 max-w-[calc(100vw-2rem)] transition-all duration-500 ${
         isHidden ? 'opacity-0 translate-y-10 pointer-events-none' : 'opacity-100'
       }`}
     >

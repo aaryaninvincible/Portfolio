@@ -24,7 +24,7 @@ export const ScrollControls: React.FC = () => {
   const scrollToBottom = () => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 
   return (
-    <div className="hidden md:flex fixed bottom-24 right-6 z-[60] flex-col gap-3 pointer-events-auto">
+    <div className="hidden md:flex fixed bottom-24 right-6 z-30 flex-col gap-3 pointer-events-auto">
       {showTop && (
         <button
           onClick={scrollToTop}

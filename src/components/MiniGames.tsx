@@ -5,7 +5,7 @@ import { subscribeToLeaderboard, submitHighScore } from '../lib/realtime';
 import type { LeaderboardEntry } from '../types';
 
 export const MiniGames: React.FC = () => {
-    const [activeGame, setActiveGame] = useState<'flappy' | 'dino' | 'dodge' | 'snake'>('flappy');
+    const [activeGame, setActiveGame] = useState<'flappy' | 'dino' | 'dodge' | 'snake' | 'breaker'>('flappy');
     const [isMuted, setIsMuted] = useState(getGameMuteState());
     const [globalScores, setGlobalScores] = useState<LeaderboardEntry[]>([]);
     
@@ -36,7 +36,8 @@ export const MiniGames: React.FC = () => {
         const dinoCanvas = document.getElementById('dinoCanvas') as HTMLCanvasElement;
         const dodgeCanvas = document.getElementById('dodgeCanvas') as HTMLCanvasElement;
         const snakeCanvas = document.getElementById('snakeCanvas') as HTMLCanvasElement;
-        if (!flappyCanvas || !dinoCanvas || !dodgeCanvas || !snakeCanvas) return;
+        const breakerCanvas = document.getElementById('breakerCanvas') as HTMLCanvasElement;
+        if (!flappyCanvas || !dinoCanvas || !dodgeCanvas || !snakeCanvas || !breakerCanvas) return;
 
         // Shared game state focus helper
         const safeFocus = (id: typeof activeGame) => {
@@ -174,6 +175,13 @@ export const MiniGames: React.FC = () => {
                 } else if (!running && paused) {
                     ctx.fillStyle = '#fff'; ctx.font = '16px "Orbitron", sans-serif';
                     ctx.fillText('Paused', 150, H / 2);
+                } else if (!running && !started) {
+                    ctx.fillStyle = '#ff7300'; ctx.font = 'bold 15px "Orbitron", sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('FLAPPY BIRD', W / 2, H / 2 - 12);
+                    ctx.fillStyle = '#94a3b8'; ctx.font = '11px monospace';
+                    ctx.fillText('Tap Start below or Tap Screen to Flap', W / 2, H / 2 + 15);
+                    ctx.textAlign = 'left';
                 }
             }
 
@@ -185,10 +193,17 @@ export const MiniGames: React.FC = () => {
                 if (running) { afId = requestAnimationFrame(loop); animationFrames.push(afId); }
             }
 
+            const handleFlapAction = (e: Event) => {
+                if (e.cancelable) e.preventDefault();
+                flap();
+            };
+
             startBtn?.addEventListener('click', start);
             pauseBtn?.addEventListener('click', togglePause);
-            tapBtn?.addEventListener('click', flap);
-            flappyCanvas.addEventListener('pointerdown', flap);
+            tapBtn?.addEventListener('pointerdown', handleFlapAction);
+            tapBtn?.addEventListener('touchstart', handleFlapAction, { passive: false });
+            flappyCanvas.addEventListener('pointerdown', handleFlapAction);
+            flappyCanvas.addEventListener('touchstart', handleFlapAction, { passive: false });
             reset(); draw();
             return {
                 action: flap,
@@ -199,8 +214,10 @@ export const MiniGames: React.FC = () => {
                 cleanup: () => {
                     startBtn?.removeEventListener('click', start);
                     pauseBtn?.removeEventListener('click', togglePause);
-                    tapBtn?.removeEventListener('click', flap);
-                    flappyCanvas.removeEventListener('pointerdown', flap);
+                    tapBtn?.removeEventListener('pointerdown', handleFlapAction);
+                    tapBtn?.removeEventListener('touchstart', handleFlapAction);
+                    flappyCanvas.removeEventListener('pointerdown', handleFlapAction);
+                    flappyCanvas.removeEventListener('touchstart', handleFlapAction);
                 }
             };
         }
@@ -300,6 +317,13 @@ export const MiniGames: React.FC = () => {
                 } else if (!running && paused) {
                     ctx.fillStyle = '#fff'; ctx.font = '16px "Orbitron", sans-serif';
                     ctx.fillText('Paused', 150, H / 2);
+                } else if (!running && !started) {
+                    ctx.fillStyle = '#ff7300'; ctx.font = 'bold 15px "Orbitron", sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('CHROME DINO RUN', W / 2, H / 2 - 12);
+                    ctx.fillStyle = '#94a3b8'; ctx.font = '11px monospace';
+                    ctx.fillText('Tap Start below or Tap Screen to Jump', W / 2, H / 2 + 15);
+                    ctx.textAlign = 'left';
                 }
             }
 
@@ -310,8 +334,17 @@ export const MiniGames: React.FC = () => {
                 if (running) { afId = requestAnimationFrame(loop); animationFrames.push(afId); }
             }
 
-            startBtn?.addEventListener('click', start); pauseBtn?.addEventListener('click', togglePause);
-            jumpBtn?.addEventListener('click', jump); dinoCanvas.addEventListener('pointerdown', jump);
+            const handleJumpAction = (e: Event) => {
+                if (e.cancelable) e.preventDefault();
+                jump();
+            };
+
+            startBtn?.addEventListener('click', start);
+            pauseBtn?.addEventListener('click', togglePause);
+            jumpBtn?.addEventListener('pointerdown', handleJumpAction);
+            jumpBtn?.addEventListener('touchstart', handleJumpAction, { passive: false });
+            dinoCanvas.addEventListener('pointerdown', handleJumpAction);
+            dinoCanvas.addEventListener('touchstart', handleJumpAction, { passive: false });
             reset(); draw();
             return {
                 action: jump,
@@ -322,8 +355,10 @@ export const MiniGames: React.FC = () => {
                 cleanup: () => {
                     startBtn?.removeEventListener('click', start);
                     pauseBtn?.removeEventListener('click', togglePause);
-                    jumpBtn?.removeEventListener('click', jump);
-                    dinoCanvas.removeEventListener('pointerdown', jump);
+                    jumpBtn?.removeEventListener('pointerdown', handleJumpAction);
+                    jumpBtn?.removeEventListener('touchstart', handleJumpAction);
+                    dinoCanvas.removeEventListener('pointerdown', handleJumpAction);
+                    dinoCanvas.removeEventListener('touchstart', handleJumpAction);
                 }
             };
         }
@@ -413,6 +448,13 @@ export const MiniGames: React.FC = () => {
                 } else if (!running && paused) {
                     ctx.fillStyle = '#fff'; ctx.font = '16px "Orbitron", sans-serif';
                     ctx.fillText('Paused', 150, H / 2);
+                } else if (!running && !started) {
+                    ctx.fillStyle = '#ff7300'; ctx.font = 'bold 15px "Orbitron", sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('ASTEROID DODGE', W / 2, H / 2 - 12);
+                    ctx.fillStyle = '#94a3b8'; ctx.font = '11px monospace';
+                    ctx.fillText('Tap Start / Drag Screen to Dodge', W / 2, H / 2 + 15);
+                    ctx.textAlign = 'left';
                 }
             }
 
@@ -447,15 +489,21 @@ export const MiniGames: React.FC = () => {
             startBtn?.addEventListener('click', handleStart);
             pauseBtn?.addEventListener('click', handleTogglePause);
             leftBtn?.addEventListener('pointerdown', handleLeftDown as any);
+            leftBtn?.addEventListener('touchstart', handleLeftDown as any, { passive: false });
             leftBtn?.addEventListener('pointerup', handleLeftUp);
+            leftBtn?.addEventListener('touchend', handleLeftUp);
             leftBtn?.addEventListener('pointerleave', handleLeftUp);
             leftBtn?.addEventListener('pointercancel', handleLeftUp);
             rightBtn?.addEventListener('pointerdown', handleRightDown as any);
+            rightBtn?.addEventListener('touchstart', handleRightDown as any, { passive: false });
             rightBtn?.addEventListener('pointerup', handleRightUp);
+            rightBtn?.addEventListener('touchend', handleRightUp);
             rightBtn?.addEventListener('pointerleave', handleRightUp);
             rightBtn?.addEventListener('pointercancel', handleRightUp);
             dodgeCanvas.addEventListener('pointerdown', handleCanvasDown as any);
+            dodgeCanvas.addEventListener('touchstart', handleCanvasDown as any, { passive: false });
             dodgeCanvas.addEventListener('pointermove', handleCanvasMove as any);
+            dodgeCanvas.addEventListener('touchmove', handleCanvasMove as any, { passive: false });
 
             reset(); draw();
             return {
@@ -579,6 +627,13 @@ export const MiniGames: React.FC = () => {
                 } else if (!running && paused) {
                     ctx.fillStyle = '#fff'; ctx.font = '16px "Orbitron", sans-serif';
                     ctx.fillText('Paused', 150, H / 2);
+                } else if (!running) {
+                    ctx.fillStyle = '#ff7300'; ctx.font = 'bold 15px "Orbitron", sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('CYBER SNAKE', W / 2, H / 2 - 12);
+                    ctx.fillStyle = '#94a3b8'; ctx.font = '11px monospace';
+                    ctx.fillText('Tap Start below to begin', W / 2, H / 2 + 15);
+                    ctx.textAlign = 'left';
                 }
             }
 
@@ -594,24 +649,48 @@ export const MiniGames: React.FC = () => {
             function left() { if (dir.x === 0) { nextDir = { x: -gridSize, y: 0 }; playSound('jump'); } }
             function right() { if (dir.x === 0) { nextDir = { x: gridSize, y: 0 }; playSound('jump'); } }
 
+            let touchStartX = 0, touchStartY = 0;
+            const handleSnakeTouchStart = (e: TouchEvent) => {
+                if (e.cancelable) e.preventDefault();
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                if (!running && !over) start(); else if (paused) resume();
+            };
+            const handleSnakeTouchEnd = (e: TouchEvent) => {
+                if (e.cancelable) e.preventDefault();
+                const dx = e.changedTouches[0].clientX - touchStartX;
+                const dy = e.changedTouches[0].clientY - touchStartY;
+                if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 15) {
+                    if (dx > 0) right(); else left();
+                } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 15) {
+                    if (dy > 0) down(); else up();
+                }
+            };
+
             const upBtn = document.getElementById('snakeUp');
             const downBtn = document.getElementById('snakeDown');
             const leftBtn = document.getElementById('snakeLeft');
             const rightBtn = document.getElementById('snakeRight');
 
-            const handleUpClick = () => { safeFocus('snake'); up(); };
-            const handleDownClick = () => { safeFocus('snake'); down(); };
-            const handleLeftClick = () => { safeFocus('snake'); left(); };
-            const handleRightClick = () => { safeFocus('snake'); right(); };
-            const handleStart = () => start();
-            const handleTogglePause = () => togglePause();
+            const handleUpClick = (e: Event) => { if (e.cancelable) e.preventDefault(); safeFocus('snake'); if (!running && !over) start(); else if (paused) resume(); up(); };
+            const handleDownClick = (e: Event) => { if (e.cancelable) e.preventDefault(); safeFocus('snake'); if (!running && !over) start(); else if (paused) resume(); down(); };
+            const handleLeftClick = (e: Event) => { if (e.cancelable) e.preventDefault(); safeFocus('snake'); if (!running && !over) start(); else if (paused) resume(); left(); };
+            const handleRightClick = (e: Event) => { if (e.cancelable) e.preventDefault(); safeFocus('snake'); if (!running && !over) start(); else if (paused) resume(); right(); };
 
-            upBtn?.addEventListener('click', handleUpClick);
-            downBtn?.addEventListener('click', handleDownClick);
-            leftBtn?.addEventListener('click', handleLeftClick);
-            rightBtn?.addEventListener('click', handleRightClick);
-            startBtn?.addEventListener('click', handleStart);
-            pauseBtn?.addEventListener('click', handleTogglePause);
+            upBtn?.addEventListener('pointerdown', handleUpClick);
+            upBtn?.addEventListener('touchstart', handleUpClick, { passive: false });
+            downBtn?.addEventListener('pointerdown', handleDownClick);
+            downBtn?.addEventListener('touchstart', handleDownClick, { passive: false });
+            leftBtn?.addEventListener('pointerdown', handleLeftClick);
+            leftBtn?.addEventListener('touchstart', handleLeftClick, { passive: false });
+            rightBtn?.addEventListener('pointerdown', handleRightClick);
+            rightBtn?.addEventListener('touchstart', handleRightClick, { passive: false });
+
+            snakeCanvas.addEventListener('touchstart', handleSnakeTouchStart, { passive: false });
+            snakeCanvas.addEventListener('touchend', handleSnakeTouchEnd, { passive: false });
+
+            startBtn?.addEventListener('click', start);
+            pauseBtn?.addEventListener('click', togglePause);
 
             reset(); draw();
             return {
@@ -624,12 +703,222 @@ export const MiniGames: React.FC = () => {
                 isPaused: () => paused,
                 isRunning: () => running,
                 cleanup: () => {
-                    upBtn?.removeEventListener('click', handleUpClick);
-                    downBtn?.removeEventListener('click', handleDownClick);
-                    leftBtn?.removeEventListener('click', handleLeftClick);
-                    rightBtn?.removeEventListener('click', handleRightClick);
-                    startBtn?.removeEventListener('click', handleStart);
-                    pauseBtn?.removeEventListener('click', handleTogglePause);
+                    upBtn?.removeEventListener('pointerdown', handleUpClick);
+                    upBtn?.removeEventListener('touchstart', handleUpClick);
+                    downBtn?.removeEventListener('pointerdown', handleDownClick);
+                    downBtn?.removeEventListener('touchstart', handleDownClick);
+                    leftBtn?.removeEventListener('pointerdown', handleLeftClick);
+                    leftBtn?.removeEventListener('touchstart', handleLeftClick);
+                    rightBtn?.removeEventListener('pointerdown', handleRightClick);
+                    rightBtn?.removeEventListener('touchstart', handleRightClick);
+                    snakeCanvas.removeEventListener('touchstart', handleSnakeTouchStart);
+                    snakeCanvas.removeEventListener('touchend', handleSnakeTouchEnd);
+                    startBtn?.removeEventListener('click', start);
+                    pauseBtn?.removeEventListener('click', togglePause);
+                }
+            };
+        }
+
+        // --- BREAKER ---
+        function setupBreaker() {
+            const ctx = breakerCanvas.getContext('2d');
+            if (!ctx) return null;
+            const scoreEl = document.getElementById('breakerScore');
+            const startBtn = document.getElementById('breakerStart');
+            const pauseBtn = document.getElementById('breakerPause');
+            const leftBtn = document.getElementById('breakerLeft');
+            const rightBtn = document.getElementById('breakerRight');
+            const W = breakerCanvas.width; const H = breakerCanvas.height;
+            let afId: number;
+
+            let running = false, started = false, paused = false, over = false, score = 0, last = 0;
+            let paddle = { x: W / 2 - 30, y: H - 16, w: 60, h: 10 };
+            let ball = { x: W / 2, y: H - 30, vx: 120, vy: -150, r: 5 };
+            let bricks: any[] = [];
+            let moveLeft = false, moveRight = false;
+
+            function initBricks() {
+                bricks = [];
+                const rows = 3, cols = 7;
+                const bw = 44, bh = 12, padding = 4, offsetTop = 20, offsetLeft = (W - (cols * (bw + padding) - padding)) / 2;
+                const colors = ['#ff7300', '#00f3ff', '#ab47bc'];
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        bricks.push({
+                            x: offsetLeft + c * (bw + padding),
+                            y: offsetTop + r * (bh + padding),
+                            w: bw, h: bh,
+                            color: colors[r],
+                            alive: true
+                        });
+                    }
+                }
+            }
+
+            function reset() {
+                running = false; started = false; paused = false; over = false; score = 0;
+                paddle = { x: W / 2 - 30, y: H - 16, w: 60, h: 10 };
+                ball = { x: W / 2, y: H - 30, vx: (Math.random() > 0.5 ? 1 : -1) * 130, vy: -150, r: 5 };
+                initBricks();
+                if (scoreEl) scoreEl.textContent = 'Score: 0';
+                if (pauseBtn) pauseBtn.textContent = 'Pause';
+            }
+
+            function start() {
+                safeFocus('breaker'); reset(); running = true; started = true; setShowSubmit(false);
+                last = performance.now(); afId = requestAnimationFrame(loop);
+                animationFrames.push(afId);
+            }
+
+            function end() {
+                running = false; over = true; paused = false;
+                if (pauseBtn) pauseBtn.textContent = 'Pause';
+                onGameOver('breaker', score);
+            }
+
+            function pause() { if (!running || over) return; running = false; paused = true; if (pauseBtn) pauseBtn.textContent = 'Resume'; }
+            function resume() { if (!paused || over) return; paused = false; running = true; if (pauseBtn) pauseBtn.textContent = 'Pause'; last = performance.now(); afId = requestAnimationFrame(loop); }
+            function togglePause() { if (paused) resume(); else pause(); }
+
+            function update(dt: number) {
+                if (moveLeft) paddle.x -= 260 * dt;
+                if (moveRight) paddle.x += 260 * dt;
+                paddle.x = Math.max(0, Math.min(W - paddle.w, paddle.x));
+
+                ball.x += ball.vx * dt;
+                ball.y += ball.vy * dt;
+
+                // Wall collisions
+                if (ball.x - ball.r < 0) { ball.x = ball.r; ball.vx *= -1; playSound('jump'); }
+                if (ball.x + ball.r > W) { ball.x = W - ball.r; ball.vx *= -1; playSound('jump'); }
+                if (ball.y - ball.r < 0) { ball.y = ball.r; ball.vy *= -1; playSound('jump'); }
+
+                // Paddle collision
+                if (ball.y + ball.r >= paddle.y && ball.x >= paddle.x && ball.x <= paddle.x + paddle.w && ball.vy > 0) {
+                    ball.vy = -Math.abs(ball.vy);
+                    const hitPos = (ball.x - (paddle.x + paddle.w / 2)) / (paddle.w / 2);
+                    ball.vx = hitPos * 180;
+                    playSound('jump');
+                }
+
+                // Brick collisions
+                let remaining = 0;
+                for (const b of bricks) {
+                    if (!b.alive) continue;
+                    remaining++;
+                    if (ball.x + ball.r > b.x && ball.x - ball.r < b.x + b.w && ball.y + ball.r > b.y && ball.y - ball.r < b.y + b.h) {
+                        b.alive = false;
+                        ball.vy *= -1;
+                        score += 20;
+                        playSound('score');
+                        if (scoreEl) scoreEl.textContent = `Score: ${score}`;
+                        break;
+                    }
+                }
+
+                if (remaining === 0) { end(); return; }
+                if (ball.y - ball.r > H) { end(); }
+            }
+
+            function draw() {
+                if (!ctx) return;
+                ctx.clearRect(0, 0, W, H);
+                ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, W, H);
+
+                for (const b of bricks) {
+                    if (b.alive) {
+                        ctx.fillStyle = b.color;
+                        ctx.fillRect(b.x, b.y, b.w, b.h);
+                    }
+                }
+
+                ctx.fillStyle = '#ff7300';
+                ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
+
+                ctx.beginPath();
+                ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff'; ctx.fill(); ctx.closePath();
+
+                if (!running && over) {
+                    ctx.fillStyle = '#fff'; ctx.font = '16px "Orbitron", sans-serif';
+                    ctx.fillText('Game Over', 130, H / 2);
+                } else if (!running && paused) {
+                    ctx.fillStyle = '#fff'; ctx.font = '16px "Orbitron", sans-serif';
+                    ctx.fillText('Paused', 150, H / 2);
+                } else if (!running && !started) {
+                    ctx.fillStyle = '#ff7300'; ctx.font = 'bold 15px "Orbitron", sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('NEON BRICK BREAKER', W / 2, H / 2 - 12);
+                    ctx.fillStyle = '#94a3b8'; ctx.font = '11px monospace';
+                    ctx.fillText('Tap Start / Drag Paddle to Play', W / 2, H / 2 + 15);
+                    ctx.textAlign = 'left';
+                }
+            }
+
+            function loop(ts: number) {
+                if (!running) { draw(); return; }
+                const dt = Math.min(0.033, (ts - last) / 1000);
+                last = ts; update(dt); draw();
+                if (running) { afId = requestAnimationFrame(loop); animationFrames.push(afId); }
+            }
+
+            function pressLeft(on: boolean) { safeFocus('breaker'); moveLeft = on; }
+            function pressRight(on: boolean) { safeFocus('breaker'); moveRight = on; }
+
+            const handleLeftDown = (e: Event) => { if (e.cancelable) e.preventDefault(); pressLeft(true); };
+            const handleLeftUp = () => pressLeft(false);
+            const handleRightDown = (e: Event) => { if (e.cancelable) e.preventDefault(); pressRight(true); };
+            const handleRightUp = () => pressRight(false);
+
+            const handleCanvasMove = (e: PointerEvent | TouchEvent) => {
+                if (document.getElementById('scoreSubmitOverlay')) return;
+                safeFocus('breaker');
+                const clientX = 'touches' in e ? e.touches[0].clientX : (e as PointerEvent).clientX;
+                const rect = breakerCanvas.getBoundingClientRect();
+                const x = clientX - rect.left;
+                paddle.x = Math.max(0, Math.min(W - paddle.w, (x / rect.width) * W - paddle.w / 2));
+                if (!started || over) start(); else if (paused) resume();
+            };
+
+            startBtn?.addEventListener('click', start);
+            pauseBtn?.addEventListener('click', togglePause);
+            leftBtn?.addEventListener('pointerdown', handleLeftDown);
+            leftBtn?.addEventListener('touchstart', handleLeftDown, { passive: false });
+            leftBtn?.addEventListener('pointerup', handleLeftUp);
+            leftBtn?.addEventListener('touchend', handleLeftUp);
+            rightBtn?.addEventListener('pointerdown', handleRightDown);
+            rightBtn?.addEventListener('touchstart', handleRightDown, { passive: false });
+            rightBtn?.addEventListener('pointerup', handleRightUp);
+            rightBtn?.addEventListener('touchend', handleRightUp);
+
+            breakerCanvas.addEventListener('pointermove', handleCanvasMove as any);
+            breakerCanvas.addEventListener('touchmove', handleCanvasMove as any, { passive: false });
+            breakerCanvas.addEventListener('pointerdown', handleCanvasMove as any);
+
+            reset(); draw();
+            return {
+                leftDown: () => pressLeft(true),
+                leftUp: () => pressLeft(false),
+                rightDown: () => pressRight(true),
+                rightUp: () => pressRight(false),
+                pause,
+                resume,
+                isPaused: () => paused,
+                isRunning: () => running,
+                cleanup: () => {
+                    startBtn?.removeEventListener('click', start);
+                    pauseBtn?.removeEventListener('click', togglePause);
+                    leftBtn?.removeEventListener('pointerdown', handleLeftDown);
+                    leftBtn?.removeEventListener('touchstart', handleLeftDown);
+                    leftBtn?.removeEventListener('pointerup', handleLeftUp);
+                    leftBtn?.removeEventListener('touchend', handleLeftUp);
+                    rightBtn?.removeEventListener('pointerdown', handleRightDown);
+                    rightBtn?.removeEventListener('touchstart', handleRightDown);
+                    rightBtn?.removeEventListener('pointerup', handleRightUp);
+                    rightBtn?.removeEventListener('touchend', handleRightUp);
+                    breakerCanvas.removeEventListener('pointermove', handleCanvasMove as any);
+                    breakerCanvas.removeEventListener('touchmove', handleCanvasMove as any);
+                    breakerCanvas.removeEventListener('pointerdown', handleCanvasMove as any);
                 }
             };
         }
@@ -638,13 +927,13 @@ export const MiniGames: React.FC = () => {
         const dino = setupDino();
         const dodge = setupDodge();
         const snake = setupSnake();
-        const games: any = { flappy, dino, dodge, snake };
+        const breaker = setupBreaker();
+        const games: any = { flappy, dino, dodge, snake, breaker };
 
         const handleKeyDown = (e: KeyboardEvent) => {
             const tag = (e.target as HTMLElement).tagName || '';
             if (tag === 'INPUT' || tag === 'TEXTAREA') return;
 
-            // Prevent scroll for game keys
             if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
                 e.preventDefault();
             }
@@ -654,8 +943,8 @@ export const MiniGames: React.FC = () => {
                 if (current === 'dino' && games.dino) games.dino.action();
                 else if (current === 'flappy' && games.flappy) games.flappy.action();
             }
-            if (current === 'dodge' && e.code === 'ArrowLeft' && games.dodge) games.dodge.leftDown();
-            if (current === 'dodge' && e.code === 'ArrowRight' && games.dodge) games.dodge.rightDown();
+            if ((current === 'dodge' || current === 'breaker') && e.code === 'ArrowLeft' && games[current]) games[current].leftDown();
+            if ((current === 'dodge' || current === 'breaker') && e.code === 'ArrowRight' && games[current]) games[current].rightDown();
             if (current === 'dino' && e.code === 'ArrowUp' && games.dino) games.dino.action();
             
             if (current === 'snake' && games.snake) {
@@ -674,8 +963,8 @@ export const MiniGames: React.FC = () => {
 
         const handleKeyUp = (e: KeyboardEvent) => {
             const current = activeGameRef.current;
-            if (current === 'dodge' && e.code === 'ArrowLeft' && games.dodge) games.dodge.leftUp();
-            if (current === 'dodge' && e.code === 'ArrowRight' && games.dodge) games.dodge.rightUp();
+            if ((current === 'dodge' || current === 'breaker') && e.code === 'ArrowLeft' && games[current]) games[current].leftUp();
+            if ((current === 'dodge' || current === 'breaker') && e.code === 'ArrowRight' && games[current]) games[current].rightUp();
         };
 
         document.addEventListener('keydown', handleKeyDown);
@@ -722,25 +1011,25 @@ export const MiniGames: React.FC = () => {
     };
 
     return (
-        <div className="w-full max-w-full sm:max-w-2xl mx-auto space-y-6 no-cursor-follower">
+        <div className="w-full max-w-full sm:max-w-2xl mx-auto space-y-6 no-cursor-follower flex flex-col items-center">
             {/* Game Selector & Mute Toggle */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="grid grid-cols-4 gap-2 sm:flex sm:flex-wrap sm:gap-2">
-                    {(['flappy', 'dino', 'dodge', 'snake'] as const).map((g) => (
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center w-full">
+                <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2 w-full sm:w-auto justify-center">
+                    {(['flappy', 'dino', 'dodge', 'snake', 'breaker'] as const).map((g) => (
                         <button
                             key={g}
                             onClick={() => handleGameChange(g)}
-                            className={`rounded-lg py-2.5 font-mono text-[10px] sm:px-5 sm:text-xs tracking-wide uppercase border transition-all ${
+                            className={`rounded-lg py-2.5 px-3 font-mono text-xs tracking-wider uppercase border transition-all text-center flex items-center justify-center font-bold ${
                                 activeGame === g
-                                    ? 'bg-primary/20 border-primary text-white shadow-[0_0_10px_rgba(255,115,0,0.2)]'
-                                    : 'bg-white/5 border-white/10 text-slate-400 hover:border-white/20'
+                                    ? 'bg-primary text-black border-primary font-black shadow-[0_0_12px_rgba(255,115,0,0.4)]'
+                                    : 'bg-white/10 border-white/15 text-slate-300 hover:border-white/30 hover:text-white'
                             }`}
                         >
                             {g}
                         </button>
                     ))}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 justify-center">
                     <button
                         onClick={() => setShowLeaderboard(!showLeaderboard)}
                         className={`glass rounded-lg px-4 py-2 text-xs font-mono flex items-center justify-center gap-2 border-white/10 hover:border-primary/40 transition-all ${
@@ -771,11 +1060,11 @@ export const MiniGames: React.FC = () => {
                         <span id="flappyScore" className="text-secondary font-bold">Score: 0</span>
                     </div>
                     <canvas id="flappyCanvas" className="border border-white/10 rounded-xl cursor-crosshair bg-black w-full max-w-[360px]" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
-                    <div className="flex gap-4 mt-5 w-full max-w-[360px] justify-center">
-                        <button id="flappyStart" className="px-6 py-2 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
-                        <button id="flappyPause" className="px-6 py-2 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
-                        <button id="flappyTap" className="px-6 py-2 text-xs uppercase tracking-widest font-bold font-mono bg-accent/20 text-accent border border-accent rounded-lg md:hidden">Flap</button>
+                    <div className="flex gap-4 mt-4 w-full max-w-[360px] justify-center">
+                        <button id="flappyStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
+                        <button id="flappyPause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
                     </div>
+                    <button id="flappyTap" className="w-full max-w-[360px] mt-3 py-3 text-xs sm:text-sm uppercase tracking-widest font-black font-orbitron bg-gradient-to-r from-primary to-accent text-black rounded-xl shadow-[0_0_15px_rgba(255,115,0,0.4)] active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-2">⚡ TAP TO FLAP BIRD</button>
                 </div>
 
                 {/* Dino Card */}
@@ -784,12 +1073,12 @@ export const MiniGames: React.FC = () => {
                         <span>TAP / SPACE to jump</span>
                         <span id="dinoScore" className="text-accent font-bold">Score: 0</span>
                     </div>
-                    <canvas id="dinoCanvas" className="border border-white/10 rounded-xl cursor-crosshair bg-black w-full max-w-[360px]" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
-                    <div className="flex gap-4 mt-5 w-full max-w-[360px] justify-center">
-                        <button id="dinoStart" className="px-6 py-2 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
-                        <button id="dinoPause" className="px-6 py-2 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
-                        <button id="dinoJump" className="px-6 py-2 text-xs uppercase tracking-widest font-bold font-mono bg-accent/20 text-accent border border-accent rounded-lg md:hidden">Jump</button>
+                    <canvas id="dinoCanvas" className="border border-white/10 rounded-xl cursor-crosshair bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
+                    <div className="flex gap-4 mt-4 w-full max-w-[360px] justify-center">
+                        <button id="dinoStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
+                        <button id="dinoPause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
                     </div>
+                    <button id="dinoJump" className="w-full max-w-[360px] mt-3 py-3 text-xs sm:text-sm uppercase tracking-widest font-black font-orbitron bg-gradient-to-r from-accent to-secondary text-black rounded-xl shadow-[0_0_15px_rgba(0,243,255,0.4)] active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-2">🚀 TAP TO JUMP DINO</button>
                 </div>
 
                 {/* Dodge Card */}
@@ -798,39 +1087,56 @@ export const MiniGames: React.FC = () => {
                         <span>DRAG / TAP to dodge</span>
                         <span id="dodgeScore" className="text-primary font-bold">Score: 0</span>
                     </div>
-                    <canvas id="dodgeCanvas" className="border border-white/10 rounded-xl cursor-crosshair bg-black w-full max-w-[360px]" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
-                    <div className="flex gap-4 mt-5 w-full max-w-[360px] justify-center">
-                        <button id="dodgeStart" className="px-6 py-2 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
-                        <button id="dodgePause" className="px-6 py-2 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
-                        <div className="md:hidden flex gap-2">
-                            <button id="dodgeLeft" className="px-4 py-2 text-xs font-bold font-mono bg-accent/20 text-accent border border-accent rounded-lg">←</button>
-                            <button id="dodgeRight" className="px-4 py-2 text-xs font-bold font-mono bg-accent/20 text-accent border border-accent rounded-lg">→</button>
-                        </div>
+                    <canvas id="dodgeCanvas" className="border border-white/10 rounded-xl cursor-crosshair bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
+                    <div className="flex gap-3 mt-4 w-full max-w-[360px] justify-center">
+                        <button id="dodgeStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
+                        <button id="dodgePause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
+                    </div>
+                    <div className="flex gap-3 w-full max-w-[360px] justify-center mt-3">
+                        <button id="dodgeLeft" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-accent/20 text-accent border border-accent/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">◀ LEFT</button>
+                        <button id="dodgeRight" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-accent/20 text-accent border border-accent/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">RIGHT ▶</button>
                     </div>
                 </div>
 
                 {/* Snake Card */}
                 <div className={`w-full flex flex-col items-center ${activeGame === 'snake' ? '' : 'hidden'}`}>
                     <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
-                        <span>ARROW KEYS to turn</span>
+                        <span>SWIPE or TAP D-Pad</span>
                         <span id="snakeScore" className="text-secondary font-bold">Score: 0</span>
                     </div>
-                    <canvas id="snakeCanvas" className="border border-white/10 rounded-xl bg-black w-full max-w-[360px]" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
-                    <div className="flex gap-4 mt-5 w-full max-w-[360px] justify-center">
-                        <button id="snakeStart" className="px-6 py-2 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
-                        <button id="snakePause" className="px-6 py-2 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
+                    <canvas id="snakeCanvas" className="border border-white/10 rounded-xl bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
+                    <div className="flex gap-4 mt-4 w-full max-w-[360px] justify-center">
+                        <button id="snakeStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
+                        <button id="snakePause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
                     </div>
-                    {/* Mobile Controls */}
-                    <div className="md:hidden grid grid-cols-3 gap-2 mt-4 w-36 justify-items-center">
+                    {/* Mobile & Touch Controls */}
+                    <div className="grid grid-cols-3 gap-2 mt-4 w-44 justify-items-center touch-none select-none">
                         <div />
-                        <button id="snakeUp" className="h-10 w-10 bg-accent/20 text-accent border border-accent rounded-lg flex items-center justify-center font-bold">↑</button>
+                        <button id="snakeUp" className="h-12 w-12 bg-primary/20 text-primary border-2 border-primary/60 rounded-xl flex items-center justify-center font-black text-lg active:scale-90 transition-transform">↑</button>
                         <div />
-                        <button id="snakeLeft" className="h-10 w-10 bg-accent/20 text-accent border border-accent rounded-lg flex items-center justify-center font-bold">←</button>
-                        <div className="h-10 w-10 flex items-center justify-center text-xs font-mono text-slate-500">🎮</div>
-                        <button id="snakeRight" className="h-10 w-10 bg-accent/20 text-accent border border-accent rounded-lg flex items-center justify-center font-bold">→</button>
+                        <button id="snakeLeft" className="h-12 w-12 bg-primary/20 text-primary border-2 border-primary/60 rounded-xl flex items-center justify-center font-black text-lg active:scale-90 transition-transform">←</button>
+                        <div className="h-12 w-12 flex items-center justify-center text-sm font-mono text-slate-400">🎮</div>
+                        <button id="snakeRight" className="h-12 w-12 bg-primary/20 text-primary border-2 border-primary/60 rounded-xl flex items-center justify-center font-black text-lg active:scale-90 transition-transform">→</button>
                         <div />
-                        <button id="snakeDown" className="h-10 w-10 bg-accent/20 text-accent border border-accent rounded-lg flex items-center justify-center font-bold">↓</button>
+                        <button id="snakeDown" className="h-12 w-12 bg-primary/20 text-primary border-2 border-primary/60 rounded-xl flex items-center justify-center font-black text-lg active:scale-90 transition-transform">↓</button>
                         <div />
+                    </div>
+                </div>
+
+                {/* Breaker Card */}
+                <div className={`w-full flex flex-col items-center ${activeGame === 'breaker' ? '' : 'hidden'}`}>
+                    <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
+                        <span>DRAG / TAP to move paddle</span>
+                        <span id="breakerScore" className="text-primary font-bold">Score: 0</span>
+                    </div>
+                    <canvas id="breakerCanvas" className="border border-white/10 rounded-xl bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
+                    <div className="flex gap-3 mt-4 w-full max-w-[360px] justify-center">
+                        <button id="breakerStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
+                        <button id="breakerPause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
+                    </div>
+                    <div className="flex gap-3 w-full max-w-[360px] justify-center mt-3">
+                        <button id="breakerLeft" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-accent/20 text-accent border border-accent/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">◀ LEFT</button>
+                        <button id="breakerRight" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-accent/20 text-accent border border-accent/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">RIGHT ▶</button>
                     </div>
                 </div>
 

@@ -12,8 +12,6 @@ import {
   Languages,
   Linkedin,
   Mail,
-  Rocket,
-  Send,
   ShieldCheck,
   Trophy,
   Utensils,
@@ -22,29 +20,21 @@ import {
 import { GlassCard } from '../components/GlassCard';
 import { InteractiveWidgets } from '../components/InteractiveWidgets';
 import { MiniGames } from '../components/MiniGames';
-import { linkedInAchievements, linkedInCertificates } from '../data/profile';
+import { MusicPlaylistWidget } from '../components/MusicPlaylist';
+import { linkedInCertificates } from '../data/profile';
 import { fetchGitHubProjects } from '../lib/github';
 import {
-  submitContactMessage,
-  submitRepoRequest,
   subscribeToCertificates,
   subscribeToProjects,
 } from '../lib/realtime';
 import type { Certificate, PortfolioProject } from '../types';
 
-const skills = [
-  'JavaScript',
-  'Python',
-  'React.js',
-  'Node.js',
-  'IoT',
-  'MongoDB',
-  'PHP',
-  'SQL',
-  'AI/ML',
-  'Firebase',
-  'Flask',
-  'AWS',
+const skillCategories = [
+  { title: 'Frontend Mastery', skills: ['React.js', 'Next.js', 'Vite', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'HTML5/CSS3', 'WebGL / Three.js'] },
+  { title: 'Backend & APIs', skills: ['Node.js', 'Express', 'Python', 'Flask', 'FastAPI', 'PHP', 'REST APIs', 'WebSockets'] },
+  { title: 'Databases & Storage', skills: ['MongoDB', 'PostgreSQL', 'Firebase Realtime / Firestore', 'MySQL', 'Redis', 'SQL'] },
+  { title: 'AI, ML & Models', skills: ['Machine Learning', 'PyTorch / TensorFlow', 'OpenAI API', 'Gemini API', 'LLMs & RAG', 'Computer Vision'] },
+  { title: 'Cloud & Engineering', skills: ['AWS', 'Vercel', 'Docker', 'Git & GitHub', 'CI/CD Pipelines', 'IoT Dashboards'] }
 ];
 
 const fallbackProjects: PortfolioProject[] = [
@@ -107,23 +97,6 @@ const fallbackProjects: PortfolioProject[] = [
   },
 ];
 
-const storyPanels = [
-  {
-    title: 'Idea to MVP',
-    copy: 'Fast prototypes for BTech, MTech, startup, and freelance software needs.',
-    imageUrl: '/banner_mvp.png',
-  },
-  {
-    title: 'Build + Integrate',
-    copy: 'React, Firebase, Node, AI/ML, IoT dashboards, admin panels, and automations.',
-    imageUrl: '/banner_build.png',
-  },
-  {
-    title: 'Demo Ready',
-    copy: 'Clean project pages with media, use cases, live demos, and approval-based repo access.',
-    imageUrl: '/banner_demo.png',
-  },
-];
 
 const ProjectIcon = ({ index }: { index: number }) => {
   const icons = [
@@ -139,8 +112,6 @@ export const HomePage: React.FC = () => {
   const [adminProjects, setAdminProjects] = useState<PortfolioProject[]>([]);
   const [githubProjects, setGithubProjects] = useState<PortfolioProject[]>([]);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
-  const [contactStatus, setContactStatus] = useState('');
-  const [requestStatus, setRequestStatus] = useState('');
 
   const [isMobile, setIsMobile] = useState(false);
   const [showScrollPopup, setShowScrollPopup] = useState(false);
@@ -197,35 +168,6 @@ export const HomePage: React.FC = () => {
   ];
   const visibleCertificates = allCertificates.filter(cert => bestCertIds.includes(cert.id)).slice(0, 6);
 
-  const handleContact = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    setContactStatus('Sending...');
-    await submitContactMessage({
-      name: String(form.get('name') || ''),
-      email: String(form.get('email') || ''),
-      phone: String(form.get('phone') || ''),
-      topic: String(form.get('topic') || 'General inquiry'),
-      message: String(form.get('message') || ''),
-    });
-    event.currentTarget.reset();
-    setContactStatus('Message received. Aryan can reply from the admin panel.');
-  };
-
-  const handleRepoRequest = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    setRequestStatus('Sending request...');
-    await submitRepoRequest({
-      name: String(form.get('name') || ''),
-      email: String(form.get('email') || ''),
-      projectTitle: String(form.get('projectTitle') || ''),
-      reason: String(form.get('reason') || ''),
-    });
-    event.currentTarget.reset();
-    setRequestStatus('Request received. You will receive a mail for repo access after review.');
-  };
-
   return (
     <div className="pt-28 pb-20 px-6 max-w-7xl mx-auto space-y-28">
       <section className="grid min-h-[calc(100vh-7rem)] items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
@@ -245,15 +187,27 @@ export const HomePage: React.FC = () => {
             <a href="/resume" className="glass px-6 py-3 rounded-lg text-secondary font-bold hover:bg-white/10 inline-flex items-center gap-2">
               <Download size={18} /> Resume
             </a>
-            <a href="#repo-request" className="glass px-6 py-3 rounded-lg text-accent font-bold hover:bg-white/10">
-              Ask For Repo
+            <a href="/contact" className="glass px-6 py-3 rounded-lg text-accent font-bold hover:bg-white/10">
+              Contact / Ask Repo
             </a>
           </div>
         </div>
 
         <div className="relative mx-auto w-full max-w-sm">
           <div className="relative rounded-[2rem] border border-primary/30 bg-black p-3 shadow-[0_0_60px_rgba(255,115,0,0.25)]">
-            <img src="/aryan.png" alt="Aryan Raikwar" className="aspect-[4/5] w-full rounded-[1.5rem] object-cover" />
+            <picture>
+              <source srcSet="/aryan.webp" type="image/webp" />
+              <source srcSet="/aryan.jpg" type="image/jpeg" />
+              <img
+                src="/aryan.jpg"
+                alt="Aryan Raikwar"
+                width={400}
+                height={500}
+                loading="eager"
+                decoding="async"
+                className="aspect-[4/5] w-full rounded-[1.5rem] object-cover"
+              />
+            </picture>
             <div className="absolute -bottom-6 left-6 right-6 glass rounded-xl p-4">
               <div className="grid grid-cols-3 gap-3 text-center">
                 <div>
@@ -669,6 +623,17 @@ export const HomePage: React.FC = () => {
 
       <InteractiveWidgets />
 
+      <section id="playlist" className="space-y-6">
+        <div className="text-center space-y-3">
+          <span className="section-kicker">Audio Experience</span>
+          <h2 className="text-3xl md:text-5xl font-orbitron">Cyber Lofi Lounge</h2>
+          <p className="text-slate-300 max-w-2xl mx-auto text-sm font-mono">
+            Listen to curated lo-fi beats &amp; ambient tracks while exploring the portfolio.
+          </p>
+        </div>
+        <MusicPlaylistWidget />
+      </section>
+
       <section id="about" className="grid lg:grid-cols-2 gap-12 items-start">
         <div className="space-y-8">
           <span className="section-kicker">About</span>
@@ -677,11 +642,34 @@ export const HomePage: React.FC = () => {
             I work across frontend, backend, Firebase, AI/ML, IoT, and automation. I can help with free learning
             projects, paid freelance builds, BTech/MTech final year projects, demos, documentation, and deployment.
           </p>
-          <div className="flex flex-wrap gap-4">
-            {skills.map((skill) => (
-              <GlassCard key={skill} className="px-5 py-3">
-                <span className="font-bold text-light text-sm">{skill}</span>
-              </GlassCard>
+          <div className="space-y-6 overflow-hidden relative w-full max-w-full">
+            <style>{`
+              @keyframes scrollLeft {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+              }
+              .animate-scroll {
+                animation: scrollLeft 25s linear infinite;
+                width: max-content;
+              }
+              .animate-scroll:hover {
+                animation-play-state: paused;
+              }
+            `}</style>
+            
+            {skillCategories.map((category, idx) => (
+              <div key={category.title} className="w-full">
+                <h4 className="text-secondary font-orbitron text-sm mb-3 uppercase tracking-wider pl-2 border-l-2 border-primary/30 ml-2">{category.title}</h4>
+                {/* Marquee Container */}
+                <div className="flex gap-3 animate-scroll py-2 pl-2" style={{ animationDirection: idx % 2 !== 0 ? 'reverse' : 'normal' }}>
+                  {/* Duplicate the items multiple times for seamless scrolling */}
+                  {[...category.skills, ...category.skills, ...category.skills, ...category.skills].map((skill, i) => (
+                    <div key={`${skill}-${i}`} className="glass px-4 py-2 shrink-0 rounded-lg border-white/5 hover:border-primary/40 hover:text-primary transition-colors cursor-default">
+                      <span className="font-bold text-light text-xs whitespace-nowrap tracking-wide">{skill}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -699,10 +687,10 @@ export const HomePage: React.FC = () => {
 
       <section id="projects" className="space-y-10">
         <div className="text-center space-y-4">
-          <span className="section-kicker">Projects</span>
-          <h2 className="text-3xl md:text-5xl font-orbitron">Latest Work From GitHub + Admin</h2>
-          <p className="text-slate-300 max-w-3xl mx-auto">
-            Repo links are private by request. Public visitors can view project details, demos, media, and ask for access.
+          <span className="section-kicker font-mono uppercase tracking-widest text-xs">Flagship Portfolio</span>
+          <h2 className="text-3xl md:text-5xl font-orbitron font-black text-light">Engineered Innovations &amp; Flagship Builds</h2>
+          <p className="text-slate-300 max-w-3xl mx-auto font-mono text-sm">
+            Showcasing full-stack web platforms, AI/ML models, IoT dashboards, and production software.
           </p>
         </div>
 
@@ -736,13 +724,19 @@ export const HomePage: React.FC = () => {
                       Demo <ExternalLink size={14} />
                     </a>
                   )}
-                  <a href="#repo-request" className="text-sm font-bold text-accent hover:text-white inline-flex items-center gap-1">
+                  <a href="/contact" className="text-sm font-bold text-accent hover:text-white inline-flex items-center gap-1">
                     Ask For Repo <ShieldCheck size={14} />
                   </a>
                 </div>
               </div>
             </GlassCard>
           ))}
+        </div>
+
+        <div className="flex justify-center pt-4">
+          <a href="/all-work" className="glass px-8 py-3.5 rounded-xl text-primary font-bold hover:bg-white/10 hover:border-primary/40 transition-all inline-flex items-center gap-2 font-orbitron tracking-wider text-sm shadow-[0_0_20px_rgba(255,115,0,0.15)]">
+            View All Projects ({projects.length}) <ExternalLink size={16} />
+          </a>
         </div>
       </section>
 
@@ -813,82 +807,115 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      <section id="achievements" className="space-y-10">
-        <div className="text-center space-y-4">
-          <span className="section-kicker">Achievements</span>
-          <h2 className="text-3xl md:text-5xl font-orbitron">LinkedIn Profile Highlights</h2>
-        </div>
-        <div className="grid md:grid-cols-2 gap-6">
-          {linkedInAchievements.map((achievement) => (
-            <GlassCard key={achievement.title} className="p-6">
-              <h3 className="font-orbitron text-xl text-accent">{achievement.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-slate-300">{achievement.description}</p>
-            </GlassCard>
-          ))}
-        </div>
-      </section>
-
-      <section id="repo-request" className="grid gap-8 lg:grid-cols-2">
-        <GlassCard className="p-8">
-          <span className="section-kicker">Repo access</span>
-          <h2 className="font-orbitron text-3xl mt-3 mb-4">Ask for a project repo</h2>
-          <p className="text-slate-300 mb-6">
-            Repo links are not shown publicly. Send a request and Aryan will review it from the admin panel.
+      {/* ── Flex / Creators & Community Realm ────────────────────────────── */}
+      <section id="creators-hub" className="space-y-10">
+        <div className="text-center space-y-3">
+          <span className="section-kicker font-mono uppercase tracking-widest text-xs">Social Impact &amp; Community</span>
+          <h2 className="text-3xl md:text-5xl font-orbitron font-black text-light">
+            Creators <span className="text-gradient">&amp; Gaming Realm</span>
+          </h2>
+          <p className="text-slate-300 max-w-2xl mx-auto font-mono text-sm">
+            Empowering 13,000+ developers on Instagram with technical tutorials &amp; streaming live gameplay on YouTube.
           </p>
-          <form onSubmit={handleRepoRequest} className="space-y-4">
-            <input name="name" className="input-shell" placeholder="Your name" required />
-            <input name="email" type="email" className="input-shell" placeholder="Email address" required />
-            <input name="projectTitle" className="input-shell" placeholder="Project name" required />
-            <textarea name="reason" className="input-shell min-h-28" placeholder="Why do you need repo access?" required />
-            <button className="glass px-5 py-3 rounded-lg text-accent font-bold inline-flex items-center gap-2" type="submit">
-              <Send size={18} /> Send Request
-            </button>
-            {requestStatus && <p className="text-sm text-accent">{requestStatus}</p>}
-          </form>
-        </GlassCard>
+        </div>
 
-        <GlassCard className="p-8" id="contact">
-          <span className="section-kicker">Contact</span>
-          <h2 className="font-orbitron text-3xl mt-3 mb-4">Project, freelancing, BTech/MTech help</h2>
-          <form onSubmit={handleContact} className="space-y-4">
-            <input name="name" className="input-shell" placeholder="Your name" required />
-            <input name="email" type="email" className="input-shell" placeholder="Email address" required />
-            <input name="phone" className="input-shell" placeholder="Phone / WhatsApp optional" />
-            <input name="topic" className="input-shell" placeholder="Topic: freelancing, AI/ML, BTech project..." />
-            <textarea name="message" className="input-shell min-h-28" placeholder="Tell me what you want to build" required />
-            <button className="glass px-5 py-3 rounded-lg text-primary font-bold inline-flex items-center gap-2" type="submit">
-              <Rocket size={18} /> Send Message
-            </button>
-            {contactStatus && <p className="text-sm text-primary">{contactStatus}</p>}
-          </form>
-        </GlassCard>
-      </section>
-
-      <section className="grid gap-8 lg:grid-cols-3">
-        {storyPanels.map((panel, index) => (
-          <motion.div
-            key={panel.title}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ delay: index * 0.12 }}
-          >
-            <GlassCard className="p-8 h-full">
-              <div className="mb-8 h-40 rounded-xl border border-white/10 bg-black/50 overflow-hidden relative group">
-                <motion.img
-                  src={panel.imageUrl}
-                  alt={panel.title}
-                  className="h-full w-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.4 }}
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Instagram Card */}
+          <GlassCard className="p-8 relative overflow-hidden group flex flex-col justify-between border-E1306C/30 hover:border-[#E1306C]/60 transition-all duration-500">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#E1306C]/20 to-purple-600/10 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform" />
+            
+            <div className="space-y-6">
+              <div className="flex items-center gap-4">
+                <img
+                  src="/codesworld_logo_new.png"
+                  alt="codesworld.exe logo"
+                  className="w-16 h-16 rounded-full object-cover border-2 border-[#E1306C] shadow-[0_0_15px_rgba(225,48,108,0.4)]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                <div>
+                  <h3 className="font-orbitron text-xl font-bold text-light">@codesworld.exe</h3>
+                  <p className="text-xs font-mono text-[#E1306C] font-bold">13K+ Followers · Millions of Views</p>
+                </div>
               </div>
-              <h2 className="font-orbitron text-2xl text-light mb-3">{panel.title}</h2>
-              <p className="text-slate-300 leading-relaxed">{panel.copy}</p>
-            </GlassCard>
-          </motion.div>
-        ))}
+
+              <p className="text-slate-300 font-mono text-xs leading-relaxed">
+                Dedicated technical teaching channel sharing modern web development tips, full-stack architecture, project walkthroughs, and developer hacks.
+              </p>
+
+              <div className="grid grid-cols-3 gap-2 text-center font-mono py-2 bg-white/5 rounded-xl border border-white/5 text-xs">
+                <div>
+                  <p className="font-orbitron font-bold text-primary">13K+</p>
+                  <p className="text-[10px] text-slate-400">Devs</p>
+                </div>
+                <div>
+                  <p className="font-orbitron font-bold text-accent">Millions</p>
+                  <p className="text-[10px] text-slate-400">Views</p>
+                </div>
+                <div>
+                  <p className="font-orbitron font-bold text-secondary">100+</p>
+                  <p className="text-[10px] text-slate-400">Reels</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-6">
+              <a
+                href="https://www.instagram.com/codesworld.exe?igsh=MnFqbThoOWdkbWE2"
+                target="_blank"
+                rel="noreferrer"
+                className="w-full glass border-[#E1306C]/40 text-light hover:text-[#E1306C] hover:border-[#E1306C] py-3 rounded-xl font-orbitron text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(225,48,108,0.2)]"
+              >
+                <Instagram size={16} className="text-[#E1306C]" /> Visit Instagram (@codesworld.exe)
+              </a>
+            </div>
+          </GlassCard>
+
+          {/* YouTube Gaming Card */}
+          <GlassCard className="p-8 relative overflow-hidden group flex flex-col justify-between border-red-500/30 hover:border-red-500/60 transition-all duration-500">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-red-600/20 to-orange-600/10 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform" />
+
+            <div className="space-y-6">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-red-600 to-orange-500 flex items-center justify-center text-white font-black font-orbitron text-xl shadow-[0_0_15px_rgba(255,0,0,0.4)] border-2 border-red-500 overflow-hidden">
+                  <img src="/youtube_logo.png" alt="Aryan Invincible TV" className="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <h3 className="font-orbitron text-xl font-bold text-light">Aryan Invincible TV</h3>
+                  <p className="text-xs font-mono text-red-400 font-bold">@aryaninvincible78 · Valorant Live</p>
+                </div>
+              </div>
+
+              <p className="text-slate-300 font-mono text-xs leading-relaxed">
+                Official gaming &amp; superhero channel! Streaming live Valorant gameplay every weekend, community matches, and interactive streams.
+              </p>
+
+              <div className="grid grid-cols-3 gap-2 text-center font-mono py-2 bg-white/5 rounded-xl border border-white/5 text-xs">
+                <div>
+                  <p className="font-orbitron font-bold text-red-400">VALORANT</p>
+                  <p className="text-[10px] text-slate-400">Live Streams</p>
+                </div>
+                <div>
+                  <p className="font-orbitron font-bold text-primary">Sat + Sun</p>
+                  <p className="text-[10px] text-slate-400">Schedule</p>
+                </div>
+                <div>
+                  <p className="font-orbitron font-bold text-accent">Gaming</p>
+                  <p className="text-[10px] text-slate-400">Community</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-6">
+              <a
+                href="https://youtube/@aryaninvincible78?si=B66qwBq-TyVFlo-M"
+                target="_blank"
+                rel="noreferrer"
+                className="w-full glass border-red-500/40 text-light hover:text-red-400 hover:border-red-500 py-3 rounded-xl font-orbitron text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(255,0,0,0.2)]"
+              >
+                <Youtube size={16} className="text-red-500" /> Watch YouTube Channel (@aryaninvincible78)
+              </a>
+            </div>
+          </GlassCard>
+        </div>
       </section>
 
       {/* ── Interactive Code Curtain ──────────────────────────────────────── */}
@@ -901,7 +928,7 @@ export const HomePage: React.FC = () => {
         <div className="text-center space-y-3">
           <span className="section-kicker">Interactive</span>
           <h2 className="text-3xl md:text-4xl font-orbitron font-black text-light">
-            Code <span className="text-gradient">Curtain</span>
+            Neural <span className="text-gradient">Matrix Fabric</span>
           </h2>
           <p className="text-slate-400 font-mono text-sm max-w-lg mx-auto">
             Hover or drag the curtain — the source code itself hangs like fabric in the breeze.
@@ -910,7 +937,7 @@ export const HomePage: React.FC = () => {
 
         {isMobile ? (
           <div className="h-[280px] w-full flex flex-col items-center justify-center bg-[#0d0d12]/90 border border-white/5 rounded-2xl text-center px-6">
-            <code className="text-primary font-bold text-lg mb-2">{"{ code_curtain }"}</code>
+            <code className="text-primary font-bold text-lg mb-2">{"{ neural_matrix_fabric }"}</code>
             <p className="text-xs text-slate-400 font-mono max-w-xs leading-relaxed">
               Interactive cloth simulation is optimized for desktop view to preserve battery life and performance.
             </p>

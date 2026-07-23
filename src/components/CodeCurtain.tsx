@@ -1,19 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 
-const SOURCE = `function curtain(canvas){const ctx=canvas.getContext('2d');
-const gravity=0.3;const damping=0.98;const stiffness=0.4;
-class Point{constructor(x,y,pin){this.x=x;this.y=y;
-this.ox=x;this.oy=y;this.ax=0;this.ay=0;this.pin=pin;}
-update(){if(this.pin)return;const vx=(this.x-this.ox)*damping;
-const vy=(this.y-this.oy)*damping;this.ox=this.x;this.oy=this.y;
-this.x+=vx+this.ax;this.y+=vy+this.ay+gravity;this.ax=0;this.ay=0;}
-push(fx,fy){this.ax+=fx;this.ay+=fy;}}
-class Spring{constructor(a,b,len,k){this.a=a;this.b=b;this.len=len;this.k=k;}
-solve(){const dx=this.b.x-this.a.x;const dy=this.b.y-this.a.y;
-const d=Math.hypot(dx,dy);if(!d)return;const f=(d-this.len)/d*this.k;
-if(!this.a.pin){this.a.x+=dx*f;this.a.y+=dy*f;}
-if(!this.b.pin){this.b.x-=dx*f;this.b.y-=dy*f;}}}
-return{ctx,Point,Spring};}`;
+const SOURCE = `/* ARYAN RAIKWAR // FULL-STACK & AI ARCHITECT */
+const portfolio = {
+  creator: "Aryan Raikwar",
+  role: "AI/ML Engineer & Full Stack Developer",
+  motto: "Transforming vision into digital reality with clean code and AI innovation",
+  skills: ["React", "TypeScript", "Python", "PyTorch", "Node.js", "Three.js", "Firebase"],
+  status: "Building next-generation intelligent applications...",
+  quote: "Code is poetry written with logic and rendered with passion."
+};
+function createMagic(idea) {
+  return idea.compile().optimize().ship();
+}
+console.log("Welcome to my interactive canvas curtain! Move your mouse or touch to interact!");`;
 
 export const CodeCurtain: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);

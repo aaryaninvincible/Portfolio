@@ -1,9 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { audioManager } from '../lib/audioManager';
+import { seaAudio } from '../lib/seaAudio';
 
 declare const THREE: any;
 
 export const SeaFooter: React.FC = () => {
+  const rootRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isInSeaView, setIsInSeaView] = useState(false);
   const [fps, setFps] = useState(60);
   const [drifting, setDrifting] = useState(true);
   const [testTimeIndex, setTestTimeIndex] = useState(0); // 0: Auto, 1: Morning, 2: Midday, 3: Golden, 4: Dusk, 5: Night
@@ -495,7 +499,54 @@ export const SeaFooter: React.FC = () => {
     return () => clearInterval(timer);
   }, [testTimeIndex]);
 
-  // Handle Quote display, transitions and auto-fading
+  // Intersection Observer to detect when user reaches sea view section
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+
+    let quoteTimer: NodeJS.Timeout;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsInSeaView(true);
+            audioManager.setSeaViewActive(true);
+            seaAudio.start(weather);
+            
+            // Show title and quote on arrival, then fade out after 6 seconds
+            setShowQuote(true);
+            clearTimeout(quoteTimer);
+            quoteTimer = setTimeout(() => {
+              setShowQuote(false);
+            }, 6000);
+          } else {
+            setIsInSeaView(false);
+            audioManager.setSeaViewActive(false);
+            seaAudio.stop();
+          }
+        });
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      clearTimeout(quoteTimer);
+      audioManager.setSeaViewActive(false);
+      seaAudio.stop();
+    };
+  }, []);
+
+  // Update ambient sea audio when weather changes
+  useEffect(() => {
+    if (isInSeaView) {
+      seaAudio.updateWeather(weather);
+    }
+  }, [weather, isInSeaView]);
+
+  // Handle Quote display & transitions
   useEffect(() => {
     let title = 'I LOVE SUNSETS';
     let quote = '"Sunsets are proof that no matter what happens, every day can end beautifully."';
@@ -524,17 +575,18 @@ export const SeaFooter: React.FC = () => {
 
     setQuoteTitle(title);
     setQuoteText(quote);
-    setShowQuote(true);
 
-    const timer = setTimeout(() => {
-      setShowQuote(false);
-    }, 6000); // Hide after 6 seconds
-
-    return () => clearTimeout(timer);
-  }, [timeLabel, weather]);
+    if (isInSeaView) {
+      setShowQuote(true);
+      const timer = setTimeout(() => {
+        setShowQuote(false);
+      }, 6000); // Hide after 6 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [timeLabel, weather, isInSeaView]);
 
   return (
-    <div className="relative w-full h-[100vh] z-[9] overflow-hidden pointer-events-none font-sans group">
+    <div ref={rootRef} className="relative w-full h-[100vh] z-[9] overflow-hidden pointer-events-none font-sans group">
       <style>{`
         .sea-ui {
           position: absolute;

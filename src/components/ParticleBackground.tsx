@@ -104,7 +104,9 @@ export const ParticleBackground: React.FC = () => {
 
         const init = () => {
             particles = [];
-            const particleCount = Math.floor((width * height) / 15000);
+            const isMobile = width < 768;
+            const targetCount = isMobile ? 22 : 45;
+            const particleCount = Math.min(targetCount, Math.floor((width * height) / 25000));
             for (let i = 0; i < particleCount; i++) {
                 particles.push(new Particle());
             }
@@ -113,20 +115,27 @@ export const ParticleBackground: React.FC = () => {
         let animationId: number;
         const animate = () => {
             if (!ctx) return;
+            if (document.hidden) {
+                animationId = requestAnimationFrame(animate);
+                return;
+            }
+
             ctx.clearRect(0, 0, width, height);
 
-            for (let a = 0; a < particles.length; a++) {
+            const len = particles.length;
+            for (let a = 0; a < len; a++) {
                 particles[a].update();
                 particles[a].draw();
 
-                for (let b = a; b < particles.length; b++) {
+                for (let b = a + 1; b < len; b++) {
                     const dx = particles[a].x - particles[b].x;
                     const dy = particles[a].y - particles[b].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const distSq = dx * dx + dy * dy;
 
-                    if (distance < 100) {
+                    if (distSq < 6400) { // 80px squared radius
+                        const distance = Math.sqrt(distSq);
                         ctx.beginPath();
-                        ctx.strokeStyle = `rgba(255, 115, 0, ${0.2 - (distance / 100) * 0.2})`;
+                        ctx.strokeStyle = `rgba(255, 115, 0, ${0.18 - (distance / 80) * 0.18})`;
                         ctx.lineWidth = 1;
                         ctx.moveTo(particles[a].x, particles[a].y);
                         ctx.lineTo(particles[b].x, particles[b].y);

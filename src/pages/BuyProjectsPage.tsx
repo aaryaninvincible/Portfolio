@@ -299,6 +299,10 @@ export const BuyProjectsPage: React.FC = () => {
       }
       return [...prev, { product, quantity: 1 }];
     });
+  };
+
+  const buyNow = (product: StoreProject) => {
+    addToCart(product);
     setIsCartOpen(true);
     setCheckoutStep('cart');
   };
@@ -510,31 +514,40 @@ export const BuyProjectsPage: React.FC = () => {
 
                   <p className="text-slate-300 text-xs font-mono leading-relaxed flex-grow">{product.description}</p>
 
-                  <div className="flex flex-wrap gap-2.5 pt-4">
+                  <div className="flex flex-wrap gap-2 pt-4">
                     {product.demoUrl && (
                       <a
                         href={product.demoUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="glass border-white/5 text-slate-300 hover:text-primary hover:border-primary/20 px-4 py-2 rounded-lg text-xs font-bold font-mono inline-flex items-center gap-1.5 transition-colors"
+                        className="glass border-white/5 text-slate-300 hover:text-primary hover:border-primary/20 px-3 py-2 rounded-lg text-[11px] font-bold font-mono inline-flex items-center gap-1 transition-colors"
                       >
-                        Live Demo <ExternalLink size={12} />
+                        Demo <ExternalLink size={11} />
                       </a>
                     )}
                     {isInCart ? (
                       <button
                         onClick={() => setIsCartOpen(true)}
-                        className="flex-grow glass border-primary/40 text-primary hover:bg-primary/5 px-4 py-2 rounded-lg text-xs font-bold font-orbitron uppercase tracking-wider inline-flex items-center justify-center gap-1.5 transition-all"
+                        className="flex-grow glass border-primary/40 text-primary hover:bg-primary/5 px-3 py-2 rounded-lg text-[11px] font-bold font-orbitron uppercase tracking-wider inline-flex items-center justify-center gap-1 transition-all"
                       >
-                        <Check size={13} /> In Cart (Open)
+                        <Check size={13} /> Added (Open Cart)
                       </button>
                     ) : (
-                      <button
-                        onClick={() => addToCart(product)}
-                        className="flex-grow bg-primary text-black hover:bg-primary/95 px-4 py-2 rounded-lg text-xs font-bold font-orbitron uppercase tracking-wider inline-flex items-center justify-center gap-1.5 shadow-[0_0_10px_rgba(255,115,0,0.15)] hover:shadow-[0_0_15px_rgba(255,115,0,0.3)] transition-all"
-                      >
-                        <ShoppingBag size={13} /> Add to Cart
-                      </button>
+                      <>
+                        <button
+                          onClick={() => addToCart(product)}
+                          className="glass border-white/15 text-light hover:text-primary hover:border-primary/40 px-3 py-2 rounded-lg text-[11px] font-bold font-orbitron uppercase tracking-wider inline-flex items-center justify-center gap-1 transition-all"
+                          title="Add to cart"
+                        >
+                          <ShoppingBag size={13} /> +Cart
+                        </button>
+                        <button
+                          onClick={() => buyNow(product)}
+                          className="flex-grow bg-primary text-black hover:bg-primary/95 px-3 py-2 rounded-lg text-[11px] font-bold font-orbitron uppercase tracking-wider inline-flex items-center justify-center gap-1 shadow-[0_0_10px_rgba(255,115,0,0.15)] hover:shadow-[0_0_15px_rgba(255,115,0,0.3)] transition-all"
+                        >
+                          Buy Now
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
@@ -546,10 +559,10 @@ export const BuyProjectsPage: React.FC = () => {
 
       {/* Cart Drawer */}
       {isCartOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden font-mono">
+        <div className="fixed inset-0 z-[100] overflow-hidden font-mono">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsCartOpen(false)} />
 
-          <div className="absolute inset-y-0 right-0 max-w-full flex pl-10">
+          <div className="absolute inset-y-0 right-0 max-w-full flex pl-10 z-[101]">
             <div className="w-screen max-w-md bg-dark border-l border-white/10 shadow-2xl p-6 flex flex-col h-full relative">
               
               {/* Header */}
@@ -574,7 +587,7 @@ export const BuyProjectsPage: React.FC = () => {
               </div>
 
               {/* Scrollable Content */}
-              <div className="flex-grow overflow-y-auto py-4 space-y-6">
+              <div className="flex-1 min-h-0 overflow-y-auto py-4 space-y-6 pr-1">
                 
                 {/* STEP 1: CART ITEMS */}
                 {checkoutStep === 'cart' && (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Volume2, VolumeX, Trophy } from 'lucide-react';
+import { Volume2, VolumeX, Trophy, Maximize2, Minimize2, X } from 'lucide-react';
 import { playSound, toggleGameMute, getGameMuteState } from '../lib/audio';
 import { subscribeToLeaderboard, submitHighScore } from '../lib/realtime';
 import type { LeaderboardEntry } from '../types';
@@ -7,6 +7,7 @@ import type { LeaderboardEntry } from '../types';
 export const MiniGames: React.FC = () => {
     const [activeGame, setActiveGame] = useState<'flappy' | 'dino' | 'dodge' | 'snake' | 'breaker'>('flappy');
     const [isMuted, setIsMuted] = useState(getGameMuteState());
+    const [isFullScreen, setIsFullScreen] = useState(false);
     const [globalScores, setGlobalScores] = useState<LeaderboardEntry[]>([]);
     
     // Score submission states
@@ -304,11 +305,34 @@ export const MiniGames: React.FC = () => {
                 ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, W, H);
                 ctx.fillStyle = '#ff7300'; ctx.fillRect(0, ground, W, 4); // Ground line
 
-                // Dino
-                ctx.fillStyle = '#ff9600'; ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
+                // Draw Animated Cyber T-Rex Dino
+                const legFrame = Math.floor(performance.now() / 100) % 2;
+                ctx.fillStyle = '#00f3ff'; // Cyber cyan dino body
+                // Body & Torso
+                ctx.fillRect(dino.x + 4, dino.y + 6, 16, 12);
+                // Head & Snout
+                ctx.fillRect(dino.x + 12, dino.y, 12, 8);
+                // Eye
+                ctx.fillStyle = '#000000'; ctx.fillRect(dino.x + 18, dino.y + 2, 2, 2);
+                ctx.fillStyle = '#00f3ff';
+                // Arm
+                ctx.fillRect(dino.x + 16, dino.y + 10, 4, 2);
+                // Tail
+                ctx.fillRect(dino.x, dino.y + 8, 6, 4);
+                // Animated Running Legs
+                if (dino.y + dino.h < ground) {
+                    ctx.fillRect(dino.x + 6, dino.y + 18, 3, 5);
+                    ctx.fillRect(dino.x + 15, dino.y + 16, 3, 4);
+                } else if (legFrame === 0) {
+                    ctx.fillRect(dino.x + 6, dino.y + 18, 3, 6);
+                    ctx.fillRect(dino.x + 15, dino.y + 18, 3, 3);
+                } else {
+                    ctx.fillRect(dino.x + 6, dino.y + 18, 3, 3);
+                    ctx.fillRect(dino.x + 15, dino.y + 18, 3, 6);
+                }
                 
-                // Obstacles
-                ctx.fillStyle = '#ff5500';
+                // Obstacles (Neon Cacti)
+                ctx.fillStyle = '#ff3366';
                 obstacles.forEach(ob => ctx.fillRect(ob.x, ob.y, ob.w, ob.h));
 
                 if (!running && over) {
@@ -1005,13 +1029,41 @@ export const MiniGames: React.FC = () => {
             // Re-fetch handled automatically by Firebase onValue subscription
         } catch (error) {
             console.error('Leaderboard submission error:', error);
-        } finally {
+} finally {
             setIsSubmitting(false);
         }
     };
 
+    const gameHints = {
+        flappy: {
+            title: 'Flappy Cyber-Bird',
+            controls: 'SPACE / TAP',
+            tips: ['Keep rhythm steady to clear tight pipes', 'Pipes speed up as score increases', '+10 points per pipe passed']
+        },
+        dino: {
+            title: 'Neon Dino Runner',
+            controls: 'SPACE / UP ARROW',
+            tips: ['Timing is key for double cactus jumps', 'Watch out for low flying pterodactyls', 'Speed scales every 50 points']
+        },
+        dodge: {
+            title: 'Asteroid Dodge',
+            controls: '← / → ARROW KEYS',
+            tips: ['Anticipate falling hazard gaps early', 'Stay near center for fast recovery', 'Points build per second survived']
+        },
+        snake: {
+            title: 'Cyber Neon Snake',
+            controls: 'D-PAD / ARROW KEYS',
+            tips: ['Collect glowing dots to grow', 'Do not hit walls or your own tail', '+10 points per energy dot']
+        },
+        breaker: {
+            title: 'Neon Brick Breaker',
+            controls: 'MOUSE / ARROW KEYS',
+            tips: ['Hit paddle edges for angled shots', 'Destroying bricks yields +20 points', 'Clear all 21 bricks to win!']
+        }
+    };
+
     return (
-        <div className="w-full max-w-full sm:max-w-2xl mx-auto space-y-6 no-cursor-follower flex flex-col items-center">
+        <div className="w-full max-w-full space-y-6 no-cursor-follower flex flex-col items-center">
             {/* Game Selector & Mute Toggle */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center w-full">
                 <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2 w-full sm:w-auto justify-center">
@@ -1048,138 +1100,215 @@ export const MiniGames: React.FC = () => {
                         {isMuted ? <VolumeX size={14} className="text-secondary" /> : <Volume2 size={14} className="text-primary" />}
                         <span>{isMuted ? 'Muted' : 'Mute'}</span>
                     </button>
+                    <button
+                        onClick={() => setIsFullScreen(!isFullScreen)}
+                        className={`glass rounded-lg px-4 py-2 text-xs font-mono flex items-center justify-center gap-2 border-white/10 hover:border-accent/40 transition-all ${
+                            isFullScreen ? 'bg-accent/20 border-accent text-accent font-bold' : 'text-slate-300 hover:text-white'
+                        }`}
+                        title="Toggle Fullscreen Game View"
+                    >
+                        {isFullScreen ? <Minimize2 size={14} className="text-accent" /> : <Maximize2 size={14} className="text-accent" />}
+                        <span>{isFullScreen ? 'Exit Fullscreen' : 'Fullscreen'}</span>
+                    </button>
                 </div>
             </div>
 
-            {/* Game Box */}
-            <div className="glass p-4 sm:p-6 rounded-2xl border border-white/10 bg-black/80 relative overflow-hidden flex flex-col items-center">
-                {/* Flappy Card */}
-                <div className={`w-full flex flex-col items-center ${activeGame === 'flappy' ? '' : 'hidden'}`}>
-                    <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
-                        <span>TAP / SPACE to flap</span>
-                        <span id="flappyScore" className="text-secondary font-bold">Score: 0</span>
+            {/* Desktop 3-Column Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full">
+                {/* Left Side Panel: Pro-Tips & Controls (Desktop) */}
+                <div className="hidden lg:block lg:col-span-3 glass p-4 rounded-2xl border border-white/10 bg-black/60 text-left space-y-3 font-mono text-xs">
+                    <div className="border-b border-white/10 pb-2">
+                        <h4 className="font-orbitron font-bold text-primary text-sm flex items-center gap-1.5">
+                            💡 Game Guide
+                        </h4>
+                        <p className="text-[11px] text-slate-400 capitalize font-bold mt-1">{gameHints[activeGame].title}</p>
                     </div>
-                    <canvas id="flappyCanvas" className="border border-white/10 rounded-xl cursor-crosshair bg-black w-full max-w-[360px]" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
-                    <div className="flex gap-4 mt-4 w-full max-w-[360px] justify-center">
-                        <button id="flappyStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
-                        <button id="flappyPause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
-                    </div>
-                    <button id="flappyTap" className="w-full max-w-[360px] mt-3 py-3 text-xs sm:text-sm uppercase tracking-widest font-black font-orbitron bg-gradient-to-r from-primary to-accent text-black rounded-xl shadow-[0_0_15px_rgba(255,115,0,0.4)] active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-2">⚡ TAP TO FLAP BIRD</button>
-                </div>
 
-                {/* Dino Card */}
-                <div className={`w-full flex flex-col items-center ${activeGame === 'dino' ? '' : 'hidden'}`}>
-                    <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
-                        <span>TAP / SPACE to jump</span>
-                        <span id="dinoScore" className="text-accent font-bold">Score: 0</span>
+                    <div className="space-y-1">
+                        <span className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Primary Controls:</span>
+                        <p className="text-accent font-bold text-xs bg-accent/10 px-2.5 py-1 rounded-lg border border-accent/20">
+                            {gameHints[activeGame].controls}
+                        </p>
                     </div>
-                    <canvas id="dinoCanvas" className="border border-white/10 rounded-xl cursor-crosshair bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
-                    <div className="flex gap-4 mt-4 w-full max-w-[360px] justify-center">
-                        <button id="dinoStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
-                        <button id="dinoPause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
-                    </div>
-                    <button id="dinoJump" className="w-full max-w-[360px] mt-3 py-3 text-xs sm:text-sm uppercase tracking-widest font-black font-orbitron bg-gradient-to-r from-accent to-secondary text-black rounded-xl shadow-[0_0_15px_rgba(0,243,255,0.4)] active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-2">🚀 TAP TO JUMP DINO</button>
-                </div>
 
-                {/* Dodge Card */}
-                <div className={`w-full flex flex-col items-center ${activeGame === 'dodge' ? '' : 'hidden'}`}>
-                    <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
-                        <span>DRAG / TAP to dodge</span>
-                        <span id="dodgeScore" className="text-primary font-bold">Score: 0</span>
-                    </div>
-                    <canvas id="dodgeCanvas" className="border border-white/10 rounded-xl cursor-crosshair bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
-                    <div className="flex gap-3 mt-4 w-full max-w-[360px] justify-center">
-                        <button id="dodgeStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
-                        <button id="dodgePause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
-                    </div>
-                    <div className="flex gap-3 w-full max-w-[360px] justify-center mt-3">
-                        <button id="dodgeLeft" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-accent/20 text-accent border border-accent/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">◀ LEFT</button>
-                        <button id="dodgeRight" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-accent/20 text-accent border border-accent/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">RIGHT ▶</button>
+                    <div className="space-y-2 pt-1">
+                        <span className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Pro Tips:</span>
+                        <ul className="space-y-1.5 text-slate-300 text-[11px]">
+                            {gameHints[activeGame].tips.map((tip, idx) => (
+                                <li key={idx} className="flex items-start gap-1.5">
+                                    <span className="text-primary">⚡</span> {tip}
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
 
-                {/* Snake Card */}
-                <div className={`w-full flex flex-col items-center ${activeGame === 'snake' ? '' : 'hidden'}`}>
-                    <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
-                        <span>SWIPE or TAP D-Pad</span>
-                        <span id="snakeScore" className="text-secondary font-bold">Score: 0</span>
-                    </div>
-                    <canvas id="snakeCanvas" className="border border-white/10 rounded-xl bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
-                    <div className="flex gap-4 mt-4 w-full max-w-[360px] justify-center">
-                        <button id="snakeStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
-                        <button id="snakePause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
-                    </div>
-                    {/* Mobile & Touch Controls */}
-                    <div className="grid grid-cols-3 gap-2 mt-4 w-44 justify-items-center touch-none select-none">
-                        <div />
-                        <button id="snakeUp" className="h-12 w-12 bg-primary/20 text-primary border-2 border-primary/60 rounded-xl flex items-center justify-center font-black text-lg active:scale-90 transition-transform">↑</button>
-                        <div />
-                        <button id="snakeLeft" className="h-12 w-12 bg-primary/20 text-primary border-2 border-primary/60 rounded-xl flex items-center justify-center font-black text-lg active:scale-90 transition-transform">←</button>
-                        <div className="h-12 w-12 flex items-center justify-center text-sm font-mono text-slate-400">🎮</div>
-                        <button id="snakeRight" className="h-12 w-12 bg-primary/20 text-primary border-2 border-primary/60 rounded-xl flex items-center justify-center font-black text-lg active:scale-90 transition-transform">→</button>
-                        <div />
-                        <button id="snakeDown" className="h-12 w-12 bg-primary/20 text-primary border-2 border-primary/60 rounded-xl flex items-center justify-center font-black text-lg active:scale-90 transition-transform">↓</button>
-                        <div />
-                    </div>
-                </div>
-
-                {/* Breaker Card */}
-                <div className={`w-full flex flex-col items-center ${activeGame === 'breaker' ? '' : 'hidden'}`}>
-                    <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
-                        <span>DRAG / TAP to move paddle</span>
-                        <span id="breakerScore" className="text-primary font-bold">Score: 0</span>
-                    </div>
-                    <canvas id="breakerCanvas" className="border border-white/10 rounded-xl bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
-                    <div className="flex gap-3 mt-4 w-full max-w-[360px] justify-center">
-                        <button id="breakerStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
-                        <button id="breakerPause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
-                    </div>
-                    <div className="flex gap-3 w-full max-w-[360px] justify-center mt-3">
-                        <button id="breakerLeft" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-accent/20 text-accent border border-accent/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">◀ LEFT</button>
-                        <button id="breakerRight" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-accent/20 text-accent border border-accent/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">RIGHT ▶</button>
-                    </div>
-                </div>
-
-                {/* Submit Score Modal overlay if game over */}
-                {showSubmit && lastScore > 0 && (
-                    <div id="scoreSubmitOverlay" className="absolute inset-0 bg-black/95 flex flex-col items-center justify-center p-6 z-30">
-                        <Trophy size={48} className="text-accent animate-bounce mb-3" />
-                        <h3 className="font-orbitron text-xl font-bold text-light mb-1">New Score: {lastScore}!</h3>
-                        <p className="text-xs text-slate-400 mb-5 text-center font-mono">Submit to the global live leaderboard</p>
-                        <form onSubmit={submitScore} className="w-full max-w-[280px] space-y-3">
-                            <input
-                                type="text"
-                                className="input-shell text-center"
-                                placeholder="Enter your name"
-                                maxLength={15}
-                                value={playerName}
-                                onChange={(e) => setPlayerName(e.target.value)}
-                                required
-                            />
-                            <div className="flex gap-2">
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="w-full bg-primary text-black py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider hover:opacity-90 disabled:opacity-50 font-orbitron"
-                                >
-                                    {isSubmitting ? 'Submitting...' : 'Submit Score'}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setShowSubmit(false)}
-                                    className="w-1/2 glass border-white/10 text-white py-2.5 rounded-lg text-xs font-bold uppercase hover:bg-white/5"
-                                >
-                                    Cancel
-                                </button>
+                {/* Center Column: Game Canvas */}
+                <div className="lg:col-span-6 flex flex-col items-center w-full">
+                    <div className={`glass p-4 sm:p-6 rounded-2xl border border-white/10 bg-black/80 relative overflow-hidden flex flex-col items-center w-full ${
+                        isFullScreen ? 'fixed inset-0 z-[9999] bg-black/95 p-4 sm:p-8 overflow-y-auto flex flex-col items-center justify-center rounded-none border-none' : ''
+                    }`}>
+                        {isFullScreen && (
+                            <button
+                                onClick={() => setIsFullScreen(false)}
+                                className="absolute top-4 right-4 z-50 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-mono text-xs flex items-center gap-1.5 transition-all"
+                            >
+                                <X size={18} />
+                                <span>Exit</span>
+                            </button>
+                        )}
+                        {/* Flappy Card */}
+                        <div className={`w-full flex flex-col items-center ${activeGame === 'flappy' ? '' : 'hidden'}`}>
+                            <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
+                                <span>TAP / SPACE to flap</span>
+                                <span id="flappyScore" className="text-secondary font-bold">Score: 0</span>
                             </div>
-                        </form>
+                            <canvas id="flappyCanvas" className="border border-white/10 rounded-xl cursor-crosshair bg-black w-full max-w-[360px]" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
+                            <div className="flex gap-4 mt-4 w-full max-w-[360px] justify-center">
+                                <button id="flappyStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
+                                <button id="flappyPause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
+                            </div>
+                            <button id="flappyTap" className="w-full max-w-[360px] mt-3 py-3 text-xs sm:text-sm uppercase tracking-widest font-black font-orbitron bg-gradient-to-r from-primary to-accent text-black rounded-xl shadow-[0_0_15px_rgba(255,115,0,0.4)] active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-2">⚡ TAP TO FLAP BIRD</button>
+                        </div>
+
+                        {/* Dino Card */}
+                        <div className={`w-full flex flex-col items-center ${activeGame === 'dino' ? '' : 'hidden'}`}>
+                            <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
+                                <span>TAP / SPACE to jump</span>
+                                <span id="dinoScore" className="text-accent font-bold">Score: 0</span>
+                            </div>
+                            <canvas id="dinoCanvas" className="border border-white/10 rounded-xl cursor-crosshair bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
+                            <div className="flex gap-4 mt-4 w-full max-w-[360px] justify-center">
+                                <button id="dinoStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
+                                <button id="dinoPause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
+                            </div>
+                            <button id="dinoJump" className="w-full max-w-[360px] mt-3 py-3 text-xs sm:text-sm uppercase tracking-widest font-black font-orbitron bg-gradient-to-r from-accent to-secondary text-black rounded-xl shadow-[0_0_15px_rgba(0,243,255,0.4)] active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-2">🦕 TAP TO JUMP DINO</button>
+                        </div>
+
+                        {/* Dodge Card */}
+                        <div className={`w-full flex flex-col items-center ${activeGame === 'dodge' ? '' : 'hidden'}`}>
+                            <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
+                                <span>ARROWS / TAP buttons</span>
+                                <span id="dodgeScore" className="text-primary font-bold">Score: 0</span>
+                            </div>
+                            <canvas id="dodgeCanvas" className="border border-white/10 rounded-xl bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
+                            <div className="flex gap-4 mt-4 w-full max-w-[360px] justify-center">
+                                <button id="dodgeStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
+                                <button id="dodgePause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
+                            </div>
+                            <div className="flex gap-3 w-full max-w-[360px] justify-center mt-3">
+                                <button id="dodgeLeft" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-primary/20 text-primary border border-primary/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">◀ LEFT</button>
+                                <button id="dodgeRight" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-primary/20 text-primary border border-primary/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">RIGHT ▶</button>
+                            </div>
+                        </div>
+
+                        {/* Snake Card */}
+                        <div className={`w-full flex flex-col items-center ${activeGame === 'snake' ? '' : 'hidden'}`}>
+                            <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
+                                <span>SWIPE or TAP D-Pad</span>
+                                <span id="snakeScore" className="text-secondary font-bold">Score: 0</span>
+                            </div>
+                            <canvas id="snakeCanvas" className="border border-white/10 rounded-xl bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
+                            <div className="flex gap-4 mt-4 w-full max-w-[360px] justify-center">
+                                <button id="snakeStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
+                                <button id="snakePause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
+                            </div>
+                            <div className="grid grid-cols-3 gap-2 mt-4 w-44 justify-items-center touch-none select-none">
+                                <div />
+                                <button id="snakeUp" className="h-12 w-12 bg-primary/20 text-primary border-2 border-primary/60 rounded-xl flex items-center justify-center font-black text-lg active:scale-90 transition-transform">↑</button>
+                                <div />
+                                <button id="snakeLeft" className="h-12 w-12 bg-primary/20 text-primary border-2 border-primary/60 rounded-xl flex items-center justify-center font-black text-lg active:scale-90 transition-transform">←</button>
+                                <div className="h-12 w-12 flex items-center justify-center text-sm font-mono text-slate-400">🎮</div>
+                                <button id="snakeRight" className="h-12 w-12 bg-primary/20 text-primary border-2 border-primary/60 rounded-xl flex items-center justify-center font-black text-lg active:scale-90 transition-transform">→</button>
+                                <div />
+                                <button id="snakeDown" className="h-12 w-12 bg-primary/20 text-primary border-2 border-primary/60 rounded-xl flex items-center justify-center font-black text-lg active:scale-90 transition-transform">↓</button>
+                                <div />
+                            </div>
+                        </div>
+
+                        {/* Breaker Card */}
+                        <div className={`w-full flex flex-col items-center ${activeGame === 'breaker' ? '' : 'hidden'}`}>
+                            <div className="flex justify-between w-full max-w-[360px] mb-3 text-xs font-mono text-slate-400">
+                                <span>DRAG / TAP to move paddle</span>
+                                <span id="breakerScore" className="text-primary font-bold">Score: 0</span>
+                            </div>
+                            <canvas id="breakerCanvas" className="border border-white/10 rounded-xl bg-black w-full max-w-[360px] touch-none" width="360" height="220" style={{ touchAction: 'none' }}></canvas>
+                            <div className="flex gap-3 mt-4 w-full max-w-[360px] justify-center">
+                                <button id="breakerStart" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono bg-primary text-black rounded-lg hover:shadow-[0_0_15px_rgba(255,115,0,0.5)] transition-all">Start</button>
+                                <button id="breakerPause" className="px-5 py-2.5 text-xs uppercase tracking-widest font-bold font-mono glass border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all">Pause</button>
+                            </div>
+                            <div className="flex gap-3 w-full max-w-[360px] justify-center mt-3">
+                                <button id="breakerLeft" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-accent/20 text-accent border border-accent/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">◀ LEFT</button>
+                                <button id="breakerRight" className="flex-1 py-3 text-xs sm:text-sm font-black font-orbitron bg-accent/20 text-accent border border-accent/60 rounded-xl active:scale-95 transition-all select-none touch-none flex items-center justify-center gap-1">RIGHT ▶</button>
+                            </div>
+                        </div>
+
+                        {/* Submit Score Modal overlay if game over */}
+                        {showSubmit && lastScore > 0 && (
+                            <div id="scoreSubmitOverlay" className="absolute inset-0 bg-black/95 flex flex-col items-center justify-center p-6 z-30">
+                                <Trophy size={48} className="text-accent animate-bounce mb-3" />
+                                <h3 className="font-orbitron text-xl font-bold text-light mb-1">New Score: {lastScore}!</h3>
+                                <p className="text-xs text-slate-400 mb-5 text-center font-mono">Submit to global live leaderboard</p>
+                                <form onSubmit={submitScore} className="w-full max-w-[280px] space-y-3">
+                                    <input
+                                        type="text"
+                                        className="input-shell text-center"
+                                        placeholder="Enter your name"
+                                        maxLength={15}
+                                        value={playerName}
+                                        onChange={(e) => setPlayerName(e.target.value)}
+                                        required
+                                    />
+                                    <div className="flex gap-2">
+                                        <button
+                                            type="submit"
+                                            disabled={isSubmitting}
+                                            className="w-full bg-primary text-black py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider hover:opacity-90 disabled:opacity-50 font-orbitron"
+                                        >
+                                            {isSubmitting ? 'Submitting...' : 'Submit Score'}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowSubmit(false)}
+                                            className="w-1/2 glass border-white/10 text-white py-2.5 rounded-lg text-xs font-bold uppercase hover:bg-white/5"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        )}
                     </div>
-                )}
+                </div>
+
+                {/* Right Side Panel: Desktop Live Leaderboard Sidebar */}
+                <div className="hidden lg:block lg:col-span-3 glass p-4 rounded-2xl border border-white/10 bg-black/60 text-left space-y-3 font-mono text-xs">
+                    <div className="flex items-center gap-2 border-b border-white/10 pb-2">
+                        <Trophy className="text-primary" size={16} />
+                        <h4 className="font-orbitron font-bold text-light text-xs uppercase tracking-wider">
+                            Leaderboard (<span className="text-primary capitalize">{activeGame}</span>)
+                        </h4>
+                    </div>
+                    <div className="space-y-2">
+                        {globalScores.slice(0, 5).map((entry, index) => (
+                            <div key={entry.id} className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5">
+                                <span className="font-orbitron text-slate-300 font-bold flex items-center gap-1.5 text-[11px]">
+                                    {index === 0 ? '👑' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`}
+                                    <span className="text-light truncate max-w-[90px]">{entry.name}</span>
+                                </span>
+                                <span className="text-primary font-bold text-xs">{entry.score}</span>
+                            </div>
+                        ))}
+                        {globalScores.length === 0 && (
+                            <p className="text-slate-400 italic text-[11px] py-4 text-center">No scores yet. Be the first!</p>
+                        )}
+                    </div>
+                </div>
             </div>
 
-            {/* Global Leaderboard - DISPLAY OUTSIDE THE GAME BOX */}
+            {/* Mobile & Toggle Leaderboard */}
             {showLeaderboard && (
-                <div className="glass p-5 rounded-2xl border border-white/10 bg-black/50">
+                <div className="glass p-5 rounded-2xl border border-white/10 bg-black/50 w-full max-w-[360px]">
                     <div className="flex items-center gap-2 mb-4">
                         <Trophy className="text-primary" size={18} />
                         <h3 className="font-orbitron text-sm font-bold uppercase tracking-wider text-light">

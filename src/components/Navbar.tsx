@@ -1,21 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Search, Terminal } from 'lucide-react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 
 const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Resume', path: '/resume' },
+    { name: 'Python & DSA', path: '/python-dsa' },
     { name: 'Updates', path: '/updates' },
     { name: 'Buy Projects', path: '/buy-projects' },
     { name: 'All Work', path: '/all-work' },
     { name: 'Contact', path: '/contact' }
 ];
 
-export const Navbar: React.FC = () => {
+interface NavbarProps {
+    onOpenCommandPalette?: () => void;
+    onOpenTerminal?: () => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ onOpenCommandPalette, onOpenTerminal }) => {
     const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [hideNavbar, setHideNavbar] = useState(false);
+    const [liveVisitors, setLiveVisitors] = useState(12);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setLiveVisitors((prev) => {
+                const delta = Math.floor(Math.random() * 3) - 1;
+                return Math.max(8, Math.min(24, prev + delta));
+            });
+        }, 12000);
+        return () => clearInterval(interval);
+    }, []);
+
     const { scrollYProgress } = useScroll();
     const scaleX = useSpring(scrollYProgress, {
         stiffness: 100,
@@ -29,7 +47,6 @@ export const Navbar: React.FC = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            // Near the bottom of the page (near 100vh SeaFooter)
             const nearBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 300;
             setHideNavbar(nearBottom);
         };
@@ -42,12 +59,19 @@ export const Navbar: React.FC = () => {
         <>
             <header className={`fixed w-full top-0 z-50 glass border-b border-white/10 shadow-lg transition-all duration-500 ${hideNavbar ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
-                    <Link to="/" className="flex items-center gap-2">
-                        <img src="/logo.png" alt="AR Logo" className="h-8 w-auto" />
-                        <span className="text-2xl font-black font-orbitron tracking-wider text-gradient animate-pulse-glow hidden sm:block">
-                            ARYAN ZONE
-                        </span>
-                    </Link>
+                    <div className="flex items-center gap-3">
+                        <Link to="/" className="flex items-center gap-2">
+                            <img src="/logo.png" alt="AR Logo" className="h-8 w-auto" />
+                            <span className="text-2xl font-black font-orbitron tracking-wider text-gradient animate-pulse-glow hidden sm:block">
+                                ARYAN ZONE
+                            </span>
+                        </Link>
+                        {/* Live Visitor Counter Badge */}
+                        <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[11px] font-bold">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                            <span>{liveVisitors} Live Online</span>
+                        </div>
+                    </div>
                     <nav className="hidden md:flex gap-6">
                         {navLinks.map((link) => (
                             <Link
@@ -63,15 +87,32 @@ export const Navbar: React.FC = () => {
                         ))}
                     </nav>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
                         <button
                             type="button"
-                            className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/15 text-light hover:text-primary hover:border-primary/40 transition-colors"
+                            onClick={onOpenCommandPalette}
+                            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/15 text-xs font-mono text-slate-300 hover:text-primary hover:border-primary/50 bg-white/5 transition-all"
+                            title="Open Command Palette (Ctrl+K)"
+                        >
+                            <Search size={14} className="text-primary" />
+                            <span>Ctrl+K</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={onOpenTerminal}
+                            className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-white/15 text-secondary hover:text-white hover:border-secondary/50 bg-white/5 transition-colors"
+                            title="Open Cyber Terminal CLI"
+                        >
+                            <Terminal size={16} />
+                        </button>
+                        <button
+                            type="button"
+                            className="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg border border-white/15 text-light hover:text-primary hover:border-primary/40 transition-colors"
                             aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
                             aria-expanded={isMobileMenuOpen}
                             onClick={() => setIsMobileMenuOpen((prev) => !prev)}
                         >
-                            {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+                            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
                         </button>
                     </div>
                 </div>

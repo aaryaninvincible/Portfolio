@@ -605,10 +605,10 @@ export const HomePage: React.FC = () => {
 
       <section id="playlist" className="space-y-6">
         <div className="text-center space-y-3">
-          <span className="section-kicker">Audio Experience</span>
-          <h2 className="text-3xl md:text-5xl font-orbitron">Cyber Lofi Lounge</h2>
-          <p className="text-slate-300 max-w-2xl mx-auto text-sm font-mono">
-            Listen to curated lo-fi beats &amp; ambient tracks while exploring the portfolio.
+          <span className="section-kicker font-mono uppercase tracking-widest text-xs">Aryan's Jukebox</span>
+          <h2 className="text-3xl md:text-5xl font-orbitron font-black text-light">Aryan's Favorite <span className="text-gradient">Playlist 🎵</span></h2>
+          <p className="text-slate-300 max-w-2xl mx-auto text-sm font-mono leading-relaxed">
+            Enjoy my all-time favorite handpicked tracks (Michael Jackson - Billie Jean &amp; Beat It, Ariana Grande, &amp; Young, Black &amp; Rich) while exploring my portfolio!
           </p>
         </div>
         <MusicPlaylistWidget />
@@ -656,18 +656,18 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ── Standalone Centered Gaming Arcade Section ── */}
-      <section id="arcade" className="space-y-8 max-w-4xl mx-auto text-center">
+      <section id="arcade" className="space-y-8 max-w-6xl mx-auto text-center">
         <div className="text-center space-y-3">
           <span className="section-kicker">Retro Arcade</span>
           <h2 className="text-3xl md:text-5xl font-orbitron font-black text-light flex items-center justify-center gap-3">
             <Bot className="text-primary" /> Gaming <span className="text-gradient">Highlights</span>
           </h2>
           <p className="text-slate-300 font-mono text-sm max-w-lg mx-auto">
-            Four interactive 2D games with live global leaderboards built for mobile and desktop play.
+            Five interactive 2D games with live global leaderboards built for mobile and desktop play.
           </p>
         </div>
 
-        <GlassCard className="p-4 sm:p-8 max-w-3xl mx-auto border border-white/10 flex flex-col items-center justify-center" disableTilt>
+        <GlassCard className="p-4 sm:p-8 max-w-6xl mx-auto border border-white/10 flex flex-col items-center justify-center" disableTilt>
           <MiniGames />
         </GlassCard>
       </section>

@@ -123,3 +123,10 @@ export const createOrder = (order: Omit<Order, 'id' | 'createdAt'>) => {
 export const updateOrder = (id: string, data: Partial<Order>) => update(ref(db, `orders/${id}`), data);
 export const deleteOrder = (id: string) => remove(ref(db, `orders/${id}`));
 
+export const submitUserFeedback = (feedback: { name: string; rating: number; suggestion: string }) => {
+  return push(ref(db, 'userFeedback'), {
+    ...feedback,
+    createdAt: serverTimestamp(),
+  });
+};
+

@@ -17,6 +17,7 @@ import { AdminPage } from './pages/AdminPage';
 import { ResumePage } from './pages/ResumePage';
 import { CertificationsPage } from './pages/CertificationsPage';
 import { ContactPage } from './pages/ContactPage';
+import { PythonDsaPage } from './pages/PythonDsaPage';
 
 const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
@@ -215,7 +216,14 @@ const MusicWidget: React.FC = () => {
   );
 };
 
+import { CommandPalette } from './components/CommandPalette';
+import { CyberTerminalModal } from './components/CyberTerminalModal';
+import { SuggestionModal } from './components/SuggestionModal';
+
 const AppContent: React.FC = () => {
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+
   useEffect(() => {
     // Force amoled black and orange theme
     document.documentElement.dataset.theme = 'amoled';
@@ -227,7 +235,7 @@ const AppContent: React.FC = () => {
       <FullscreenAlert />
       <SplashLoader />
       <ParticleBackground />
-      <Navbar />
+      <Navbar onOpenCommandPalette={() => setIsCommandPaletteOpen(true)} onOpenTerminal={() => setIsTerminalOpen(true)} />
       <main className="min-h-screen z-10 relative">
         <PageTransition>
           <Routes>
@@ -239,12 +247,27 @@ const AppContent: React.FC = () => {
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/certifications" element={<CertificationsPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/python-dsa" element={<PythonDsaPage />} />
           </Routes>
         </PageTransition>
       </main>
       <SeaFooter />
       <ScrollControls />
       <MusicWidget />
+      <SuggestionModal />
+
+      {/* Cyber Command Palette Modal */}
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onOpenTerminal={() => setIsTerminalOpen(true)}
+      />
+
+      {/* Cyber Interactive Terminal CLI Modal */}
+      <CyberTerminalModal
+        isOpen={isTerminalOpen}
+        onClose={() => setIsTerminalOpen(false)}
+      />
     </>
   );
 };

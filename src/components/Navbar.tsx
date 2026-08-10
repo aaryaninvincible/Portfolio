@@ -6,7 +6,6 @@ import { motion, useScroll, useSpring } from 'framer-motion';
 const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Resume', path: '/resume' },
-    { name: 'Python & DSA', path: '/python-dsa' },
     { name: 'Updates', path: '/updates' },
     { name: 'Buy Projects', path: '/buy-projects' },
     { name: 'All Work', path: '/all-work' },

@@ -17,7 +17,6 @@ import { AdminPage } from './pages/AdminPage';
 import { ResumePage } from './pages/ResumePage';
 import { CertificationsPage } from './pages/CertificationsPage';
 import { ContactPage } from './pages/ContactPage';
-import { PythonDsaPage } from './pages/PythonDsaPage';
 
 const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
@@ -247,7 +246,6 @@ const AppContent: React.FC = () => {
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/certifications" element={<CertificationsPage />} />
             <Route path="/contact" element={<ContactPage />} />
-            <Route path="/python-dsa" element={<PythonDsaPage />} />
           </Routes>
         </PageTransition>
       </main>

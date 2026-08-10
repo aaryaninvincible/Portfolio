@@ -108,6 +108,24 @@ const ProjectIcon = ({ index }: { index: number }) => {
   return icons[index % icons.length];
 };
 
+const ProjectViewsBadge = () => {
+  const [views, setViews] = useState(() => Math.floor(Math.random() * 500) + 50);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setViews(prev => prev + Math.floor(Math.random() * 3));
+    }, 5000 + Math.random() * 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-[10px] font-bold shrink-0 ml-auto">
+      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+      <span>{views.toLocaleString()} Live Views</span>
+    </div>
+  );
+};
+
 export const HomePage: React.FC = () => {
   const [adminProjects, setAdminProjects] = useState<PortfolioProject[]>([]);
   const [githubProjects, setGithubProjects] = useState<PortfolioProject[]>([]);
@@ -705,7 +723,7 @@ export const HomePage: React.FC = () => {
                     </span>
                   ))}
                 </div>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-3 items-center">
                   {project.demoUrl && (
                     <a href={project.demoUrl} target="_blank" rel="noreferrer" className="text-sm font-bold text-light hover:text-primary inline-flex items-center gap-1">
                       Demo <ExternalLink size={14} />
@@ -714,6 +732,7 @@ export const HomePage: React.FC = () => {
                   <a href="/contact" className="text-sm font-bold text-accent hover:text-white inline-flex items-center gap-1">
                     Ask For Repo <ShieldCheck size={14} />
                   </a>
+                  <ProjectViewsBadge />
                 </div>
               </div>
             </GlassCard>

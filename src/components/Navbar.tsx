@@ -21,18 +21,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCommandPalette, onOpenTerm
     const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [hideNavbar, setHideNavbar] = useState(false);
-    const [liveVisitors, setLiveVisitors] = useState(12);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setLiveVisitors((prev) => {
-                const delta = Math.floor(Math.random() * 3) - 1;
-                return Math.max(8, Math.min(24, prev + delta));
-            });
-        }, 12000);
-        return () => clearInterval(interval);
-    }, []);
-
     const { scrollYProgress } = useScroll();
     const scaleX = useSpring(scrollYProgress, {
         stiffness: 100,
@@ -64,12 +52,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCommandPalette, onOpenTerm
                             <span className="text-2xl font-black font-orbitron tracking-wider text-gradient animate-pulse-glow hidden sm:block">
                                 ARYAN ZONE
                             </span>
-                        </Link>
-                        {/* Live Visitor Counter Badge */}
-                        <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[11px] font-bold">
-                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                            <span>{liveVisitors} Live Online</span>
-                        </div>
                     </div>
                     <nav className="hidden md:flex items-center gap-3 lg:gap-5">
                         {navLinks.map((link) => (

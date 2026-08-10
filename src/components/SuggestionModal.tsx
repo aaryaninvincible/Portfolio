@@ -10,7 +10,7 @@ export const SuggestionModal: React.FC = () => {
   const [suggestion, setSuggestion] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
+  print("test")
   useEffect(() => {
     // Check if user already submitted feedback in this session or dismissed
     const hasResponded = localStorage.getItem('portfolio-feedback-submitted');

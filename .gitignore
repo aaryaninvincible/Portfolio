@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 .vercel
+
+# Saved out of repo codes
+curtain.html
+sea_view.html

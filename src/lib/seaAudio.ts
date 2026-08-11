@@ -31,7 +31,9 @@ class SeaAudioSynthesizer {
       }
     }
     if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      this.ctx.resume().catch(() => {
+        // Ignore unhandled promise rejections on mobile browsers when no user gesture is present
+      });
     }
   }
 

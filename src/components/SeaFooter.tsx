@@ -38,7 +38,9 @@ export const SeaFooter: React.FC = () => {
     function initSea() {
       seaRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       seaRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // optimize pixel ratio
-      seaRenderer.setSize(seaContainer.clientWidth, seaContainer.clientHeight);
+      const width = seaContainer.clientWidth;
+      const height = seaContainer.clientHeight || 1;
+      seaRenderer.setSize(width, height);
       seaRenderer.toneMapping = THREE.ACESFilmicToneMapping;
       seaRenderer.toneMappingExposure = 0.5;
       seaContainer.appendChild(seaRenderer.domElement);
@@ -46,7 +48,7 @@ export const SeaFooter: React.FC = () => {
       seaScene = new THREE.Scene();
       seaScene.fog = new THREE.FogExp2(0x0c1420, 0.001);
 
-      seaCamera = new THREE.PerspectiveCamera(55, seaContainer.clientWidth / seaContainer.clientHeight, 1, 20000);
+      seaCamera = new THREE.PerspectiveCamera(55, width / height, 1, 20000);
       seaCamera.position.set(0, 30, 100);
 
       sun = new THREE.Vector3();
@@ -223,11 +225,17 @@ export const SeaFooter: React.FC = () => {
       seaAnimate();
     }
 
+    let resizeTimeout: any;
     function onSeaWindowResize() {
-      if(!seaCamera || !seaRenderer || !seaContainer) return;
-      seaCamera.aspect = seaContainer.clientWidth / seaContainer.clientHeight;
-      seaCamera.updateProjectionMatrix();
-      seaRenderer.setSize(seaContainer.clientWidth, seaContainer.clientHeight);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if(!seaCamera || !seaRenderer || !seaContainer) return;
+        const width = seaContainer.clientWidth;
+        const height = seaContainer.clientHeight || 1;
+        seaCamera.aspect = width / height;
+        seaCamera.updateProjectionMatrix();
+        seaRenderer.setSize(width, height);
+      }, 250);
     }
 
     function seaAnimate() {
@@ -343,8 +351,17 @@ export const SeaFooter: React.FC = () => {
       isSeaActive = false;
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', onSeaWindowResize);
-      if (seaRenderer && seaRenderer.domElement && seaContainer.contains(seaRenderer.domElement)) {
-        seaContainer.removeChild(seaRenderer.domElement);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      if (seaRenderer) {
+        if (seaRenderer.domElement && seaContainer.contains(seaRenderer.domElement)) {
+          seaContainer.removeChild(seaRenderer.domElement);
+        }
+        seaRenderer.dispose();
+        const gl = seaRenderer.getContext();
+        if (gl) {
+          const ext = gl.getExtension('WEBGL_lose_context');
+          if (ext) ext.loseContext();
+        }
       }
     };
   }, []);
@@ -655,7 +672,7 @@ export const SeaFooter: React.FC = () => {
         }
       `}</style>
       
-      <div ref={containerRef} className="absolute top-0 left-0 w-full h-full pointer-events-auto" />
+      <div ref={containerRef} className="absolute top-0 left-0 w-full h-full pointer-events-none" />
 
       {/* DOM-based Rain Overlay */}
       {weather === 'RAIN' && (

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Curtain</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #000000;
+    }
+    canvas { display: block; position: fixed; top: 0; left: 0; cursor: crosshair; z-index: 2; background: transparent; }
+    /* hide all scrollbars */
+    ::-webkit-scrollbar { display: none; }
+    * { scrollbar-width: none; }
+    .behind-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: clamp(2.2rem, 8vw, 4.8rem);
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.35);
+      text-shadow: 0 0 6px #ff7300, 0 0 20px rgba(255, 115, 0, 0.5);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      pointer-events: none;
+      user-select: none;
+      z-index: 1;
+      text-align: center;
+      width: 100%;
+      padding: 0 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="behind-text">aaryaninvincible</div>
+<canvas id="c"></canvas>
+<script>
+"use strict";
+
+// ─── Source text (displayed as curtain characters) ────────────────────────────
+const SOURCE =
+`function curtain(canvas){const ctx=canvas.getContext('2d');
+const gravity=0.3;const damping=0.98;const stiffness=0.4;
+class Point{constructor(x,y,pin){this.x=x;this.y=y;
+this.ox=x;this.oy=y;this.ax=0;this.ay=0;this.pin=pin;}
+update(){if(this.pin)return;const vx=(this.x-this.ox)*damping;
+const vy=(this.y-this.oy)*damping;this.ox=this.x;this.oy=this.y;
+this.x+=vx+this.ax;this.y+=vy+this.ay+gravity;this.ax=0;this.ay=0;}
+push(fx,fy){this.ax+=fx;this.ay+=fy;}}
+class Spring{constructor(a,b,len,k){this.a=a;this.b=b;this.len=len;this.k=k;}
+solve(){const dx=this.b.x-this.a.x;const dy=this.b.y-this.a.y;
+const d=Math.hypot(dx,dy);if(!d)return;const f=(d-this.len)/d*this.k;
+if(!this.a.pin){this.a.x+=dx*f;this.a.y+=dy*f;}
+if(!this.b.pin){this.b.x-=dx*f;this.b.y-=dy*f;}}}
+return{ctx,Point,Spring};}
+const canvas=document.getElementById("c");
+const particles=[];const constraints=[];`;
+
+// ─── Canvas & DPR ────────────────────────────────────────────────────────────
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+const DPR    = Math.min(window.devicePixelRatio || 1, 2);
+
+let W = 0, H = 0;
+
+// ─── Physics params ───────────────────────────────────────────────────────────
+const GRAVITY  = 0.28;
+const DAMPING  = 0.982;
+const STIFF_V  = 0.42;   // vertical spring stiffness
+const STIFF_H  = 0.18;   // horizontal spacer stiffness (loose — allows drape)
+const ITERS    = 10;
+
+const M_RADIUS = 140;    // hover push radius (CSS px)
+const M_FORCE  = 5.5;
+const GRAB_R   = 24;     // grab radius (CSS px)
+
+// ─── Grid config — adapts to container size ───────────────────────────────────
+function gridConfig() {
+  const w = window.innerWidth, h = window.innerHeight;
+  const cols = Math.min(Math.max(Math.floor(w / 16), 24), 72);
+  const rows = Math.min(Math.max(Math.floor(h / 18), 16), 42);
+  const cw   = w / (cols + 1);
+  const rh   = h / (rows - 1) * 0.92;
+  return { cols, rows, cw, rh };
+}
+
+// ─── Point ───────────────────────────────────────────────────────────────────
+class Point {
+  constructor(x, y, pinned) {
+    this.x = x; this.y = y;
+    this.ox = x; this.oy = y;
+    this.ax = 0; this.ay = 0;
+    this.pinned = pinned;
+  }
+  update() {
+    if (this.pinned) return;
+    const vx = (this.x - this.ox) * DAMPING;
+    const vy = (this.y - this.oy) * DAMPING;
+    this.ox = this.x; this.oy = this.y;
+    this.x += vx + this.ax;
+    this.y += vy + this.ay + GRAVITY;
+    this.ax = 0; this.ay = 0;
+  }
+  push(fx, fy) { this.ax += fx; this.ay += fy; }
+}
+
+// ─── Spring (elastic — bounces back when released) ───────────────────────────
+class Spring {
+  constructor(a, b, stiffness) {
+    this.a = a; this.b = b;
+    this.rest = Math.hypot(b.x - a.x, b.y - a.y);
+    this.k = stiffness;
+  }
+  solve() {
+    const dx = this.b.x - this.a.x;
+    const dy = this.b.y - this.a.y;
+    const d  = Math.hypot(dx, dy);
+    if (d < 0.0001) return;
+    const f = ((d - this.rest) / d) * this.k;
+    if (!this.a.pinned) { this.a.x += dx * f; this.a.y += dy * f; }
+    if (!this.b.pinned) { this.b.x -= dx * f; this.b.y -= dy * f; }
+  }
+}
+
+// ─── Grid state ──────────────────────────────────────────────────────────────
+let points  = [];
+let springs = [];
+let G;
+
+function buildGrid() {
+  G       = gridConfig();
+  points  = [];
+  springs = [];
+  W = window.innerWidth;
+  H = window.innerHeight;
+
+  canvas.width        = W * DPR;
+  canvas.height       = H * DPR;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+  const pool = SOURCE.replace(/\s+/g, '').split('').filter(c => c.trim());
+
+  for (let c = 0; c < G.cols; c++) {
+    const col = [];
+    for (let r = 0; r < G.rows; r++) {
+      const x  = G.cw * (c + 1);
+      const y  = G.rh * r;
+      const pt = new Point(x, y, r === 0);
+      const ch = pool[(c * G.rows + r) % pool.length];
+      col.push({ pt, ch });
+    }
+    points.push(col);
+  }
+
+  // Vertical springs (main threads)
+  for (let c = 0; c < G.cols; c++) {
+    for (let r = 0; r < G.rows - 1; r++) {
+      springs.push(new Spring(points[c][r].pt, points[c][r + 1].pt, STIFF_V));
+    }
+  }
+
+  // Horizontal spacers every other row — loose so columns drape independently
+  for (let c = 0; c < G.cols - 1; c++) {
+    for (let r = 0; r < G.rows; r += 2) {
+      const s = new Spring(points[c][r].pt, points[c + 1][r].pt, STIFF_H);
+      s.rest *= 1.6;  // extra stretch slack
+      springs.push(s);
+    }
+  }
+}
+
+buildGrid();
+
+// ─── Mouse / touch ───────────────────────────────────────────────────────────
+const mouse = { x: -9999, y: -9999, grabbed: null };
+
+function nearestPoint(mx, my, maxD) {
+  let best = Infinity, found = null;
+  for (let c = 0; c < G.cols; c++) {
+    for (let r = 1; r < G.rows; r++) {
+      const pt = points[c][r].pt;
+      const dx = pt.x - mx, dy = pt.y - my;
+      const d2 = dx * dx + dy * dy;
+      if (d2 < best) { best = d2; found = pt; }
+    }
+  }
+  return Math.sqrt(best) < maxD ? found : null;
+}
+
+canvas.addEventListener('mousemove', e => {
+  mouse.x = e.clientX; mouse.y = e.clientY;
+  if (mouse.grabbed) {
+    mouse.grabbed.x  = e.clientX;
+    mouse.grabbed.y  = e.clientY;
+    mouse.grabbed.ox = e.clientX;
+    mouse.grabbed.oy = e.clientY;
+  }
+});
+canvas.addEventListener('mousedown', e => {
+  const pt = nearestPoint(e.clientX, e.clientY, GRAB_R);
+  if (pt) { pt._wasPinned = pt.pinned; pt.pinned = true; mouse.grabbed = pt; }
+});
+canvas.addEventListener('mouseup', () => {
+  if (mouse.grabbed) {
+    mouse.grabbed.pinned = mouse.grabbed._wasPinned || false;
+    mouse.grabbed = null;
+  }
+});
+canvas.addEventListener('mouseleave', () => {
+  mouse.x = -9999; mouse.y = -9999;
+  if (mouse.grabbed) { mouse.grabbed.pinned = mouse.grabbed._wasPinned || false; mouse.grabbed = null; }
+});
+
+// Touch
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const t = e.touches[0];
+  mouse.x = t.clientX; mouse.y = t.clientY;
+  const pt = nearestPoint(t.clientX, t.clientY, GRAB_R * 2);
+  if (pt) { pt._wasPinned = pt.pinned; pt.pinned = true; mouse.grabbed = pt; }
+}, { passive: false });
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const t = e.touches[0];
+  mouse.x = t.clientX; mouse.y = t.clientY;
+  if (mouse.grabbed) {
+    mouse.grabbed.x  = t.clientX;
+    mouse.grabbed.y  = t.clientY;
+    mouse.grabbed.ox = t.clientX;
+    mouse.grabbed.oy = t.clientY;
+  }
+}, { passive: false });
+canvas.addEventListener('touchend', () => {
+  mouse.x = -9999; mouse.y = -9999;
+  if (mouse.grabbed) { mouse.grabbed.pinned = mouse.grabbed._wasPinned || false; mouse.grabbed = null; }
+});
+
+// ─── Wind gusts ──────────────────────────────────────────────────────────────
+function gust() {
+  const amp    = (Math.random() - 0.5) * 8;
+  const band   = Math.random() * H;
+  const spread = H * 0.4;
+  for (let c = 0; c < G.cols; c++) {
+    for (let r = 1; r < G.rows; r++) {
+      const pt = points[c][r].pt;
+      const t  = Math.max(0, 1 - Math.abs(pt.y - band) / spread);
+      pt.push(amp * t, 0);
+    }
+  }
+}
+setInterval(gust, 2200);
+
+// ─── Glyph cache (bright white characters) ────────────────────────────────────
+const glyphMap = {};
+function getGlyph(ch, sz) {
+  const key = ch + '|' + sz;
+  if (glyphMap[key]) return glyphMap[key];
+  const cell = Math.ceil(sz * 1.5);
+  const off  = document.createElement('canvas');
+  off.width  = off.height = cell * DPR;
+  const g    = off.getContext('2d');
+  g.scale(DPR, DPR);
+  g.font          = `bold ${sz}px "Courier New", monospace`;
+  g.textAlign     = 'center';
+  g.textBaseline  = 'middle';
+  // Pure white characters
+  g.fillStyle     = '#ffffff';
+  g.fillText(ch, cell / 2, cell / 2);
+  off._s = cell;
+  return (glyphMap[key] = off);
+}
+
+function fontSize() { return Math.min(Math.max(G.rh * 0.7, 8), 15); }
+
+function prewarm() {
+  const sz = fontSize();
+  for (const ch of new Set(SOURCE.replace(/\s+/g, ''))) {
+    if (ch.trim()) getGlyph(ch, sz);
+  }
+}
+prewarm();
+
+// ─── Draw ─────────────────────────────────────────────────────────────────────
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  const sz = fontSize();
+  const mr2 = M_RADIUS * M_RADIUS;
+
+  for (let c = 0; c < G.cols; c++) {
+    for (let r = 0; r < G.rows; r++) {
+      const { pt, ch } = points[c][r];
+
+      // Glow near mouse: full white + slightly brighter; dim far away
+      const dx = pt.x - mouse.x, dy = pt.y - mouse.y;
+      const d2 = dx * dx + dy * dy;
+      const proximity = d2 < mr2 ? (1 - Math.sqrt(d2) / M_RADIUS) : 0;
+      ctx.globalAlpha = 0.55 + proximity * 0.45;
+
+      // Rotate character to follow the thread direction below it
+      let angle = 0;
+      if (r < G.rows - 1) {
+        const below = points[c][r + 1].pt;
+        angle = Math.atan2(below.y - pt.y, below.x - pt.x) - Math.PI / 2;
+      } else if (r > 0) {
+        const above = points[c][r - 1].pt;
+        angle = Math.atan2(pt.y - above.y, pt.x - above.x) - Math.PI / 2;
+      }
+
+      const g = getGlyph(ch, sz);
+      const h = g._s / 2;
+
+      ctx.save();
+      ctx.translate(pt.x, pt.y);
+      ctx.rotate(angle);
+      ctx.drawImage(g, -h, -h, g._s, g._s);
+      ctx.restore();
+    }
+  }
+
+  ctx.globalAlpha = 1;
+
+  // Cursor glow ring (orange)
+  if (mouse.x > -1000) {
+    const gr = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, M_RADIUS);
+    gr.addColorStop(0,   'rgba(255,140,30,0.22)');
+    gr.addColorStop(0.5, 'rgba(255,90,0,0.07)');
+    gr.addColorStop(1,   'rgba(0,0,0,0)');
+    ctx.beginPath();
+    ctx.arc(mouse.x, mouse.y, M_RADIUS, 0, Math.PI * 2);
+    ctx.fillStyle = gr;
+    ctx.fill();
+  }
+}
+
+// ─── Physics loop ─────────────────────────────────────────────────────────────
+function simulate() {
+  const mr2 = M_RADIUS * M_RADIUS;
+  const mx  = mouse.x, my = mouse.y;
+
+  // Hover push
+  if (!mouse.grabbed && mx > -1000) {
+    for (let c = 0; c < G.cols; c++) {
+      for (let r = 1; r < G.rows; r++) {
+        const pt  = points[c][r].pt;
+        const dx  = pt.x - mx, dy = pt.y - my;
+        const d2  = dx * dx + dy * dy;
+        if (d2 < mr2 && d2 > 0.01) {
+          const d   = Math.sqrt(d2);
+          const t   = 1 - d / M_RADIUS;
+          const str = t * t * M_FORCE;
+          pt.push((dx / d) * str, (dy / d) * str);
+        }
+      }
+    }
+  }
+
+  // Integrate
+  for (let c = 0; c < G.cols; c++) {
+    for (let r = 0; r < G.rows; r++) points[c][r].pt.update();
+  }
+
+  // Solve springs
+  for (let i = 0; i < ITERS; i++) {
+    for (const s of springs) s.solve();
+  }
+
+  // Re-anchor top row
+  for (let c = 0; c < G.cols; c++) {
+    const pt = points[c][0].pt;
+    pt.x = G.cw * (c + 1); pt.y = 0;
+    pt.ox = pt.x; pt.oy = 0;
+  }
+}
+
+// ─── Main loop ───────────────────────────────────────────────────────────────
+function loop() {
+  requestAnimationFrame(loop);
+  simulate();
+  draw();
+}
+loop();
+
+// ─── Resize ──────────────────────────────────────────────────────────────────
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => { buildGrid(); prewarm(); }, 150);
+});
+</script>
+</body>
+</html>

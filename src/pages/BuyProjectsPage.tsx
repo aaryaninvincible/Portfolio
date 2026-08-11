@@ -6,10 +6,47 @@ import type { StoreProject } from '../types';
 
 const fallbackStoreProjects: StoreProject[] = [
   {
+    id: 'store-ai-based-cc',
+    title: 'AI Based Career Counseling (AI-Based-C-C)',
+    description: 'AI-driven student guidance and career roadmap platform featuring interactive aptitude tests, domain pathways, and institute dashboards.',
+    price: 499,
+    demoUrl: 'https://aaryaninvincible.github.io/AI-Based-C-C/',
+    imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=60',
+    category: 'AI / ML',
+  },
+  {
+    id: 'store-cv-project',
+    title: 'Computer Vision Intelligence Suite (Cv_project)',
+    description: 'Advanced computer vision platform integrating real-time gesture recognition, spatial tracking, and interactive AI canvas control.',
+    price: 599,
+    demoUrl: '/demos/Cv_project/index.html',
+    imageUrl: 'https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=600&auto=format&fit=crop&q=60',
+    category: 'AI / ML',
+  },
+  {
+    id: 'store-gesture-x',
+    title: 'GestureX - Real-Time Gesture & SAM Control',
+    description: 'Virtual light & image editing system utilizing hand gesture control, Segment Anything Model (SAM) object segmentation, and inpainting.',
+    price: 549,
+    demoUrl: '/demos/GestureX/index.html',
+    imageUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=60',
+    category: 'AI / ML',
+  },
+  {
+    id: 'store-research-paper-platform',
+    title: 'Research Paper Management Platform',
+    description: 'End-to-end intelligent research paper platform featuring PDF metadata extraction, semantic vector search, AI summarization, and peer review workflows.',
+    price: 699,
+    demoUrl: '/demos/research-paper-management-platform/index.html',
+    imageUrl: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&auto=format&fit=crop&q=60',
+    category: 'Full Stack',
+  },
+  {
     id: 'store-windows11-clone',
     title: 'Windows 11 Clone',
     description: 'A premium CSS & React reproduction of the Windows 11 desktop experience, complete with an interactive Start Menu, taskbar, widgets, and draggable windows.',
     price: 399,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Windows11%20Clone/',
     imageUrl: 'https://images.unsplash.com/photo-1628277613967-6abca504d0ac?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -17,6 +54,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Excel AI Editor',
     description: 'AI-powered spreadsheet editor featuring inline formulas, batch text cleaning, data formatting, and smart sheet operations.',
     price: 349,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/ExcelAI%20Editor/',
     imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -24,6 +62,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Spotify Web Player',
     description: 'Fully responsive HTML/CSS/JS clone of the Spotify web player UI with custom playlists, animated music player bars, and hover utilities.',
     price: 299,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Spotify/',
     imageUrl: 'https://images.unsplash.com/photo-1614680376593-902f74fa0d41?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -31,6 +70,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'YouTube Portal Clone',
     description: 'Sleek frontend dashboard clone of YouTube\'s video portal, complete with collapsible sidebars, video player grids, and category filter bars.',
     price: 299,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Youtube-Clone/',
     imageUrl: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -38,6 +78,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Myntra Design Clone',
     description: 'E-commerce store clone mimicking the Myntra design, featuring responsive shopping categories, wishlist, and sliding banners.',
     price: 249,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Myntra-Clone-main/',
     imageUrl: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -45,6 +86,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Billing & Invoice System',
     description: 'Standalone system equipped to catalog sales, calculate GST/VAT, generate invoices, and print receipt summaries in one-click.',
     price: 349,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Biling_Software/',
     imageUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -52,6 +94,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Socket.IO Chat App',
     description: 'Real-time communication app built with Node.js and Socket.io, featuring multiple rooms, message timestamps, and active user list.',
     price: 199,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Socket%20IO%20Chat%20App/',
     imageUrl: 'https://images.unsplash.com/photo-1611746872915-64382b5c76da?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -59,6 +102,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'HTML5 Drawing Pad',
     description: 'HTML5 canvas drawing board with custom brushes, color palettes, size controls, eraser tool, and export-to-image option.',
     price: 0, // FREE mini project
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Drawing%20pad/',
     imageUrl: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -66,6 +110,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Sorting Visualizer',
     description: 'Interactive algorithm visualizer showing Bubble Sort, Merge Sort, and Quick Sort operations with adjustable execution speeds.',
     price: 199,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Sorting_Visualizer/',
     imageUrl: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -73,6 +118,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'MindState Analyzer',
     description: 'AI health application designed to analyze journal logs and evaluate stress and focus metrics with visual charting.',
     price: 249,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/MindState_Analyzer/',
     imageUrl: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -80,6 +126,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: '2048 Game Classic',
     description: 'Responsive slider puzzle game built in Vanilla Javascript with smooth sliding cell animations and local high score tracking.',
     price: 0, // FREE mini project
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/2048%20Game/',
     imageUrl: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -87,6 +134,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Bawarchi 2.0 Website',
     description: 'Premium restaurant ordering landing page featuring interactive menus, shopping drawers, and polished responsive sections.',
     price: 299,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Bawarchi_2.0/',
     imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -94,6 +142,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'PDF Password Opener',
     description: 'A utility program that uses key processing algorithms to safely unlock and decrypt password-protected PDF files.',
     price: 149,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/PDF%20Password%20Opener/',
     imageUrl: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -101,6 +150,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'PDF Editor WebApp',
     description: 'A browser-based editor built to split, merge, rotate, annotate, and manage PDF documents with instant exports.',
     price: 199,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Pdf_editor/',
     imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -108,6 +158,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Rich Note Pad',
     description: 'Clean text writing application featuring rich formatting tools, category tagging, search filters, and automatic local storage.',
     price: 0, // FREE mini project
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Note_Pad/',
     imageUrl: 'https://images.unsplash.com/photo-1517842645767-c639042777db?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -115,6 +166,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Attendance Tracker System',
     description: 'Responsive database logger built to track student/employee logs, check-in timestamps, and generate monthly reports.',
     price: 199,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/AttendanceSystem/',
     imageUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -122,6 +174,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'QR Code Camera Scanner',
     description: 'Utility app utilizing browser media devices to scan, decode, and open links embedded within QR codes instantly.',
     price: 0, // FREE mini project
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/QR%20Code%20Scanner/',
     imageUrl: 'https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -129,6 +182,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Online Mock Test System',
     description: 'Responsive educational portal featuring multiple-choice questions, automated timer thresholds, and grading summaries.',
     price: 249,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/OnlineMockTestSystem/',
     imageUrl: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -136,6 +190,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Web Screen Recorder',
     description: 'Browser capturing utility that records active window, tab, or full screen video and audio, exporting ready-to-use webm clips.',
     price: 149,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Screen%20Recorder/',
     imageUrl: 'https://images.unsplash.com/photo-1461151304267-38cd8907a900?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -143,6 +198,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Wordle Guessing Game',
     description: 'Interactive clone of the viral word game Wordle, featuring key styling animations, stat analytics, and win streak counters.',
     price: 0, // FREE mini project
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Wordle_Clone/',
     imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -150,6 +206,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Typing Speed Assessor',
     description: 'Game UI measuring keystroke accuracy, word counts, and WPM speeds over customizable training periods.',
     price: 0, // FREE mini project
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Speed%20Typing%20Game/',
     imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -157,6 +214,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Luxury Watch Store Portal',
     description: 'Minimalist product showroom for luxury timepieces with dynamic sliding banners and custom cart integrations.',
     price: 249,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/watch-store/',
     imageUrl: 'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -164,6 +222,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Nebula Chat Interface',
     description: 'Responsive chat environment utilizing Firebase Realtime Database for persistent global and channel text messaging.',
     price: 199,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/NebulaChat/',
     imageUrl: 'https://images.unsplash.com/photo-1577563906417-a0a84594612d?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -171,6 +230,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Disk Scheduling Simulator',
     description: 'Academic visualizer charting operating system disk arm movements (FCFS, SCAN, SSTF) with responsive data grids.',
     price: 149,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/DiskSchedulingAlgorithms/',
     imageUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -178,6 +238,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Linguistic Academy Portal',
     description: 'Educational website offering interactive foreign language courses, clean student navigation, and signup forms.',
     price: 299,
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Linguistic%20Academy/',
     imageUrl: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -185,6 +246,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Forecast Weather App',
     description: 'Real-time forecasting tool requesting open weather API statistics to display humidity, wind speeds, and temperature overlays.',
     price: 0, // FREE mini project
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Weather%20App/',
     imageUrl: 'https://images.unsplash.com/photo-1592210454359-9043f067919b?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -192,6 +254,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Responsive To-Do List',
     description: 'Modern task organizer featuring category grouping, completion tracking, list sorting, and state memory.',
     price: 0, // FREE mini project
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/to-do-list/',
     imageUrl: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -199,6 +262,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Secure Password Generator',
     description: 'Developer utility configuring cryptographic character sets to generate custom, crack-resistant keys.',
     price: 0, // FREE mini project
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Password%20Generator/',
     imageUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -206,6 +270,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Analog Clock ticking UI',
     description: 'Elegant CSS grid stopwatch and analog clock widget matching precise system time events.',
     price: 0, // FREE mini project
+    demoUrl: 'https://aaryaninvincible.github.io/Projects/Analog%20Watch/',
     imageUrl: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600&auto=format&fit=crop&q=60',
   }
 ];
@@ -583,16 +648,19 @@ export const BuyProjectsPage: React.FC = () => {
                   <p className="text-slate-300 text-xs font-mono leading-relaxed flex-grow">{product.description}</p>
 
                   <div className="flex flex-wrap gap-2 pt-4">
-                    {product.demoUrl && (
-                      <a
-                        href={product.demoUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="glass border-white/5 text-slate-300 hover:text-primary hover:border-primary/20 px-3 py-2 rounded-lg text-[11px] font-bold font-mono inline-flex items-center gap-1 transition-colors"
-                      >
-                        Demo <ExternalLink size={11} />
-                      </a>
-                    )}
+                    {(() => {
+                      const demoUrl = product.demoUrl || `https://aaryaninvincible.github.io/Projects/${encodeURIComponent(product.title)}/`;
+                      return (
+                        <a
+                          href={demoUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="glass border-white/10 text-slate-200 hover:text-primary hover:border-primary/40 px-3 py-2 rounded-lg text-[11px] font-bold font-mono inline-flex items-center gap-1 transition-all bg-white/5 hover:bg-primary/10"
+                        >
+                          Live Demo <ExternalLink size={11} />
+                        </a>
+                      );
+                    })()}
                     {isInCart ? (
                       <button
                         onClick={() => setIsCartOpen(true)}

@@ -2,6 +2,75 @@ import type { PortfolioProject } from '../types';
 
 export const githubPagesProjects: PortfolioProject[] = [
   {
+    "id": "ai-based-cc",
+    "title": "AI Based Career Counseling (AI-Based-C-C)",
+    "description": "AI-driven student guidance and career roadmap platform featuring interactive aptitude tests, domain pathways, and institute dashboards.",
+    "category": "AI",
+    "technologies": [
+      "AI",
+      "JavaScript",
+      "HTML5",
+      "CSS3",
+      "Career Analytics"
+    ],
+    "demoUrl": "https://aaryaninvincible.github.io/AI-Based-C-C/",
+    "imageUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=60",
+    "featured": true,
+    "source": "github"
+  },
+  {
+    "id": "cv-project",
+    "title": "Computer Vision Intelligence Suite (Cv_project)",
+    "description": "Advanced computer vision platform integrating real-time gesture recognition, spatial tracking, and interactive AI canvas control.",
+    "category": "AI/ML",
+    "technologies": [
+      "Computer Vision",
+      "OpenCV",
+      "MediaPipe",
+      "Python",
+      "PyTorch"
+    ],
+    "demoUrl": "https://aaryaninvincible.github.io/Cv_project/",
+    "imageUrl": "https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=600&auto=format&fit=crop&q=60",
+    "featured": true,
+    "source": "github"
+  },
+  {
+    "id": "gesture-x",
+    "title": "GestureX - Real-Time Gesture & SAM Control",
+    "description": "Virtual light & image editing system utilizing hand gesture control, Segment Anything Model (SAM) object segmentation, and inpainting.",
+    "category": "AI/ML",
+    "technologies": [
+      "MediaPipe",
+      "SAM (Meta AI)",
+      "OpenCV",
+      "Streamlit",
+      "Python"
+    ],
+    "demoUrl": "https://aaryaninvincible.github.io/Cv_project/GestureX/",
+    "imageUrl": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=60",
+    "featured": true,
+    "source": "github"
+  },
+  {
+    "id": "research-paper-management-platform",
+    "title": "Research Paper Management Platform",
+    "description": "End-to-end intelligent research paper platform featuring PDF metadata extraction, semantic vector search, AI summarization, and peer review workflows.",
+    "category": "AI",
+    "technologies": [
+      "Next.js",
+      "NestJS",
+      "Prisma",
+      "TypeScript",
+      "PostgreSQL",
+      "AI"
+    ],
+    "demoUrl": "https://aaryaninvincible.github.io/research-paper-management-platform/",
+    "imageUrl": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&auto=format&fit=crop&q=60",
+    "featured": true,
+    "source": "github"
+  },
+  {
     "id": "ghp-1-animated-search-form",
     "title": "Animated Search Form",
     "description": "Interactive Forms & Auth project hosted live on GitHub Pages.",

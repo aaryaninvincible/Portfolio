@@ -70,7 +70,7 @@ export type Order = {
   price: number;
   upiTxnId?: string;
   paymentScreenshotUrl?: string;
-  status: 'pending' | 'completed' | 'failed';
+  status: 'pending' | 'completed' | 'failed' | 'free_claimed';
   createdAt?: number;
 };
 

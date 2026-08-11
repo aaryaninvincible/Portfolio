@@ -1,10 +1,29 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Bot, ExternalLink, Github, ShieldCheck } from 'lucide-react';
+import { ExternalLink, ShoppingBag } from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
 import { fetchGitHubProjects } from '../lib/github';
 import { subscribeToProjects } from '../lib/realtime';
 import { githubPagesProjects } from '../data/githubPagesProjects';
 import type { PortfolioProject } from '../types';
+
+const categoryThumbnails: Record<string, string> = {
+  'Games & Interactive': 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=60',
+  'Tools & Utilities': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=60',
+  'Forms & Auth': 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=600&auto=format&fit=crop&q=60',
+  'UI & Animations': 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=600&auto=format&fit=crop&q=60',
+  'Portfolios & Sites': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop&q=60',
+  'AI': 'https://images.unsplash.com/photo-1677442136019-21780efad99a?w=600&auto=format&fit=crop&q=60',
+  'AI/ML': 'https://images.unsplash.com/photo-1677442136019-21780efad99a?w=600&auto=format&fit=crop&q=60',
+  'Security': 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&auto=format&fit=crop&q=60',
+  'Web': 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=600&auto=format&fit=crop&q=60',
+  'IoT': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=60',
+  'Clones & Apps': 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&auto=format&fit=crop&q=60',
+};
+
+const getProjectThumbnail = (project: PortfolioProject) => {
+  if (project.imageUrl) return project.imageUrl;
+  return categoryThumbnails[project.category || ''] || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=60';
+};
 
 const fallbackProjects: PortfolioProject[] = [
   {
@@ -40,6 +59,7 @@ const fallbackProjects: PortfolioProject[] = [
     description: 'Emergency ambulance booking platform with booking workflow and admin-oriented management.',
     category: 'Web',
     technologies: ['PHP', 'SQL', 'JavaScript', 'SCSS'],
+    imageUrl: 'https://images.unsplash.com/photo-1587745416684-47953f16f02f?w=600&auto=format&fit=crop&q=60',
   },
   {
     id: 'smart-agriculture',
@@ -47,6 +67,7 @@ const fallbackProjects: PortfolioProject[] = [
     description: 'IoT agriculture monitoring system for real-time sensor data and automated control use cases.',
     category: 'IoT',
     technologies: ['IoT', 'Sensors', 'Dashboard'],
+    imageUrl: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=600&auto=format&fit=crop&q=60',
   },
   {
     id: 'ai-career-counseling',
@@ -54,6 +75,7 @@ const fallbackProjects: PortfolioProject[] = [
     description: 'AI-powered student guidance concept using NLP and recommendation workflows.',
     category: 'AI',
     technologies: ['AI/ML', 'NLP', 'Python'],
+    imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=60',
   },
 ];
 
@@ -107,7 +129,7 @@ export const AllWorkPage: React.FC = () => {
           Project <span className="text-gradient">Gallery</span>
         </h1>
         <p className="text-xl text-slate-300 font-mono max-w-3xl mx-auto">
-          GitHub projects and admin-added portfolio work. Repository links stay private until approved.
+          Explore full-stack software systems, AI models, and interactive web tools. Buy source code or claim free projects.
         </p>
       </div>
 
@@ -127,17 +149,15 @@ export const AllWorkPage: React.FC = () => {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filtered.map((project) => (
-          <GlassCard key={project.id} className="group flex flex-col h-full">
+          <GlassCard key={project.id} className="group flex flex-col h-full overflow-hidden">
             <div className="h-48 overflow-hidden relative border-b border-light/5 bg-black/50 flex items-center justify-center">
               {project.videoUrl ? (
-                <video src={project.videoUrl} className="h-full w-full object-cover opacity-80" autoPlay muted loop playsInline />
-              ) : project.imageUrl ? (
-                <img src={project.imageUrl} className="w-full h-full object-cover opacity-80" alt={project.title} />
+                <video src={project.videoUrl} className="h-full w-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" autoPlay muted loop playsInline />
               ) : (
-                <Bot className="h-14 w-14 text-primary" />
+                <img src={getProjectThumbnail(project)} className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" alt={project.title} />
               )}
-              <span className="absolute top-4 left-4 text-xs font-mono font-bold text-light bg-dark/70 px-3 py-1 rounded-full border border-white/10">
-                {project.source === 'github' ? 'GitHub synced' : project.category}
+              <span className="absolute top-4 left-4 text-xs font-mono font-bold text-light bg-dark/80 px-3 py-1 rounded-full border border-white/10 backdrop-blur-md">
+                {project.source === 'github' ? 'GitHub Live' : project.category}
               </span>
             </div>
             <div className="p-6 flex flex-col flex-grow">
@@ -156,13 +176,10 @@ export const AllWorkPage: React.FC = () => {
                     Demo <ExternalLink size={14} />
                   </a>
                 )}
-                <a href="/#repo-request" className="text-sm font-bold text-accent hover:text-white inline-flex items-center gap-1">
-                  Ask For Repo <ShieldCheck size={14} />
+                <a href={`/buy-projects?select=${encodeURIComponent(project.id)}`} className="text-sm font-bold text-accent hover:text-white inline-flex items-center gap-1">
+                  Buy Project <ShoppingBag size={14} />
                 </a>
                 <ProjectViewsBadge />
-                <span className="text-xs text-slate-500 inline-flex items-center gap-1 w-full mt-1">
-                  <Github size={13} /> Private by request
-                </span>
               </div>
             </div>
           </GlassCard>

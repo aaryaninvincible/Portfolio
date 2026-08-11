@@ -12,7 +12,7 @@ import {
   Languages,
   Linkedin,
   Mail,
-  ShieldCheck,
+  ShoppingBag,
   Trophy,
   Utensils,
   Youtube,
@@ -197,8 +197,8 @@ export const HomePage: React.FC = () => {
             <a href="/resume" className="glass px-6 py-3 rounded-lg text-secondary font-bold hover:bg-white/10 inline-flex items-center gap-2">
               <Download size={18} /> Resume
             </a>
-            <a href="/contact" className="glass px-6 py-3 rounded-lg text-accent font-bold hover:bg-white/10">
-              Contact / Ask Repo
+            <a href="/buy-projects" className="glass px-6 py-3 rounded-lg text-accent font-bold hover:bg-white/10">
+              Buy Projects
             </a>
           </div>
         </div>
@@ -729,8 +729,8 @@ export const HomePage: React.FC = () => {
                       Demo <ExternalLink size={14} />
                     </a>
                   )}
-                  <a href="/contact" className="text-sm font-bold text-accent hover:text-white inline-flex items-center gap-1">
-                    Ask For Repo <ShieldCheck size={14} />
+                  <a href={`/buy-projects?select=${encodeURIComponent(project.id)}`} className="text-sm font-bold text-accent hover:text-white inline-flex items-center gap-1">
+                    Buy Project <ShoppingBag size={14} />
                   </a>
                   <ProjectViewsBadge />
                 </div>
@@ -741,7 +741,7 @@ export const HomePage: React.FC = () => {
 
         <div className="flex justify-center pt-4">
           <a href="/all-work" className="glass px-8 py-3.5 rounded-xl text-primary font-bold hover:bg-white/10 hover:border-primary/40 transition-all inline-flex items-center gap-2 font-orbitron tracking-wider text-sm shadow-[0_0_20px_rgba(255,115,0,0.15)]">
-            View All Projects ({projects.length}) <ExternalLink size={16} />
+            View All Projects <ExternalLink size={16} />
           </a>
         </div>
       </section>

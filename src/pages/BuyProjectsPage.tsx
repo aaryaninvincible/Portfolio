@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { ShoppingCart, ShoppingBag, X, Trash2, ExternalLink, CheckCircle2, ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { ShoppingCart, ShoppingBag, X, Trash2, ExternalLink, CheckCircle2, ChevronLeft, ChevronRight, Check, Github, Gift } from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
 import { subscribeToStoreProducts, createOrder, uploadAsset } from '../lib/realtime';
 import type { StoreProject } from '../types';
@@ -58,7 +58,7 @@ const fallbackStoreProjects: StoreProject[] = [
     id: 'store-drawing-pad',
     title: 'HTML5 Drawing Pad',
     description: 'HTML5 canvas drawing board with custom brushes, color palettes, size controls, eraser tool, and export-to-image option.',
-    price: 149,
+    price: 0, // FREE mini project
     imageUrl: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -79,7 +79,7 @@ const fallbackStoreProjects: StoreProject[] = [
     id: 'store-2048-game',
     title: '2048 Game Classic',
     description: 'Responsive slider puzzle game built in Vanilla Javascript with smooth sliding cell animations and local high score tracking.',
-    price: 99,
+    price: 0, // FREE mini project
     imageUrl: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -107,7 +107,7 @@ const fallbackStoreProjects: StoreProject[] = [
     id: 'store-notepad',
     title: 'Rich Note Pad',
     description: 'Clean text writing application featuring rich formatting tools, category tagging, search filters, and automatic local storage.',
-    price: 99,
+    price: 0, // FREE mini project
     imageUrl: 'https://images.unsplash.com/photo-1517842645767-c639042777db?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -121,7 +121,7 @@ const fallbackStoreProjects: StoreProject[] = [
     id: 'store-qr-scanner',
     title: 'QR Code Camera Scanner',
     description: 'Utility app utilizing browser media devices to scan, decode, and open links embedded within QR codes instantly.',
-    price: 99,
+    price: 0, // FREE mini project
     imageUrl: 'https://images.unsplash.com/photo-1595079676339-1534801ad6cf?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -142,14 +142,14 @@ const fallbackStoreProjects: StoreProject[] = [
     id: 'store-wordle-clone',
     title: 'Wordle Guessing Game',
     description: 'Interactive clone of the viral word game Wordle, featuring key styling animations, stat analytics, and win streak counters.',
-    price: 99,
+    price: 0, // FREE mini project
     imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60',
   },
   {
     id: 'store-typing-game',
     title: 'Typing Speed Assessor',
     description: 'Game UI measuring keystroke accuracy, word counts, and WPM speeds over customizable training periods.',
-    price: 99,
+    price: 0, // FREE mini project
     imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=60',
   },
   {
@@ -184,28 +184,28 @@ const fallbackStoreProjects: StoreProject[] = [
     id: 'store-weather-app',
     title: 'Forecast Weather App',
     description: 'Real-time forecasting tool requesting open weather API statistics to display humidity, wind speeds, and temperature overlays.',
-    price: 50,
+    price: 0, // FREE mini project
     imageUrl: 'https://images.unsplash.com/photo-1592210454359-9043f067919b?w=600&auto=format&fit=crop&q=60',
   },
   {
     id: 'store-todo-list',
     title: 'Responsive To-Do List',
     description: 'Modern task organizer featuring category grouping, completion tracking, list sorting, and state memory.',
-    price: 50,
+    price: 0, // FREE mini project
     imageUrl: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=600&auto=format&fit=crop&q=60',
   },
   {
     id: 'store-password-gen',
     title: 'Secure Password Generator',
     description: 'Developer utility configuring cryptographic character sets to generate custom, crack-resistant keys.',
-    price: 50,
+    price: 0, // FREE mini project
     imageUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&auto=format&fit=crop&q=60',
   },
   {
     id: 'store-analog-watch',
     title: 'Analog Clock ticking UI',
     description: 'Elegant CSS grid stopwatch and analog clock widget matching precise system time events.',
-    price: 50,
+    price: 0, // FREE mini project
     imageUrl: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600&auto=format&fit=crop&q=60',
   }
 ];
@@ -220,6 +220,7 @@ export const BuyProjectsPage: React.FC = () => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [githubHandle, setGithubHandle] = useState('');
   const [upiTxnId, setUpiTxnId] = useState('');
   const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
   const [orderId, setOrderId] = useState('');
@@ -264,6 +265,22 @@ export const BuyProjectsPage: React.FC = () => {
       category: p.category || 'Utilities'
     }));
   }, [dbProducts]);
+
+  // URL query parameter listener for auto-selecting projects
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const selectedId = params.get('select');
+    if (selectedId && products.length > 0) {
+      const match = products.find(
+        (p) => p.id === selectedId || p.id.toLowerCase().includes(selectedId.toLowerCase()) || p.title.toLowerCase().includes(selectedId.toLowerCase())
+      );
+      if (match) {
+        setCart([{ product: match, quantity: 1 }]);
+        setIsCartOpen(true);
+        setCheckoutStep('cart');
+      }
+    }
+  }, [products]);
 
   const categories = useMemo(() => {
     const cats = new Set<string>();
@@ -315,6 +332,9 @@ export const BuyProjectsPage: React.FC = () => {
     return cart.reduce((total, item) => total + item.product.price, 0);
   };
 
+  const subtotal = getSubtotal();
+  const isFreeCheckout = cart.length > 0 && subtotal === 0;
+
   const handleNextStep = () => {
     if (checkoutStep === 'cart') {
       setCheckoutStep('details');
@@ -328,7 +348,6 @@ export const BuyProjectsPage: React.FC = () => {
   };
 
   const upiId = 'aryanraikwar78@okicici';
-  const subtotal = getSubtotal();
   const upiName = 'Aryan Raikwar';
   
   // Format items description for payment reference
@@ -383,6 +402,42 @@ export const BuyProjectsPage: React.FC = () => {
     }
   };
 
+  const handleFreeClaimSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!githubHandle.trim()) {
+      alert('Please enter your GitHub handle/username to claim your free project.');
+      return;
+    }
+    setIsSubmitting(true);
+
+    try {
+      const generatedId = 'FREE-' + Math.floor(100000 + Math.random() * 900000);
+
+      for (const item of cart) {
+        await createOrder({
+          name: fullName,
+          email: email,
+          phone: phone || githubHandle,
+          projectId: item.product.id,
+          projectTitle: item.product.title,
+          price: 0,
+          upiTxnId: `FREE_GITHUB_FOLLOW: ${githubHandle}`,
+          paymentScreenshotUrl: 'https://github.com/aaryaninvincible',
+          status: 'free_claimed'
+        });
+      }
+
+      setOrderId(generatedId);
+      setCheckoutStep('success');
+      setCart([]);
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong. Please check connection and try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleScreenshotNav = (productId: string, maxScreens: number, direction: 'prev' | 'next') => {
     setActiveScreenshot((prev) => {
       const currentIdx = prev[productId] || 0;
@@ -405,7 +460,7 @@ export const BuyProjectsPage: React.FC = () => {
             Buy <span className="text-gradient">Projects</span>
           </h1>
           <p className="text-slate-300 max-w-2xl font-mono text-sm">
-            Purchase verified source codes, documentation, and Major/Minor software projects. Maintained and sent securely via Gmail.
+            Purchase verified source codes, documentation, and Major/Minor software projects. Mini projects are 100% free with a GitHub follow.
           </p>
         </div>
 
@@ -416,7 +471,9 @@ export const BuyProjectsPage: React.FC = () => {
         >
           <ShoppingCart size={18} className="animate-pulse" />
           <span>Cart ({cart.length})</span>
-          <span className="text-white font-bold ml-1 font-mono">₹{subtotal}</span>
+          <span className="text-white font-bold ml-1 font-mono">
+            {subtotal === 0 ? 'FREE' : `₹${subtotal}`}
+          </span>
         </button>
       </div>
 
@@ -464,6 +521,7 @@ export const BuyProjectsPage: React.FC = () => {
             const currentIdx = activeScreenshot[product.id] || 0;
             const allImages = hasScreenshots ? [product.imageUrl, ...product.screenshots!] : [product.imageUrl];
             const isInCart = cart.some(item => item.product.id === product.id);
+            const isFree = product.price === 0;
 
             return (
               <GlassCard key={product.id} className="flex flex-col h-full group overflow-hidden relative">
@@ -471,6 +529,12 @@ export const BuyProjectsPage: React.FC = () => {
                 <div className="h-56 bg-black relative overflow-hidden flex items-center justify-center border-b border-white/5">
                   <img src={allImages[currentIdx]} className="h-full w-full object-cover opacity-85 hover:scale-105 transition-all duration-500" alt={product.title} />
                   
+                  {isFree && (
+                    <span className="absolute top-3 right-3 bg-emerald-500 text-black font-orbitron font-extrabold text-[10px] uppercase tracking-widest px-3 py-1 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.5)] z-10">
+                      FREE MINI PROJECT
+                    </span>
+                  )}
+
                   {allImages.length > 1 && (
                     <>
                       <button
@@ -509,7 +573,11 @@ export const BuyProjectsPage: React.FC = () => {
                       <span className="text-[10px] font-bold text-accent uppercase tracking-wider font-mono bg-accent/10 px-2 py-0.5 rounded border border-accent/20">{product.category}</span>
                       <h3 className="font-orbitron text-lg text-primary font-bold mt-2">{product.title}</h3>
                     </div>
-                    <span className="font-mono font-bold text-light text-lg">₹{product.price}</span>
+                    {isFree ? (
+                      <span className="font-mono font-bold text-emerald-400 text-sm bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/20">FREE</span>
+                    ) : (
+                      <span className="font-mono font-bold text-light text-lg">₹{product.price}</span>
+                    )}
                   </div>
 
                   <p className="text-slate-300 text-xs font-mono leading-relaxed flex-grow">{product.description}</p>
@@ -543,9 +611,13 @@ export const BuyProjectsPage: React.FC = () => {
                         </button>
                         <button
                           onClick={() => buyNow(product)}
-                          className="flex-grow bg-primary text-black hover:bg-primary/95 px-3 py-2 rounded-lg text-[11px] font-bold font-orbitron uppercase tracking-wider inline-flex items-center justify-center gap-1 shadow-[0_0_10px_rgba(255,115,0,0.15)] hover:shadow-[0_0_15px_rgba(255,115,0,0.3)] transition-all"
+                          className={`flex-grow px-3 py-2 rounded-lg text-[11px] font-bold font-orbitron uppercase tracking-wider inline-flex items-center justify-center gap-1 transition-all ${
+                            isFree 
+                              ? 'bg-emerald-500 text-black hover:bg-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.3)]'
+                              : 'bg-primary text-black hover:bg-primary/95 shadow-[0_0_10px_rgba(255,115,0,0.15)] hover:shadow-[0_0_15px_rgba(255,115,0,0.3)]'
+                          }`}
                         >
-                          Buy Now
+                          {isFree ? 'Get Free ZIP' : 'Buy Now'}
                         </button>
                       </>
                     )}
@@ -583,7 +655,9 @@ export const BuyProjectsPage: React.FC = () => {
               <div className="grid grid-cols-3 gap-2 py-4 text-[10px] text-center text-slate-400 font-bold border-b border-white/5">
                 <span className={checkoutStep === 'cart' ? 'text-primary' : ''}>1. Items</span>
                 <span className={checkoutStep === 'details' ? 'text-primary' : ''}>2. Delivery Info</span>
-                <span className={checkoutStep === 'payment' ? 'text-primary' : ''}>3. Pay UPI</span>
+                <span className={checkoutStep === 'payment' ? 'text-primary' : ''}>
+                  {isFreeCheckout ? '3. Follow GitHub' : '3. Pay UPI'}
+                </span>
               </div>
 
               {/* Scrollable Content */}
@@ -604,8 +678,9 @@ export const BuyProjectsPage: React.FC = () => {
                             <img src={item.product.imageUrl} className="w-16 h-16 object-cover rounded-lg" alt={item.product.title} />
                             <div className="flex-grow">
                               <h4 className="font-bold text-light text-sm">{item.product.title}</h4>
-                              <p className="text-accent text-xs font-bold mt-1">₹{item.product.price}</p>
-                              
+                              <p className="text-accent text-xs font-bold mt-1">
+                                {item.product.price === 0 ? <span className="text-emerald-400">FREE</span> : `₹${item.product.price}`}
+                              </p>
                               <span className="text-[10px] text-slate-400 mt-1 block">Full Source Code License</span>
                             </div>
                             <button
@@ -627,7 +702,7 @@ export const BuyProjectsPage: React.FC = () => {
                   <div className="space-y-4">
                     <h3 className="font-orbitron text-sm font-bold text-light mb-4">Delivery & Contact Information</h3>
                     <div className="space-y-1">
-                      <label className="text-[11px] text-slate-400 uppercase">Gmail Address (for delivery)*</label>
+                      <label className="text-[11px] text-slate-400 uppercase">Gmail Address (for ZIP delivery)*</label>
                       <input
                         type="email"
                         value={email}
@@ -659,87 +734,148 @@ export const BuyProjectsPage: React.FC = () => {
                       />
                     </div>
                     <p className="text-[10px] text-slate-400 leading-relaxed italic bg-white/5 p-3 rounded-lg border border-white/5">
-                      Information is strictly used to send the software source code, setup files, and project repositories directly to your Gmail account.
+                      Information is strictly used to send the project source code ZIP file directly to your Gmail account.
                     </p>
                   </div>
                 )}
 
-                {/* STEP 3: UPI PAYMENT */}
+                {/* STEP 3: PAYMENT / FREE GITHUB FOLLOW */}
                 {checkoutStep === 'payment' && (
-                  <div className="space-y-5 flex flex-col items-center">
-                    <h3 className="font-orbitron text-sm font-bold text-light self-start">UPI Payments Gateway</h3>
-                    
-                    <div className="flex flex-col items-center gap-3 w-full bg-black/40 border border-white/5 rounded-xl p-4">
-                      {/* QR Code */}
-                      <div className="bg-white p-2 border border-primary/30 rounded-lg">
-                        <img src="/payment_qr.png" className="w-48 h-56 object-contain" alt="Scan QR code" />
-                      </div>
-                      
-                      <p className="text-[10px] text-slate-400 text-center font-bold">
-                        Scan with GPay, PhonePe, Paytm, BHIM or any UPI App
-                      </p>
+                  <>
+                    {isFreeCheckout ? (
+                      /* FREE CHECKOUT: GITHUB FOLLOW FLOW */
+                      <div className="space-y-5 flex flex-col items-center">
+                        <div className="flex items-center gap-2 text-emerald-400 font-bold font-orbitron">
+                          <Gift size={22} />
+                          <span>Free Project Download</span>
+                        </div>
+                        
+                        <div className="w-full bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-5 text-center space-y-3">
+                          <p className="text-xs font-mono text-slate-200">
+                            This project is <span className="text-emerald-400 font-bold">100% FREE</span>! No payment details required.
+                          </p>
+                          <p className="text-[11px] text-slate-300">
+                            Simply follow <span className="text-primary font-bold">@aaryaninvincible</span> on GitHub to receive your source code ZIP.
+                          </p>
 
-                      <div className="w-full border-t border-white/5 pt-3 mt-1 flex flex-col gap-1.5 text-center text-xs">
-                        <div>UPI ID: <span className="text-primary font-bold">{upiId}</span></div>
-                        <div>Payee: <span className="text-light">{upiName}</span></div>
-                        <div className="text-sm font-bold text-accent">Total Amount: ₹{subtotal}</div>
-                      </div>
+                          <a
+                            href="https://github.com/aaryaninvincible"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="glass border-primary/40 text-primary hover:bg-primary/20 px-4 py-2.5 rounded-lg text-xs font-bold font-mono inline-flex items-center gap-2 justify-center w-full transition-all shadow-[0_0_15px_rgba(255,115,0,0.2)]"
+                          >
+                            <Github size={16} /> Follow @aaryaninvincible on GitHub <ExternalLink size={12} />
+                          </a>
+                        </div>
 
-                      {/* Mobile Launch Button */}
-                      <a
-                        href={upiPaymentUri}
-                        className="w-full bg-primary text-black py-2.5 rounded-lg text-xs font-bold text-center uppercase tracking-wider hover:opacity-95 md:hidden block mt-2"
-                      >
-                        🚀 Open UPI Mobile App
-                      </a>
-                    </div>
+                        <form onSubmit={handleFreeClaimSubmit} className="w-full space-y-4 border-t border-white/5 pt-4">
+                          <div className="space-y-1">
+                            <label className="text-[10px] text-slate-400 uppercase font-bold">Your GitHub Handle / Username*</label>
+                            <input
+                              type="text"
+                              value={githubHandle}
+                              onChange={(e) => setGithubHandle(e.target.value)}
+                              className="input-shell text-xs font-mono"
+                              placeholder="@yourgithubusername"
+                              required
+                            />
+                          </div>
+                          <p className="text-[9px] text-slate-400 text-center leading-relaxed">
+                            We will verify your follow and email the full project ZIP file directly to <span className="text-light font-bold">{email}</span>.
+                          </p>
+                          <button
+                            type="submit"
+                            disabled={isSubmitting || !githubHandle.trim()}
+                            className="w-full bg-emerald-400 text-black py-3 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-emerald-300 disabled:opacity-50 font-orbitron shadow-[0_0_15px_rgba(52,211,153,0.3)] transition-all"
+                          >
+                            {isSubmitting ? 'Verifying...' : 'Verify Follow & Claim Free ZIP'}
+                          </button>
+                        </form>
+                      </div>
+                    ) : (
+                      /* PAID CHECKOUT: UPI PAYMENT FLOW */
+                      <div className="space-y-5 flex flex-col items-center">
+                        <h3 className="font-orbitron text-sm font-bold text-light self-start">UPI Payments Gateway</h3>
+                        
+                        <div className="flex flex-col items-center gap-3 w-full bg-black/40 border border-white/5 rounded-xl p-4">
+                          {/* QR Code */}
+                          <div className="bg-white p-2 border border-primary/30 rounded-lg">
+                            <img src="/payment_qr.png" className="w-48 h-56 object-contain" alt="Scan QR code" />
+                          </div>
+                          
+                          <p className="text-[10px] text-slate-400 text-center font-bold">
+                            Scan with GPay, PhonePe, Paytm, BHIM or any UPI App
+                          </p>
 
-                    <form onSubmit={handlePlaceOrder} className="w-full space-y-4 border-t border-white/5 pt-4">
-                      <div className="space-y-1">
-                        <label className="text-[10px] text-slate-400 uppercase font-bold">Upload Payment Screenshot*</label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => setScreenshotFile(e.target.files?.[0] || null)}
-                          className="input-shell text-xs"
-                          required
-                        />
+                          <div className="w-full border-t border-white/5 pt-3 mt-1 flex flex-col gap-1.5 text-center text-xs">
+                            <div>UPI ID: <span className="text-primary font-bold">{upiId}</span></div>
+                            <div>Payee: <span className="text-light">{upiName}</span></div>
+                            <div className="text-sm font-bold text-accent">Total Amount: ₹{subtotal}</div>
+                          </div>
+
+                          {/* Mobile Launch Button */}
+                          <a
+                            href={upiPaymentUri}
+                            className="w-full bg-primary text-black py-2.5 rounded-lg text-xs font-bold text-center uppercase tracking-wider hover:opacity-95 md:hidden block mt-2"
+                          >
+                            🚀 Open UPI Mobile App
+                          </a>
+                        </div>
+
+                        <form onSubmit={handlePlaceOrder} className="w-full space-y-4 border-t border-white/5 pt-4">
+                          <div className="space-y-1">
+                            <label className="text-[10px] text-slate-400 uppercase font-bold">Upload Payment Screenshot*</label>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => setScreenshotFile(e.target.files?.[0] || null)}
+                              className="input-shell text-xs"
+                              required
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] text-slate-400 uppercase font-bold">UPI Transaction ID / UTR*</label>
+                            <input
+                              type="text"
+                              value={upiTxnId}
+                              onChange={(e) => setUpiTxnId(e.target.value)}
+                              className="input-shell text-xs text-center font-bold"
+                              placeholder="e.g. 308945672314"
+                              required
+                            />
+                          </div>
+                          <p className="text-[9px] text-slate-400 text-center leading-relaxed">
+                            Upload screenshot and enter UTR. We will verify and email download files to <span className="text-light font-bold">{email}</span>.
+                          </p>
+                          <button
+                            type="submit"
+                            disabled={isSubmitting || !upiTxnId.trim() || !screenshotFile}
+                            className="w-full bg-primary text-black py-3 rounded-lg text-xs font-bold uppercase tracking-widest hover:shadow-[0_0_15px_rgba(255,115,0,0.3)] disabled:opacity-50 font-orbitron"
+                          >
+                            {isSubmitting ? 'Submitting Receipt...' : 'Confirm Payment & Order'}
+                          </button>
+                        </form>
                       </div>
-                      <div className="space-y-1">
-                        <label className="text-[10px] text-slate-400 uppercase font-bold">UPI Transaction ID / UTR*</label>
-                        <input
-                          type="text"
-                          value={upiTxnId}
-                          onChange={(e) => setUpiTxnId(e.target.value)}
-                          className="input-shell text-xs text-center font-bold"
-                          placeholder="e.g. 308945672314"
-                          required
-                        />
-                      </div>
-                      <p className="text-[9px] text-slate-400 text-center leading-relaxed">
-                        Upload screenshot and enter UTR. We will verify and email download files to <span className="text-light font-bold">{email}</span>.
-                      </p>
-                      <button
-                        type="submit"
-                        disabled={isSubmitting || !upiTxnId.trim() || !screenshotFile}
-                        className="w-full bg-primary text-black py-3 rounded-lg text-xs font-bold uppercase tracking-widest hover:shadow-[0_0_15px_rgba(255,115,0,0.3)] disabled:opacity-50 font-orbitron"
-                      >
-                        {isSubmitting ? 'Submitting Receipt...' : 'Confirm Payment & Order'}
-                      </button>
-                    </form>
-                  </div>
+                    )}
+                  </>
                 )}
 
                 {/* SUCCESS SCREEN */}
                 {checkoutStep === 'success' && (
                   <div className="flex flex-col items-center justify-center py-10 text-center space-y-4">
-                    <CheckCircle2 size={48} className="text-primary animate-pulse" />
-                    <h3 className="font-orbitron text-lg font-bold text-light">Order Submitted!</h3>
+                    <CheckCircle2 size={48} className="text-emerald-400 animate-pulse" />
+                    <h3 className="font-orbitron text-lg font-bold text-light">
+                      {isFreeCheckout ? 'Free Project Claimed! 🎉' : 'Order Submitted!'}
+                    </h3>
                     <p className="text-xs text-slate-300 leading-relaxed font-mono">
-                      Your order reference is <span className="text-primary font-bold">{orderId}</span>. 
+                      Your reference ID is <span className="text-primary font-bold">{orderId}</span>. 
                     </p>
-                    <p className="text-[11px] text-slate-400 leading-relaxed">
-                      Aryan Raikwar will verify the UPI Transaction ID (<span className="text-light font-bold">{upiTxnId}</span>) and email the repository link or zip download to <span className="text-light font-bold">{email}</span> shortly.
+                    <p className="text-[11px] text-slate-300 leading-relaxed">
+                      {isFreeCheckout ? (
+                        <>Thank you for following on GitHub! The project ZIP file will be sent directly to <span className="text-light font-bold">{email}</span> shortly.</>
+                      ) : (
+                        <>Aryan Raikwar will verify the UPI Transaction ID (<span className="text-light font-bold">{upiTxnId}</span>) and email the repository link or zip download to <span className="text-light font-bold">{email}</span> shortly.</>
+                      )}
                     </p>
                     <button
                       onClick={() => {
@@ -748,7 +884,7 @@ export const BuyProjectsPage: React.FC = () => {
                       }}
                       className="glass text-xs font-bold px-6 py-2.5 rounded-lg text-primary hover:bg-white/5 border-primary/20"
                     >
-                      Continue Shopping
+                      Continue Browsing
                     </button>
                   </div>
                 )}
@@ -763,13 +899,17 @@ export const BuyProjectsPage: React.FC = () => {
                   </div>
                   <div className="flex justify-between items-center text-sm mb-6">
                     <span className="text-slate-400">Subtotal:</span>
-                    <span className="text-primary font-bold text-lg">₹{subtotal}</span>
+                    <span className="text-primary font-bold text-lg">
+                      {subtotal === 0 ? <span className="text-emerald-400">FREE</span> : `₹${subtotal}`}
+                    </span>
                   </div>
                   <button
                     onClick={handleNextStep}
                     className="w-full bg-primary text-black py-3 rounded-lg text-xs font-bold font-orbitron uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-95 shadow-[0_0_15px_rgba(255,115,0,0.2)]"
                   >
-                    <span>Proceed to {checkoutStep === 'cart' ? 'Delivery Details' : 'UPI Payment'}</span>
+                    <span>
+                      Proceed to {checkoutStep === 'cart' ? 'Delivery Details' : (isFreeCheckout ? 'GitHub Verification' : 'UPI Payment')}
+                    </span>
                   </button>
                 </div>
               )}

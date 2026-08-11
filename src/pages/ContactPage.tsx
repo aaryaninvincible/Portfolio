@@ -33,7 +33,7 @@ export const ContactPage: React.FC = () => {
           Contact <span className="text-gradient">Aryan</span>
         </h1>
         <p className="text-slate-300 max-w-2xl mx-auto font-mono text-lg leading-relaxed">
-          Whether you want a custom project, BTech/MTech help, freelancing services, or repo access, drop a message below.
+          Whether you want a custom project, BTech/MTech help, freelancing services, or project purchases, drop a message below.
         </p>
       </div>
 
@@ -50,7 +50,7 @@ export const ContactPage: React.FC = () => {
             <select name="topic" className="input-shell w-full bg-black/50 text-slate-300 cursor-pointer" required defaultValue="">
               <option value="" disabled>Select a Topic</option>
               <option value="Request a Custom Project">Request a Custom Project</option>
-              <option value="Request Repo Access">Request Repo Access</option>
+              <option value="Buy / Purchase Project Inquiry">Buy / Purchase Project Inquiry</option>
               <option value="Freelancing / BTech / MTech Help">Freelancing / BTech / MTech Help</option>
               <option value="General Inquiry">General Inquiry</option>
             </select>
@@ -59,7 +59,7 @@ export const ContactPage: React.FC = () => {
           <textarea 
             name="message" 
             className="input-shell w-full min-h-[150px]" 
-            placeholder="Tell me what you want to build, or which repo you need access to..." 
+            placeholder="Tell me what you want to build or inquire about..." 
             required 
           />
           

@@ -23,7 +23,7 @@ const STATIC_UPDATES = [
     date: 'June 2026',
     content: 'Added Firebase-powered contact messages, repo access requests, admin project uploads, certificates, resume view, analytics, and private-by-request repository flow.',
     tags: ['Firebase', 'Admin Panel', 'Portfolio', 'Vercel'],
-    links: [{ text: 'Ask For Repo', url: '/#repo-request', type: 'primary' }],
+    links: [{ text: 'Buy Projects', url: '/buy-projects', type: 'primary' }],
   },
   {
     id: 2,
@@ -177,12 +177,9 @@ export const UpdatesPage: React.FC = () => {
                 </h3>
                 <p className="text-slate-300 font-mono text-sm leading-relaxed">{description.body}</p>
                 <div className="mt-6 flex flex-wrap gap-3 border-t border-white/5 pt-5">
-                  <a href="/#repo-request" className="inline-flex items-center gap-2 px-5 py-2 rounded-lg font-mono text-sm font-bold uppercase bg-primary text-dark">
-                    Ask For Repo <ExternalLink size={16} />
+                  <a href="/buy-projects" className="inline-flex items-center gap-2 px-5 py-2 rounded-lg font-mono text-sm font-bold uppercase bg-primary text-dark">
+                    Buy Projects <ExternalLink size={16} />
                   </a>
-                  <span className="inline-flex items-center rounded-lg border border-white/10 px-4 py-2 text-xs text-slate-400">
-                    Repo access is private by request
-                  </span>
                 </div>
               </GlassCard>
             </div>

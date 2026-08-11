@@ -52,6 +52,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCommandPalette, onOpenTerm
                             <span className="text-2xl font-black font-orbitron tracking-wider text-gradient animate-pulse-glow hidden sm:block">
                                 ARYAN ZONE
                             </span>
+                        </Link>
                     </div>
                     <nav className="hidden md:flex items-center gap-3 lg:gap-5">
                         {navLinks.map((link) => (

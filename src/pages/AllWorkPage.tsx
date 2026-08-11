@@ -3,6 +3,7 @@ import { Bot, ExternalLink, Github, ShieldCheck } from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
 import { fetchGitHubProjects } from '../lib/github';
 import { subscribeToProjects } from '../lib/realtime';
+import { githubPagesProjects } from '../data/githubPagesProjects';
 import type { PortfolioProject } from '../types';
 
 const fallbackProjects: PortfolioProject[] = [
@@ -89,7 +90,7 @@ export const AllWorkPage: React.FC = () => {
 
   const projects = useMemo(() => {
     const byTitle = new Map<string, PortfolioProject>();
-    [...fallbackProjects, ...githubProjects, ...adminProjects].forEach((project) => {
+    [...githubPagesProjects, ...fallbackProjects, ...githubProjects, ...adminProjects].forEach((project) => {
       byTitle.set(project.title.toLowerCase(), project);
     });
     return Array.from(byTitle.values());

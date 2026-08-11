@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Paper Management Platform | AI Academic Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #090d16;
+            --surface: #111827;
+            --surface-hover: #1f2937;
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --emerald: #10b981;
+            --amber: #f59e0b;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        header {
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            background: rgba(9, 13, 22, 0.85);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary-light);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        .hero {
+            padding: 5rem 5% 3rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.8rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 30%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .cta-btns {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+        }
+
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-hover);
+            transform: translateY(-2px);
+        }
+
+        .demo-section {
+            max-width: 1100px;
+            margin: 2rem auto 5rem;
+            padding: 0 5%;
+        }
+
+        .demo-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            padding: 14px 20px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .paper-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .paper-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .paper-item:hover {
+            border-color: var(--primary-light);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .paper-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .paper-meta {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 10px;
+        }
+
+        .paper-tags {
+            display: flex;
+            gap: 8px;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.05);
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: var(--primary-light);
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 5%;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            📚 ScholarPulse <span class="badge">Next.js &bull; NestJS &bull; AI</span>
+        </div>
+        <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.3);">Live Interactive Portal</span>
+    </header>
+
+    <section class="hero">
+        <h1>Research Paper Management Platform</h1>
+        <p>An end-to-end intelligent research workspace enabling automated PDF metadata parsing, semantic vector search, AI paper summarization, citation tracking, and collaborative peer reviews.</p>
+        <div class="cta-btns">
+            <a href="#demo" class="btn btn-primary">🔍 Explore Live Paper Repository</a>
+        </div>
+    </section>
+
+    <section class="demo-section" id="demo">
+        <div class="demo-card">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 1rem;">Live Indexed Research Catalog</h2>
+            
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search by title, author, DOI, or AI semantic keyword..." id="searchInput" oninput="filterPapers()">
+                <button class="btn btn-primary">Search</button>
+            </div>
+
+            <div class="paper-list" id="paperList">
+                <div class="paper-item">
+                    <div class="paper-title">Physics-Aware Digital Twin for Anomaly Detection in SCADA Networks</div>
+                    <div class="paper-meta">Authors: A. Raikwar, et al. &bull; Published: 2026 &bull; DOI: 10.1109/TDSC.2026.3198042</div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px;">Hybrid cyber-physical approach combining physical process dynamics with deep neural telemetry for industrial control safety.</p>
+                    <div class="paper-tags">
+                        <span class="tag">SCADA</span>
+                        <span class="tag">Digital Twin</span>
+                        <span class="tag">Cyber-Physical Security</span>
+                    </div>
+                </div>
+
+                <div class="paper-item">
+                    <div class="paper-title">Attention Is All You Need: Scaling Deep Transformer Networks</div>
+                    <div class="paper-meta">Authors: Vaswani et al. &bull; Citation Count: 124,500+ &bull; Category: AI / Deep Learning</div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px;">Foundational neural network architecture introducing self-attention mechanisms for sequence modelling.</p>
+                    <div class="paper-tags">
+                        <span class="tag">Transformers</span>
+                        <span class="tag">NLP</span>
+                        <span class="tag">Deep Learning</span>
+                    </div>
+                </div>
+
+                <div class="paper-item">
+                    <div class="paper-title">Zero-Shot Object Segmentation via Segment Anything (SAM)</div>
+                    <div class="paper-meta">Authors: Kirillov et al. &bull; Meta AI Research &bull; Category: Computer Vision</div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px;">Foundation model for image segmentation capable of producing high quality object masks from visual prompts.</p>
+                    <div class="paper-tags">
+                        <span class="tag">Computer Vision</span>
+                        <span class="tag">Segmentation</span>
+                        <span class="tag">SAM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Research Paper Management Platform by Aryan Raikwar. Built with Next.js, NestJS, Prisma, and PostgreSQL.</p>
+    </footer>
+
+    <script>
+        function filterPapers() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const items = document.querySelectorAll('.paper-item');
+            items.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                item.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>

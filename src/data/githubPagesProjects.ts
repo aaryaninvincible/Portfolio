@@ -30,10 +30,10 @@ export const githubPagesProjects: PortfolioProject[] = [
       "Python",
       "PyTorch"
     ],
-    "demoUrl": "https://aaryaninvincible.github.io/Cv_project/",
+    "demoUrl": "/demos/Cv_project/index.html",
     "imageUrl": "https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=600&auto=format&fit=crop&q=60",
     "featured": true,
-    "source": "github"
+    "source": "admin"
   },
   {
     "id": "gesture-x",
@@ -47,10 +47,10 @@ export const githubPagesProjects: PortfolioProject[] = [
       "Streamlit",
       "Python"
     ],
-    "demoUrl": "https://aaryaninvincible.github.io/Cv_project/GestureX/",
+    "demoUrl": "/demos/GestureX/index.html",
     "imageUrl": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=60",
     "featured": true,
-    "source": "github"
+    "source": "admin"
   },
   {
     "id": "research-paper-management-platform",
@@ -65,10 +65,10 @@ export const githubPagesProjects: PortfolioProject[] = [
       "PostgreSQL",
       "AI"
     ],
-    "demoUrl": "https://aaryaninvincible.github.io/research-paper-management-platform/",
+    "demoUrl": "/demos/research-paper-management-platform/index.html",
     "imageUrl": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&auto=format&fit=crop&q=60",
     "featured": true,
-    "source": "github"
+    "source": "admin"
   },
   {
     "id": "ghp-1-animated-search-form",

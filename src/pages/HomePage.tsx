@@ -12,7 +12,9 @@ import {
   Languages,
   Linkedin,
   Mail,
+  ShieldCheck,
   ShoppingBag,
+  Sparkles,
   Trophy,
   Utensils,
   Youtube,
@@ -21,6 +23,7 @@ import { GlassCard } from '../components/GlassCard';
 import { InteractiveWidgets } from '../components/InteractiveWidgets';
 import { MiniGames } from '../components/MiniGames';
 import { MusicPlaylistWidget } from '../components/MusicPlaylist';
+import { mainBigProjects } from '../data/mainProjects';
 import { linkedInCertificates } from '../data/profile';
 import { fetchGitHubProjects } from '../lib/github';
 import {
@@ -37,106 +40,13 @@ const skillCategories = [
   { title: 'Cloud & Engineering', skills: ['AWS', 'Vercel', 'Docker', 'Git & GitHub', 'CI/CD Pipelines', 'IoT Dashboards'] }
 ];
 
-const fallbackProjects: PortfolioProject[] = [
-  {
-    id: 'ai-based-cc',
-    title: 'AI Based Career Counseling (AI-Based-C-C)',
-    description: 'AI-driven student guidance and career roadmap platform featuring interactive aptitude tests, domain pathways, and institute dashboards.',
-    category: 'AI',
-    technologies: ['AI', 'JavaScript', 'HTML5', 'CSS3', 'Career Analytics'],
-    demoUrl: 'https://aaryaninvincible.github.io/AI-Based-C-C/',
-    imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=60',
-    featured: true,
-  },
-  {
-    id: 'cv-project',
-    title: 'Computer Vision Intelligence Suite (Cv_project)',
-    description: 'Advanced computer vision platform integrating real-time gesture recognition, spatial tracking, and interactive AI canvas control.',
-    category: 'AI/ML',
-    technologies: ['Computer Vision', 'OpenCV', 'MediaPipe', 'Python', 'PyTorch'],
-    demoUrl: '/demos/Cv_project/index.html',
-    imageUrl: 'https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=600&auto=format&fit=crop&q=60',
-    featured: true,
-  },
-  {
-    id: 'gesture-x',
-    title: 'GestureX - Real-Time Gesture & SAM Control',
-    description: 'Virtual light & image editing system utilizing hand gesture control, Segment Anything Model (SAM) object segmentation, and inpainting.',
-    category: 'AI/ML',
-    technologies: ['MediaPipe', 'SAM (Meta AI)', 'OpenCV', 'Streamlit', 'Python'],
-    demoUrl: '/demos/GestureX/index.html',
-    imageUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=60',
-    featured: true,
-  },
-  {
-    id: 'research-paper-management-platform',
-    title: 'Research Paper Management Platform',
-    description: 'End-to-end intelligent research paper platform featuring PDF metadata extraction, semantic vector search, AI summarization, and peer review workflows.',
-    category: 'AI',
-    technologies: ['Next.js', 'NestJS', 'Prisma', 'TypeScript', 'PostgreSQL', 'AI'],
-    demoUrl: '/demos/research-paper-management-platform/index.html',
-    imageUrl: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&auto=format&fit=crop&q=60',
-    featured: true,
-  },
-  {
-    id: 'fitness-rewired',
-    title: 'Fitness Rewired',
-    description: 'A premium human performance ecosystem designed to transform how people move, think, and live.',
-    technologies: ['React', 'Vite', 'Tailwind', 'Framer Motion'],
-    category: 'Web',
-    demoUrl: 'https://fitness-rewired.vercel.app/',
-    imageUrl: '/fitness_demo.png',
-    featured: true,
-  },
-  {
-    id: 'e-challan-detector',
-    title: 'E-Challan Scam Detector',
-    description: 'Professional screening workflow for SMS, URL, and PDF challan evidence with explainable risk scoring.',
-    technologies: ['AI/ML', 'Python', 'React', 'Tailwind'],
-    category: 'Security',
-    demoUrl: 'https://challanchecker.vercel.app/',
-    imageUrl: '/echallan_demo.png',
-    featured: true,
-  },
-  {
-    id: 'synapse-ai',
-    title: 'Synapse AI',
-    description: 'Advanced AI voice and screen assistant designed to help with queries, screen-sharing, and real-time interactive tasks.',
-    technologies: ['React', 'Vite', 'Gemini API', 'AI'],
-    category: 'AI',
-    demoUrl: 'https://aaryan-synapse-ai.vercel.app/',
-    imageUrl: '/synapse_demo.png',
-    featured: true,
-  },
-  {
-    id: 'excel-ai-editor',
-    title: 'Excel AI Editor',
-    description: 'AI-powered spreadsheet editor for data cleanup, analysis, and advanced Excel workflows.',
-    technologies: ['AI', 'JavaScript', 'HTML', 'CSS'],
-    category: 'AI',
-    demoUrl: '../ExcelAI Editor/index.html',
-    featured: true,
-  },
-  {
-    id: 'bawarchi-2',
-    title: 'Bawarchi 2.0',
-    description: 'Restaurant website with a polished menu, responsive design, and customer-first layout.',
-    technologies: ['HTML', 'CSS', 'JavaScript'],
-    category: 'Web',
-    demoUrl: '../Bawarchi_2.0/index.html',
-    featured: true,
-  },
-  {
-    id: 'linguistic-academy',
-    title: 'Linguistic Academy',
-    description: 'Language learning interface with interactive lessons and clean student navigation.',
-    technologies: ['HTML', 'CSS', 'Vanilla JS'],
-    category: 'Education',
-    demoUrl: '../Linguistic Academy/index.html',
-    featured: true,
-  },
+const projectCategories = [
+  'All Innovations',
+  'Cyber-Physical & Security',
+  'AI & Deep Learning',
+  'Computer Vision',
+  'Full Stack & Mobile',
 ];
-
 
 const ProjectIcon = ({ index }: { index: number }) => {
   const icons = [
@@ -170,6 +80,7 @@ export const HomePage: React.FC = () => {
   const [adminProjects, setAdminProjects] = useState<PortfolioProject[]>([]);
   const [githubProjects, setGithubProjects] = useState<PortfolioProject[]>([]);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [selectedProjectCategory, setSelectedProjectCategory] = useState('All Innovations');
 
   const [showScrollPopup, setShowScrollPopup] = useState(false);
 
@@ -198,25 +109,65 @@ export const HomePage: React.FC = () => {
   }, []);
 
   const projects = useMemo(() => {
-    const byTitle = new Map<string, PortfolioProject>();
-    [...fallbackProjects, ...githubProjects, ...adminProjects].forEach((project) => {
-      byTitle.set(project.title.toLowerCase(), project);
+    const byId = new Map<string, PortfolioProject>();
+    // Priority: mainBigProjects first, then adminProjects, then githubProjects
+    mainBigProjects.forEach((project) => {
+      byId.set(project.id, project);
     });
-    return Array.from(byTitle.values());
+    adminProjects.forEach((project) => {
+      byId.set(project.id, { ...byId.get(project.id), ...project });
+    });
+    githubProjects.forEach((project) => {
+      if (!byId.has(project.id)) {
+        byId.set(project.id, project);
+      }
+    });
+    return Array.from(byId.values());
   }, [adminProjects, githubProjects]);
 
-  const featuredProjects = projects.filter((project) => project.featured || project.source === 'github').slice(0, 9);
-  
-  const allCertificates = certificates.length > 0 ? certificates : linkedInCertificates;
-  const bestCertIds = [
-    'coursera-google-ai', 
-    'linkedin-krishi-verse-web-dev', 
-    'python-by-meta', 
-    'google-analytics', 
-    'mastercard-cybersecurity', 
-    'linkedin-accenture-data-analytics'
+  const featuredProjects = useMemo(() => {
+    if (selectedProjectCategory === 'All Innovations') {
+      return projects.filter((p) => p.featured !== false).slice(0, 24);
+    }
+    return projects.filter((p) => {
+      const text = `${p.category} ${p.title} ${p.technologies.join(' ')}`.toLowerCase();
+      if (selectedProjectCategory === 'Cyber-Physical & Security') {
+        return text.includes('scada') || text.includes('cyber') || text.includes('security') || text.includes('challan') || text.includes('twin');
+      }
+      if (selectedProjectCategory === 'AI & Deep Learning') {
+        return text.includes('ai') || text.includes('gemini') || text.includes('pytorch') || text.includes('learning') || text.includes('counseling') || text.includes('research');
+      }
+      if (selectedProjectCategory === 'Computer Vision') {
+        return text.includes('vision') || text.includes('opencv') || text.includes('mediapipe') || text.includes('gesture') || text.includes('sam');
+      }
+      if (selectedProjectCategory === 'Full Stack & Mobile') {
+        return text.includes('full stack') || text.includes('flutter') || text.includes('mobile') || text.includes('next.js') || text.includes('react') || text.includes('downloader') || text.includes('tree');
+      }
+      return true;
+    });
+  }, [projects, selectedProjectCategory]);
+
+  const allCertificates = useMemo(() => {
+    const map = new Map<string, Certificate>();
+    linkedInCertificates.forEach((c) => map.set(c.id, c));
+    certificates.forEach((c) => {
+      map.set(c.id, { ...map.get(c.id), ...c });
+    });
+    return Array.from(map.values());
+  }, [certificates]);
+
+  const topCertIds = [
+    'oracle-cloud-infrastructure-architect-associate',
+    'oracle-agentic-ai-foundations-associate',
+    'google-hack2skill-promptwars',
+    'coursera-google-ai',
+    'coursera-iot-systems-specialization',
+    'python-by-meta',
+    'mastercard-cybersecurity',
+    'linkedin-accenture-data-analytics',
+    'coursera-aws-prompt-engineering'
   ];
-  const visibleCertificates = allCertificates.filter(cert => bestCertIds.includes(cert.id)).slice(0, 6);
+  const visibleCertificates = allCertificates.filter(cert => topCertIds.includes(cert.id)).slice(0, 9);
 
   return (
     <div className="pt-28 pb-20 px-6 max-w-7xl mx-auto space-y-28">
@@ -732,47 +683,88 @@ export const HomePage: React.FC = () => {
 
       <section id="projects" className="space-y-10">
         <div className="text-center space-y-4">
-          <span className="section-kicker font-mono uppercase tracking-widest text-xs">Flagship Portfolio</span>
-          <h2 className="text-3xl md:text-5xl font-orbitron font-black text-light">Engineered Innovations &amp; Flagship Builds</h2>
-          <p className="text-slate-300 max-w-3xl mx-auto font-mono text-sm">
-            Showcasing full-stack web platforms, AI/ML models, IoT dashboards, and production software.
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-mono mb-2 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+            <ShieldCheck size={14} className="text-emerald-400" />
+            <span>Proprietary IP Protected &bull; Source Code Safeguarded Against Theft</span>
+          </div>
+          <span className="section-kicker font-mono uppercase tracking-widest text-xs">Flagship Portfolio &amp; Major Systems</span>
+          <h2 className="text-3xl md:text-5xl font-orbitron font-black text-light">
+            Engineered <span className="text-gradient">Innovations</span>
+          </h2>
+          <p className="text-slate-300 max-w-3xl mx-auto font-mono text-sm sm:text-base leading-relaxed">
+            Showcasing physics-aware cyber-physical digital twins, computer vision suites, generative AI assistants, and enterprise production software.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+        {/* Project Category Filter Tabs */}
+        <div className="flex flex-wrap gap-2 justify-center pb-2">
+          {projectCategories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedProjectCategory(cat)}
+              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-mono transition-all ${
+                selectedProjectCategory === cat
+                  ? 'bg-primary text-black font-bold shadow-[0_0_20px_rgba(255,115,0,0.4)]'
+                  : 'glass text-slate-300 hover:text-white hover:border-primary/40'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {featuredProjects.map((project, index) => (
-            <GlassCard key={project.id} className="group flex flex-col h-full">
-              <div className="h-48 bg-black/60 relative overflow-hidden flex items-center justify-center border-b border-white/5">
+            <GlassCard key={project.id} className="group flex flex-col h-full overflow-hidden hover:border-primary/50 hover:shadow-[0_0_30px_rgba(255,115,0,0.15)] transition-all duration-300">
+              <div className="h-52 bg-black/70 relative overflow-hidden flex items-center justify-center border-b border-white/5">
                 {project.videoUrl ? (
-                  <video src={project.videoUrl} className="h-full w-full object-cover opacity-80" autoPlay muted loop playsInline />
+                  <video src={project.videoUrl} className="h-full w-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500" autoPlay muted loop playsInline />
                 ) : project.imageUrl ? (
-                  <img src={project.imageUrl} className="h-full w-full object-cover opacity-80" alt={project.title} />
+                  <img src={project.imageUrl} className="h-full w-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500" alt={project.title} loading="lazy" />
                 ) : (
                   <ProjectIcon index={index} />
                 )}
+                {project.badge && (
+                  <div className="absolute top-3 right-3 bg-black/85 backdrop-blur-md px-3 py-1 rounded-full border border-primary/40 text-primary text-[11px] font-mono font-bold shadow-lg flex items-center gap-1.5">
+                    <Sparkles size={12} className="text-secondary" />
+                    <span>{project.badge}</span>
+                  </div>
+                )}
               </div>
-              <div className="p-6 flex flex-col flex-grow">
-                <span className="text-xs font-bold text-secondary uppercase tracking-widest">{project.category}</span>
-                <h3 className="font-orbitron text-2xl text-primary mt-3 mb-2 font-bold capitalize">{project.title}</h3>
-                <p className="text-slate-300 text-sm mb-4 font-mono leading-relaxed flex-grow">{project.description}</p>
-                {project.useCase && <p className="text-xs text-slate-400 mb-4">Use case: {project.useCase}</p>}
-                <div className="flex gap-2 flex-wrap mb-6">
-                  {project.technologies.slice(0, 5).map((tech) => (
-                    <span key={tech} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-mono border border-primary/20">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex flex-wrap gap-3 items-center">
-                  {project.demoUrl && (
-                    <a href={project.demoUrl} target="_blank" rel="noreferrer" className="text-sm font-bold text-light hover:text-primary inline-flex items-center gap-1">
-                      Demo <ExternalLink size={14} />
-                    </a>
+              <div className="p-6 flex flex-col flex-grow justify-between">
+                <div>
+                  <span className="text-xs font-bold text-secondary uppercase tracking-widest font-mono">{project.category}</span>
+                  <h3 className="font-orbitron text-xl sm:text-2xl text-primary mt-2 mb-2 font-bold group-hover:text-white transition-colors">{project.title}</h3>
+                  {project.highlights && (
+                    <div className="mb-3 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-xs flex items-center gap-1.5">
+                      <span>⚡ {project.highlights}</span>
+                    </div>
                   )}
-                  <a href={`/buy-projects?select=${encodeURIComponent(project.id)}`} className="text-sm font-bold text-accent hover:text-white inline-flex items-center gap-1">
-                    Buy Project <ShoppingBag size={14} />
-                  </a>
-                  <ProjectViewsBadge />
+                  <p className="text-slate-300 text-xs sm:text-sm mb-4 font-mono leading-relaxed">{project.description}</p>
+                  {project.useCase && <p className="text-xs text-slate-400 mb-4 font-mono italic">Impact: {project.useCase}</p>}
+                </div>
+                <div>
+                  <div className="flex gap-2 flex-wrap mb-5">
+                    {project.technologies.slice(0, 5).map((tech) => (
+                      <span key={tech} className="bg-primary/10 text-primary px-2.5 py-1 rounded-full text-xs font-mono border border-primary/20">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap gap-3 items-center pt-3 border-t border-white/5">
+                    {project.demoUrl && (
+                      <a href={project.demoUrl} target="_blank" rel="noreferrer" className="text-xs sm:text-sm font-bold text-light hover:text-primary inline-flex items-center gap-1 transition-colors">
+                        Demo <ExternalLink size={13} />
+                      </a>
+                    )}
+                    <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2.5 py-1 rounded-md inline-flex items-center gap-1.5 shadow-[0_0_10px_rgba(16,185,129,0.12)] cursor-default select-none" title="Source code is protected by proprietary IP security against unauthorized duplication">
+                      <ShieldCheck size={13} className="text-emerald-400" /> Source Protected
+                    </span>
+                    <a href={`/buy-projects?select=${encodeURIComponent(project.id)}`} className="text-xs sm:text-sm font-bold text-accent hover:text-white inline-flex items-center gap-1 transition-colors">
+                      Buy Project <ShoppingBag size={13} />
+                    </a>
+                    <ProjectViewsBadge />
+                  </div>
                 </div>
               </div>
             </GlassCard>
@@ -781,22 +773,29 @@ export const HomePage: React.FC = () => {
 
         <div className="flex justify-center pt-4">
           <a href="/all-work" className="glass px-8 py-3.5 rounded-xl text-primary font-bold hover:bg-white/10 hover:border-primary/40 transition-all inline-flex items-center gap-2 font-orbitron tracking-wider text-sm shadow-[0_0_20px_rgba(255,115,0,0.15)]">
-            View All Projects <ExternalLink size={16} />
+            View All Projects in Showcase <ExternalLink size={16} />
           </a>
         </div>
       </section>
 
       <section id="certificates" className="space-y-10">
         <div className="text-center space-y-4">
-          <span className="section-kicker">Certificates</span>
-          <h2 className="text-3xl md:text-5xl font-orbitron">Verified Learning</h2>
+          <span className="section-kicker font-mono uppercase tracking-widest text-xs inline-flex items-center gap-1.5">
+            <ShieldCheck size={14} /> Verified Credentials ({allCertificates.length}+ Total)
+          </span>
+          <h2 className="text-3xl md:text-5xl font-orbitron font-black text-light">
+            Industry <span className="text-gradient">Certifications</span>
+          </h2>
+          <p className="text-slate-300 max-w-3xl mx-auto font-mono text-sm sm:text-base leading-relaxed">
+            Verified credentials from Oracle, Google, LearnQuest, Meta, AWS, and leading industry institutions.
+          </p>
         </div>
         {visibleCertificates.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {visibleCertificates.map((certificate) => (
               <GlassCard 
                 key={certificate.id} 
-                className="overflow-hidden flex flex-col h-full cursor-pointer hover:border-accent/40 transition-all duration-300"
+                className="overflow-hidden flex flex-col h-full cursor-pointer hover:border-primary/50 hover:shadow-[0_0_25px_rgba(255,115,0,0.15)] transition-all duration-300 group"
                 onClick={() => {
                   const targetUrl = certificate.pdfUrl || certificate.imageUrl;
                   if (targetUrl) {
@@ -804,38 +803,46 @@ export const HomePage: React.FC = () => {
                   }
                 }}
               >
-                {certificate.imageUrl ? (
-                  certificate.imageUrl.toLowerCase().endsWith('.pdf') ? (
-                    <div className="flex h-56 flex-col items-center justify-center border-b border-white/10 bg-black/50 px-6 text-center gap-2">
-                      <FileText className="h-10 w-10 text-primary animate-pulse" />
-                      <span className="font-orbitron text-sm text-slate-300">PDF Credential</span>
-                    </div>
+                <div className="relative overflow-hidden bg-black/60 border-b border-white/10">
+                  {certificate.imageUrl ? (
+                    certificate.imageUrl.toLowerCase().endsWith('.pdf') ? (
+                      <div className="flex h-52 flex-col items-center justify-center bg-black/50 px-6 text-center gap-2">
+                        <FileText className="h-10 w-10 text-primary animate-pulse" />
+                        <span className="font-orbitron text-sm text-slate-300">PDF Credential</span>
+                      </div>
+                    ) : (
+                      <img src={certificate.imageUrl} alt={certificate.title} className="h-52 w-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                    )
                   ) : (
-                    <img src={certificate.imageUrl} alt={certificate.title} className="h-56 w-full object-cover" />
-                  )
-                ) : (
-                  <div className="flex h-40 items-center justify-center border-b border-white/10 bg-black/50 px-6 text-center">
-                    <Trophy className="mr-3 h-8 w-8 shrink-0 text-primary" />
-                    <span className="font-orbitron text-lg text-light">{certificate.issuer || 'Certificate'}</span>
+                    <div className="flex h-52 items-center justify-center bg-black/50 px-6 text-center">
+                      <Trophy className="mr-3 h-8 w-8 shrink-0 text-primary" />
+                      <span className="font-orbitron text-lg text-light">{certificate.issuer || 'Certificate'}</span>
+                    </div>
+                  )}
+                  <div className="absolute top-3 right-3 bg-black/80 backdrop-blur-md px-2.5 py-1 rounded-full border border-emerald-500/30 text-emerald-400 text-[11px] font-mono flex items-center gap-1.5 shadow-lg">
+                    <CheckCircle2 size={12} />
+                    <span>Verified</span>
                   </div>
-                )}
+                </div>
                 <div className="p-6 flex flex-col flex-grow justify-between">
                   <div>
-                    <h3 className="font-orbitron text-xl text-primary">{certificate.title}</h3>
-                    <p className="mt-2 text-sm text-slate-300 leading-relaxed">{certificate.description}</p>
+                    <span className="text-xs font-bold text-secondary uppercase tracking-widest font-mono">{certificate.issuer}</span>
+                    <h3 className="font-orbitron text-lg sm:text-xl text-primary mt-1 font-bold group-hover:text-white transition-colors">{certificate.title}</h3>
+                    <p className="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed font-mono">{certificate.description}</p>
                   </div>
-                  <div className="mt-4 flex items-center justify-between">
+                  <div className="mt-5 pt-4 border-t border-white/5 flex items-center justify-between">
                     <p className="text-xs text-slate-400 font-mono">
-                      {[certificate.issuer, certificate.date].filter(Boolean).join(' - ')}
+                      {certificate.date}
                     </p>
                     {(certificate.pdfUrl || certificate.imageUrl) && (
                       <a 
                         href={certificate.pdfUrl || certificate.imageUrl} 
                         target="_blank" 
                         rel="noreferrer" 
-                        className="text-xs font-bold text-accent hover:text-white inline-flex items-center gap-1 transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-xs font-bold text-accent hover:text-white inline-flex items-center gap-1.5 transition-colors bg-accent/10 px-2.5 py-1 rounded border border-accent/20"
                       >
-                        View <ExternalLink size={12} />
+                        {certificate.pdfUrl ? 'View PDF' : 'View Image'} <ExternalLink size={12} />
                       </a>
                     )}
                   </div>
@@ -844,11 +851,11 @@ export const HomePage: React.FC = () => {
             ))}
           </div>
         ) : (
-          <GlassCard className="p-8 text-center text-slate-300">Certificates will appear here after upload from admin.</GlassCard>
+          <GlassCard className="p-8 text-center text-slate-300">Certificates will appear here.</GlassCard>
         )}
-        <div className="flex justify-center pt-8">
-          <a href="/certifications" className="glass px-8 py-3 rounded-lg text-primary font-bold hover:bg-white/10 transition-colors inline-flex items-center gap-2">
-            View All Certifications <ExternalLink size={18} />
+        <div className="flex justify-center pt-6">
+          <a href="/certifications" className="glass px-8 py-3.5 rounded-xl text-primary font-bold hover:bg-white/10 hover:border-primary/40 transition-all inline-flex items-center gap-2 font-orbitron tracking-wider text-sm shadow-[0_0_20px_rgba(255,115,0,0.15)]">
+            Explore All {allCertificates.length}+ Certifications <ExternalLink size={16} />
           </a>
         </div>
       </section>

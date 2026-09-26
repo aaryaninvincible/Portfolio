@@ -218,6 +218,7 @@ const MusicWidget: React.FC = () => {
 import { CommandPalette } from './components/CommandPalette';
 import { CyberTerminalModal } from './components/CyberTerminalModal';
 import { SuggestionModal } from './components/SuggestionModal';
+import { SecurityShield } from './components/SecurityShield';
 
 const AppContent: React.FC = () => {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
@@ -253,6 +254,7 @@ const AppContent: React.FC = () => {
       <ScrollControls />
       <MusicWidget />
       <SuggestionModal />
+      <SecurityShield />
 
       {/* Cyber Command Palette Modal */}
       <CommandPalette

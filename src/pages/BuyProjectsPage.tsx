@@ -6,6 +6,40 @@ import type { StoreProject } from '../types';
 
 const fallbackStoreProjects: StoreProject[] = [
   {
+    id: 'store-scada-digital-twin',
+    title: 'Physics-Aware Digital Twin for SCADA Anomaly & Attack Detection',
+    description: 'Production-ready Cyber-Physical Digital Twin system integrating real-time SCADA telemetry simulation (IEC 60870-5-104), physics-informed conservation equations, and deep sequence ML models (PyTorch LSTM + Random Forest) with IEEE paper.',
+    price: 999,
+    demoUrl: 'https://github.com/aaryaninvincible',
+    imageUrl: '/scada_digital_twin_demo.png',
+    category: 'Cyber-Physical & AI',
+  },
+  {
+    id: 'store-synapse-ai',
+    title: 'Synapse AI - Multimodal Screen & Real-Time Voice Agent',
+    description: 'Next-generation AI voice and vision copilot designed for low-latency live dialogue, active desktop screen-share analysis, interactive visual troubleshooting, and intelligent code inspection.',
+    price: 649,
+    demoUrl: 'https://aaryan-synapse-ai.vercel.app/',
+    imageUrl: '/synapse_demo.png',
+    category: 'AI / ML',
+  },
+  {
+    id: 'store-paste2plan',
+    title: 'Paste2Plan - Voice & Text AI Agile Project Planning Engine',
+    description: 'Intelligent Flutter mobile app that converts unstructured voice notes, meeting transcripts, or specifications into structured agile sprints, task backlogs, and notifications.',
+    price: 599,
+    imageUrl: '/paste2plan_demo.png',
+    category: 'Mobile & AI',
+  },
+  {
+    id: 'store-anything-downloader',
+    title: 'Anything-Downloader - Universal Media Processing Suite',
+    description: 'Universal multi-platform media downloader (YouTube, Instagram, TikTok, X, Facebook) with adaptive stream muxing, audio extraction, and Docker deployment.',
+    price: 499,
+    imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
+    category: 'Full Stack',
+  },
+  {
     id: 'store-ai-based-cc',
     title: 'AI Based Career Counseling (AI-Based-C-C)',
     description: 'AI-driven student guidance and career roadmap platform featuring interactive aptitude tests, domain pathways, and institute dashboards.',

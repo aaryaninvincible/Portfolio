@@ -8,8 +8,12 @@ export type PortfolioProject = {
   category: string;
   useCase?: string;
   demoUrl?: string;
+  repoUrl?: string;
   imageUrl?: string;
   videoUrl?: string;
+  badge?: string;
+  highlights?: string;
+  codeProtected?: boolean;
   featured?: boolean;
   source?: 'admin' | 'github';
   updatedAt?: number | string;

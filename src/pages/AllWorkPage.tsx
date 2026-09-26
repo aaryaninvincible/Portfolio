@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ExternalLink, ShoppingBag } from 'lucide-react';
+import { ExternalLink, ShoppingBag, Sparkles, ShieldCheck } from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
 import { fetchGitHubProjects } from '../lib/github';
 import { subscribeToProjects } from '../lib/realtime';
+import { mainBigProjects } from '../data/mainProjects';
 import { githubPagesProjects } from '../data/githubPagesProjects';
 import type { PortfolioProject } from '../types';
 
@@ -147,11 +148,30 @@ export const AllWorkPage: React.FC = () => {
   }, []);
 
   const projects = useMemo(() => {
-    const byTitle = new Map<string, PortfolioProject>();
-    [...githubPagesProjects, ...fallbackProjects, ...githubProjects, ...adminProjects].forEach((project) => {
-      byTitle.set(project.title.toLowerCase(), project);
+    const byId = new Map<string, PortfolioProject>();
+    // Priority: mainBigProjects FIRST, then adminProjects, then fallbackProjects, then githubProjects, then githubPagesProjects
+    mainBigProjects.forEach((project) => {
+      byId.set(project.id, project);
     });
-    return Array.from(byTitle.values());
+    adminProjects.forEach((project) => {
+      byId.set(project.id, { ...byId.get(project.id), ...project });
+    });
+    fallbackProjects.forEach((project) => {
+      if (!byId.has(project.id)) {
+        byId.set(project.id, project);
+      }
+    });
+    githubProjects.forEach((project) => {
+      if (!byId.has(project.id)) {
+        byId.set(project.id, project);
+      }
+    });
+    githubPagesProjects.forEach((project) => {
+      if (!byId.has(project.id)) {
+        byId.set(project.id, project);
+      }
+    });
+    return Array.from(byId.values());
   }, [adminProjects, githubProjects]);
 
   const categories = ['All', ...Array.from(new Set(projects.map((project) => project.category || 'Software')))].sort();
@@ -160,12 +180,16 @@ export const AllWorkPage: React.FC = () => {
   return (
     <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto space-y-16">
       <div className="text-center space-y-6">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs sm:text-sm font-mono shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+          <ShieldCheck size={16} className="text-emerald-400" />
+          <span>Proprietary IP Protection: Source Code Safeguarded Against Scraping &amp; Theft</span>
+        </div>
         <span className="section-kicker">All projects</span>
         <h1 className="text-5xl font-orbitron font-black text-light">
           Project <span className="text-gradient">Gallery</span>
         </h1>
         <p className="text-xl text-slate-300 font-mono max-w-3xl mx-auto">
-          Explore full-stack software systems, AI models, and interactive web tools. Buy source code or claim free projects.
+          Explore full-stack software systems, cyber-physical digital twins, AI models, and interactive tools. Source codebases are proprietary and protected; licensing and custom enterprise deployments available.
         </p>
       </div>
 
@@ -185,8 +209,8 @@ export const AllWorkPage: React.FC = () => {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filtered.map((project) => (
-          <GlassCard key={project.id} className="group flex flex-col h-full overflow-hidden">
-            <div className="h-48 overflow-hidden relative border-b border-light/5 bg-black/50 flex items-center justify-center">
+          <GlassCard key={project.id} className="group flex flex-col h-full overflow-hidden hover:border-primary/50 hover:shadow-[0_0_25px_rgba(255,115,0,0.15)] transition-all duration-300">
+            <div className="h-52 overflow-hidden relative border-b border-light/5 bg-black/50 flex items-center justify-center">
               {project.videoUrl ? (
                 <video src={project.videoUrl} className="h-full w-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" autoPlay muted loop playsInline />
               ) : (
@@ -195,27 +219,45 @@ export const AllWorkPage: React.FC = () => {
               <span className="absolute top-4 left-4 text-xs font-mono font-bold text-light bg-dark/80 px-3 py-1 rounded-full border border-white/10 backdrop-blur-md">
                 {project.source === 'github' ? 'GitHub Live' : project.category}
               </span>
+              {project.badge && (
+                <div className="absolute top-4 right-4 bg-black/85 backdrop-blur-md px-3 py-1 rounded-full border border-primary/40 text-primary text-[11px] font-mono font-bold shadow-lg flex items-center gap-1.5">
+                  <Sparkles size={12} className="text-secondary" />
+                  <span>{project.badge}</span>
+                </div>
+              )}
             </div>
-            <div className="p-6 flex flex-col flex-grow">
-              <h3 className="font-orbitron font-bold text-xl text-primary capitalize">{project.title}</h3>
-              <p className="font-mono text-sm text-slate-300 leading-relaxed mt-3 flex-grow">{project.description}</p>
-              <div className="flex flex-wrap gap-2 mt-5">
-                {project.technologies.slice(0, 6).map((tech) => (
-                  <span key={tech} className="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-xs">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-              <div className="flex flex-wrap gap-3 mt-6 items-center">
-                {project.demoUrl && (
-                  <a href={project.demoUrl} target="_blank" rel="noreferrer" className="text-sm font-bold text-light hover:text-primary inline-flex items-center gap-1">
-                    Demo <ExternalLink size={14} />
-                  </a>
+            <div className="p-6 flex flex-col flex-grow justify-between">
+              <div>
+                <h3 className="font-orbitron font-bold text-xl text-primary capitalize group-hover:text-white transition-colors">{project.title}</h3>
+                {project.highlights && (
+                  <div className="mt-2 mb-2 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-xs flex items-center gap-1.5">
+                    <span>⚡ {project.highlights}</span>
+                  </div>
                 )}
-                <a href={`/buy-projects?select=${encodeURIComponent(project.id)}`} className="text-sm font-bold text-accent hover:text-white inline-flex items-center gap-1">
-                  Buy Project <ShoppingBag size={14} />
-                </a>
-                <ProjectViewsBadge />
+                <p className="font-mono text-sm text-slate-300 leading-relaxed mt-3">{project.description}</p>
+              </div>
+              <div>
+                <div className="flex flex-wrap gap-2 mt-5">
+                  {project.technologies.slice(0, 6).map((tech) => (
+                    <span key={tech} className="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-xs font-mono">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-3 mt-6 items-center pt-3 border-t border-white/5">
+                  {project.demoUrl && (
+                    <a href={project.demoUrl} target="_blank" rel="noreferrer" className="text-sm font-bold text-light hover:text-primary inline-flex items-center gap-1 transition-colors">
+                      Demo <ExternalLink size={14} />
+                    </a>
+                  )}
+                  <span className="text-sm font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2.5 py-1 rounded-md inline-flex items-center gap-1.5 shadow-[0_0_10px_rgba(16,185,129,0.12)] cursor-default select-none" title="Source code is protected by proprietary IP security against unauthorized duplication">
+                    <ShieldCheck size={14} className="text-emerald-400" /> Source Protected
+                  </span>
+                  <a href={`/buy-projects?select=${encodeURIComponent(project.id)}`} className="text-sm font-bold text-accent hover:text-white inline-flex items-center gap-1 transition-colors">
+                    Buy Project <ShoppingBag size={14} />
+                  </a>
+                  <ProjectViewsBadge />
+                </div>
               </div>
             </div>
           </GlassCard>

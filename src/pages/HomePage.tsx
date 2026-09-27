@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bot,
   CheckCircle2,
+  ChevronDown,
+  ChevronUp,
   Download,
   ExternalLink,
   FileSpreadsheet,
@@ -81,6 +83,7 @@ export const HomePage: React.FC = () => {
   const [githubProjects, setGithubProjects] = useState<PortfolioProject[]>([]);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [selectedProjectCategory, setSelectedProjectCategory] = useState('All Innovations');
+  const [visibleProjectCount, setVisibleProjectCount] = useState(6);
 
   const [showScrollPopup, setShowScrollPopup] = useState(false);
 
@@ -125,9 +128,9 @@ export const HomePage: React.FC = () => {
     return Array.from(byId.values());
   }, [adminProjects, githubProjects]);
 
-  const featuredProjects = useMemo(() => {
+  const filteredProjects = useMemo(() => {
     if (selectedProjectCategory === 'All Innovations') {
-      return projects.filter((p) => p.featured !== false).slice(0, 24);
+      return projects.filter((p) => p.featured !== false);
     }
     return projects.filter((p) => {
       const text = `${p.category} ${p.title} ${p.technologies.join(' ')}`.toLowerCase();
@@ -146,6 +149,10 @@ export const HomePage: React.FC = () => {
       return true;
     });
   }, [projects, selectedProjectCategory]);
+
+  const displayedProjects = useMemo(() => {
+    return filteredProjects.slice(0, visibleProjectCount);
+  }, [filteredProjects, visibleProjectCount]);
 
   const allCertificates = useMemo(() => {
     const map = new Map<string, Certificate>();
@@ -170,11 +177,11 @@ export const HomePage: React.FC = () => {
   const visibleCertificates = allCertificates.filter(cert => topCertIds.includes(cert.id)).slice(0, 9);
 
   return (
-    <div className="pt-28 pb-20 px-6 max-w-7xl mx-auto space-y-28">
-      <section className="grid min-h-[calc(100vh-7rem)] items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="space-y-8">
+    <div className="pt-24 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 max-w-7xl mx-auto space-y-16 sm:space-y-24 md:space-y-28">
+      <section className="grid min-h-[calc(100vh-7rem)] items-center gap-8 sm:gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="space-y-6 sm:space-y-8">
           <span className="section-kicker">Full stack + AI/ML + freelance builds</span>
-          <h1 className="text-5xl md:text-7xl font-orbitron font-black text-light drop-shadow-[0_0_10px_rgba(255,115,0,0.7)]">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-orbitron font-black text-light drop-shadow-[0_0_10px_rgba(255,115,0,0.7)]">
             Aryan <span className="text-gradient">Raikwar</span>
           </h1>
           <p className="text-lg md:text-xl text-slate-300 max-w-3xl font-mono leading-relaxed">
@@ -701,7 +708,10 @@ export const HomePage: React.FC = () => {
           {projectCategories.map((cat) => (
             <button
               key={cat}
-              onClick={() => setSelectedProjectCategory(cat)}
+              onClick={() => {
+                setSelectedProjectCategory(cat);
+                setVisibleProjectCount(6);
+              }}
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-mono transition-all ${
                 selectedProjectCategory === cat
                   ? 'bg-primary text-black font-bold shadow-[0_0_20px_rgba(255,115,0,0.4)]'
@@ -713,10 +723,17 @@ export const HomePage: React.FC = () => {
           ))}
         </div>
 
+        <div className="text-center">
+          <span className="text-xs font-mono text-slate-400">
+            Showing top <span className="text-primary font-bold">{displayedProjects.length}</span> of{' '}
+            <span className="text-light font-bold">{filteredProjects.length}</span> Flagship Innovations
+          </span>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredProjects.map((project, index) => (
+          {displayedProjects.map((project, index) => (
             <GlassCard key={project.id} className="group flex flex-col h-full overflow-hidden hover:border-primary/50 hover:shadow-[0_0_30px_rgba(255,115,0,0.15)] transition-all duration-300">
-              <div className="h-52 bg-black/70 relative overflow-hidden flex items-center justify-center border-b border-white/5">
+              <div className="h-48 sm:h-52 bg-black/70 relative overflow-hidden flex items-center justify-center border-b border-white/5">
                 {project.videoUrl ? (
                   <video src={project.videoUrl} className="h-full w-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500" autoPlay muted loop playsInline />
                 ) : project.imageUrl ? (
@@ -731,10 +748,10 @@ export const HomePage: React.FC = () => {
                   </div>
                 )}
               </div>
-              <div className="p-6 flex flex-col flex-grow justify-between">
+              <div className="p-5 sm:p-6 flex flex-col flex-grow justify-between">
                 <div>
                   <span className="text-xs font-bold text-secondary uppercase tracking-widest font-mono">{project.category}</span>
-                  <h3 className="font-orbitron text-xl sm:text-2xl text-primary mt-2 mb-2 font-bold group-hover:text-white transition-colors">{project.title}</h3>
+                  <h3 className="font-orbitron text-lg sm:text-2xl text-primary mt-2 mb-2 font-bold group-hover:text-white transition-colors">{project.title}</h3>
                   {project.highlights && (
                     <div className="mb-3 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-xs flex items-center gap-1.5">
                       <span>⚡ {project.highlights}</span>
@@ -744,15 +761,15 @@ export const HomePage: React.FC = () => {
                   {project.useCase && <p className="text-xs text-slate-400 mb-4 font-mono italic">Impact: {project.useCase}</p>}
                 </div>
                 <div>
-                  <div className="flex gap-2 flex-wrap mb-5">
-                    {project.technologies.slice(0, 5).map((tech) => (
-                      <span key={tech} className="bg-primary/10 text-primary px-2.5 py-1 rounded-full text-xs font-mono border border-primary/20">
+                  <div className="flex gap-1.5 sm:gap-2 flex-wrap mb-4">
+                    {project.technologies.slice(0, 4).map((tech) => (
+                      <span key={tech} className="bg-primary/10 text-primary px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-mono border border-primary/20">
                         {tech}
                       </span>
                     ))}
                   </div>
-                  <div className="flex flex-wrap gap-3 items-center pt-3 border-t border-white/5">
-                    {project.demoUrl && (
+                  <div className="flex flex-wrap gap-2.5 sm:gap-3 items-center pt-3 border-t border-white/5">
+                    {project.demoUrl && (!project.demoUrl.includes('github.com') || project.demoUrl.includes('.github.io')) && (
                       <a href={project.demoUrl} target="_blank" rel="noreferrer" className="text-xs sm:text-sm font-bold text-light hover:text-primary inline-flex items-center gap-1 transition-colors">
                         Demo <ExternalLink size={13} />
                       </a>
@@ -771,9 +788,30 @@ export const HomePage: React.FC = () => {
           ))}
         </div>
 
-        <div className="flex justify-center pt-4">
-          <a href="/all-work" className="glass px-8 py-3.5 rounded-xl text-primary font-bold hover:bg-white/10 hover:border-primary/40 transition-all inline-flex items-center gap-2 font-orbitron tracking-wider text-sm shadow-[0_0_20px_rgba(255,115,0,0.15)]">
-            View All Projects in Showcase <ExternalLink size={16} />
+        {/* Project Controls: Show More / Show Less & View All Showcase */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-4">
+          {filteredProjects.length > visibleProjectCount && (
+            <button
+              onClick={() => setVisibleProjectCount((prev) => Math.min(prev + 6, filteredProjects.length))}
+              className="glass px-6 py-3 rounded-xl text-light hover:text-white hover:border-primary/40 transition-all inline-flex items-center gap-2 font-mono text-sm shadow-[0_0_15px_rgba(255,115,0,0.15)]"
+            >
+              <ChevronDown size={16} className="text-primary" />
+              Show More Projects (+{filteredProjects.length - visibleProjectCount} remaining)
+            </button>
+          )}
+
+          {visibleProjectCount > 6 && (
+            <button
+              onClick={() => setVisibleProjectCount(6)}
+              className="glass px-6 py-3 rounded-xl text-slate-300 hover:text-white hover:border-white/30 transition-all inline-flex items-center gap-2 font-mono text-sm"
+            >
+              <ChevronUp size={16} className="text-secondary" />
+              Show Less (Top 6)
+            </button>
+          )}
+
+          <a href="/all-work" className="glass px-8 py-3.5 rounded-xl text-primary font-bold hover:bg-white/10 hover:border-primary/40 transition-all inline-flex items-center gap-2 font-orbitron tracking-wider text-sm shadow-[0_0_20px_rgba(255,115,0,0.2)]">
+            Explore All {projects.length}+ Projects in Showcase <ExternalLink size={16} />
           </a>
         </div>
       </section>

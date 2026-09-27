@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="lofibg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181028"/>
+      <stop offset="50%" stop-color="#0f0c1b"/>
+      <stop offset="100%" stop-color="#090514"/>
+    </linearGradient>
+    <linearGradient id="neon-pink" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f43f5e"/>
+      <stop offset="50%" stop-color="#d946ef"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="wave-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="800" height="500" fill="url(#lofibg)"/>
+  
+  <!-- Subtle Stars / Noise -->
+  <circle cx="120" cy="80" r="1.5" fill="#f43f5e" opacity="0.6"/>
+  <circle cx="340" cy="40" r="2" fill="#d946ef" opacity="0.5"/>
+  <circle cx="700" cy="110" r="1.5" fill="#38bdf8" opacity="0.7"/>
+  <circle cx="650" cy="420" r="2" fill="#a855f7" opacity="0.4"/>
+  <circle cx="180" cy="450" r="1.5" fill="#ec4899" opacity="0.6"/>
+  
+  <!-- VS Code Dark Frame -->
+  <rect x="70" y="45" width="660" height="410" rx="14" fill="#1e1e1e" stroke="rgba(217, 70, 239, 0.3)" stroke-width="1.5"/>
+  
+  <!-- Title bar -->
+  <rect x="70" y="45" width="660" height="38" rx="14" fill="#252526"/>
+  <rect x="70" y="70" width="660" height="13" fill="#252526"/>
+  <circle cx="95" cy="64" r="5" fill="#ff5f56"/>
+  <circle cx="112" cy="64" r="5" fill="#ffbd2e"/>
+  <circle cx="129" cy="64" r="5" fill="#27c93f"/>
+  <text x="320" y="69" fill="#cccccc" font-family="'JetBrains Mono', monospace" font-size="12">lofi-coder.ts — VS Code</text>
+  
+  <!-- Activity Bar & Side Bar -->
+  <rect x="70" y="83" width="48" height="372" fill="#333333"/>
+  <rect x="118" y="83" width="180" height="372" fill="#252526"/>
+  <text x="135" y="115" fill="#bbbbbb" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="bold">LOFI CHANNELS</text>
+  
+  <rect x="128" y="130" width="160" height="30" rx="5" fill="rgba(217, 70, 239, 0.2)" stroke="rgba(217, 70, 239, 0.4)"/>
+  <text x="140" y="150" fill="#f472b6" font-family="'JetBrains Mono', monospace" font-size="11">🎵 Chill Beats 24/7</text>
+  
+  <rect x="128" y="170" width="160" height="30" rx="5" fill="rgba(255,255,255,0.03)"/>
+  <text x="140" y="190" fill="#888888" font-family="'JetBrains Mono', monospace" font-size="11">☕ Rainy Cafe Coding</text>
+  
+  <rect x="128" y="210" width="160" height="30" rx="5" fill="rgba(255,255,255,0.03)"/>
+  <text x="140" y="230" fill="#888888" font-family="'JetBrains Mono', monospace" font-size="11">🌌 Cyberpunk Focus</text>
+  
+  <!-- Code Editor Window -->
+  <rect x="298" y="83" width="432" height="372" fill="#1e1e1e"/>
+  
+  <!-- Code lines -->
+  <text x="320" y="125" fill="#e06c75" font-family="'Fira Code', monospace" font-size="12">import</text>
+  <text x="375" y="125" fill="#abb2bf" font-family="'Fira Code', monospace" font-size="12">{ LoFiStreamer } from</text>
+  <text x="545" y="125" fill="#98c379" font-family="'Fira Code', monospace" font-size="12">'lofi-engine';</text>
+  
+  <text x="320" y="150" fill="#c678dd" font-family="'Fira Code', monospace" font-size="12">const</text>
+  <text x="365" y="150" fill="#61afef" font-family="'Fira Code', monospace" font-size="12">player</text>
+  <text x="420" y="150" fill="#56b6c2" font-family="'Fira Code', monospace" font-size="12">=</text>
+  <text x="435" y="150" fill="#e5c07b" font-family="'Fira Code', monospace" font-size="12">new LoFiStreamer({</text>
+  
+  <text x="345" y="175" fill="#e06c75" font-family="'Fira Code', monospace" font-size="12">bitrate:</text>
+  <text x="415" y="175" fill="#d19a66" font-family="'Fira Code', monospace" font-size="12">320_000</text>
+  <text x="480" y="175" fill="#5c6370" font-family="'Fira Code', monospace" font-size="12">// Crystal Hi-Fi</text>
+  
+  <text x="345" y="200" fill="#e06c75" font-family="'Fira Code', monospace" font-size="12">cpuUsage:</text>
+  <text x="430" y="200" fill="#98c379" font-family="'Fira Code', monospace" font-size="12">'&lt; 0.8%'</text>
+  <text x="495" y="200" fill="#5c6370" font-family="'Fira Code', monospace" font-size="12">// Zero lag</text>
+  
+  <text x="320" y="225" fill="#e5c07b" font-family="'Fira Code', monospace" font-size="12">});</text>
+  
+  <!-- Interactive Visualizer Overlay Card -->
+  <rect x="330" y="250" width="370" height="150" rx="12" fill="rgba(15, 12, 27, 0.9)" stroke="rgba(217, 70, 239, 0.4)" stroke-width="1.5"/>
+  
+  <!-- Soundwave Equalizer Bars -->
+  <g transform="translate(360, 360)">
+    <rect x="0" y="-40" width="8" height="40" rx="3" fill="#f43f5e"/>
+    <rect x="14" y="-65" width="8" height="65" rx="3" fill="#ec4899"/>
+    <rect x="28" y="-30" width="8" height="30" rx="3" fill="#d946ef"/>
+    <rect x="42" y="-85" width="8" height="85" rx="3" fill="#a855f7"/>
+    <rect x="56" y="-50" width="8" height="50" rx="3" fill="#8b5cf6"/>
+    <rect x="70" y="-70" width="8" height="70" rx="3" fill="#6366f1"/>
+    <rect x="84" y="-35" width="8" height="35" rx="3" fill="#3b82f6"/>
+    <rect x="98" y="-90" width="8" height="90" rx="3" fill="#06b6d4"/>
+    <rect x="112" y="-60" width="8" height="60" rx="3" fill="#10b981"/>
+    <rect x="126" y="-40" width="8" height="40" rx="3" fill="#3b82f6"/>
+    <rect x="140" y="-75" width="8" height="75" rx="3" fill="#8b5cf6"/>
+    <rect x="154" y="-55" width="8" height="55" rx="3" fill="#d946ef"/>
+    <rect x="168" y="-80" width="8" height="80" rx="3" fill="#ec4899"/>
+    <rect x="182" y="-45" width="8" height="45" rx="3" fill="#f43f5e"/>
+    <rect x="196" y="-30" width="8" height="30" rx="3" fill="#a855f7"/>
+  </g>
+  
+  <!-- Track info -->
+  <text x="585" y="295" fill="#f8fafc" font-family="'Space Grotesk', sans-serif" font-size="14" font-weight="bold">Midnight Coding</text>
+  <text x="585" y="318" fill="#ec4899" font-family="'JetBrains Mono', monospace" font-size="11">Lo-Fi Beats / 72 BPM</text>
+  <text x="585" y="342" fill="#10b981" font-family="'JetBrains Mono', monospace" font-size="10">▶ 02:45 / LIVE</text>
+  
+  <!-- VS Code Status Bar -->
+  <rect x="70" y="432" width="660" height="23" fill="#007acc"/>
+  <text x="85" y="448" fill="#ffffff" font-family="'JetBrains Mono', monospace" font-size="11">🎧 LoFi Coder: Streaming Live Beats (44.1kHz)</text>
+</svg>

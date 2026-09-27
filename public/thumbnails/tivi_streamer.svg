@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="crtbg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050a0a"/>
+      <stop offset="100%" stop-color="#020404"/>
+    </linearGradient>
+    <radialGradient id="screen-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00ff88" stop-opacity="0.25"/>
+      <stop offset="80%" stop-color="#003318" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#001408" stop-opacity="0.95"/>
+    </radialGradient>
+    <pattern id="scanlines" width="100" height="4" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="100" y2="0" stroke="rgba(0, 0, 0, 0.45)" stroke-width="1.5" />
+    </pattern>
+  </defs>
+  
+  <rect width="800" height="500" fill="url(#crtbg)"/>
+  
+  <!-- CRT Television Outer Shell -->
+  <rect x="90" y="35" width="620" height="430" rx="40" fill="#181e18" stroke="#2a382a" stroke-width="6"/>
+  <rect x="96" y="41" width="608" height="418" rx="34" fill="#0f140f"/>
+  
+  <!-- CRT Screen Curved Bezel -->
+  <rect x="130" y="65" width="460" height="370" rx="30" fill="url(#screen-glow)" stroke="#00ff88" stroke-width="2"/>
+  
+  <!-- Scanline Overlay -->
+  <rect x="130" y="65" width="460" height="370" rx="30" fill="url(#scanlines)"/>
+  
+  <!-- Screen Content: Cyberpunk Stream Player -->
+  <g transform="translate(150, 95)">
+    <!-- Retro Channel OSD -->
+    <text x="10" y="25" fill="#00ff88" font-family="'Courier New', monospace" font-size="18" font-weight="900" letter-spacing="2">CH 07 [LIVE]</text>
+    <text x="360" y="25" fill="#00ff88" font-family="'Courier New', monospace" font-size="14" font-weight="bold">REC ●</text>
+    
+    <!-- Cyberpunk Synthwave Grid & Sun -->
+    <path d="M0,180 L420,180" stroke="#00ff88" stroke-width="2"/>
+    <path d="M40,180 L0,260" stroke="#00ff88" stroke-width="1.5"/>
+    <path d="M120,180 L70,260" stroke="#00ff88" stroke-width="1.5"/>
+    <path d="M210,180 L210,260" stroke="#00ff88" stroke-width="1.5"/>
+    <path d="M300,180 L350,260" stroke="#00ff88" stroke-width="1.5"/>
+    <path d="M380,180 L420,260" stroke="#00ff88" stroke-width="1.5"/>
+    
+    <circle cx="210" cy="130" r="45" fill="#ff0055" opacity="0.8"/>
+    <line x1="165" y1="125" x2="255" y2="125" stroke="#001408" stroke-width="3"/>
+    <line x1="170" y1="135" x2="250" y2="135" stroke="#001408" stroke-width="3"/>
+    <line x1="175" y1="145" x2="245" y2="145" stroke="#001408" stroke-width="3"/>
+    
+    <!-- Audio Visualizer Spectrum -->
+    <g transform="translate(20, 275)">
+      <rect x="0" y="-30" width="8" height="30" fill="#00ff88"/>
+      <rect x="14" y="-55" width="8" height="55" fill="#00ff88"/>
+      <rect x="28" y="-40" width="8" height="40" fill="#00ff88"/>
+      <rect x="42" y="-70" width="8" height="70" fill="#00ff88"/>
+      <rect x="56" y="-85" width="8" height="85" fill="#ffaa00"/>
+      <rect x="70" y="-60" width="8" height="60" fill="#00ff88"/>
+      <rect x="84" y="-35" width="8" height="35" fill="#00ff88"/>
+      <rect x="98" y="-75" width="8" height="75" fill="#ff0055"/>
+      <rect x="112" y="-95" width="8" height="95" fill="#ff0055"/>
+      <rect x="126" y="-65" width="8" height="65" fill="#ffaa00"/>
+      <rect x="140" y="-45" width="8" height="45" fill="#00ff88"/>
+      <rect x="154" y="-30" width="8" height="30" fill="#00ff88"/>
+      <rect x="168" y="-70" width="8" height="70" fill="#00ff88"/>
+      <rect x="182" y="-50" width="8" height="50" fill="#00ff88"/>
+    </g>
+    
+    <text x="240" y="270" fill="#00ff88" font-family="'Courier New', monospace" font-size="12" font-weight="bold">AUDIO: 48kHz HLS</text>
+    <text x="240" y="290" fill="#ffaa00" font-family="'Courier New', monospace" font-size="12">GLSL SHADER FX: ON</text>
+  </g>
+  
+  <!-- Right Side Television Control Knobs & Grille -->
+  <g transform="translate(615, 80)">
+    <!-- Power Switch -->
+    <circle cx="40" cy="40" r="22" fill="#252e25" stroke="#3d4d3d" stroke-width="2"/>
+    <line x1="40" y1="26" x2="40" y2="40" stroke="#00ff88" stroke-width="3"/>
+    
+    <!-- Channel Dial -->
+    <circle cx="40" cy="115" r="28" fill="#1c241c" stroke="#3d4d3d" stroke-width="3"/>
+    <circle cx="40" cy="115" r="14" fill="#0d120d"/>
+    <line x1="40" y1="92" x2="40" y2="105" stroke="#ffaa00" stroke-width="3"/>
+    
+    <!-- Volume Dial -->
+    <circle cx="40" cy="195" r="28" fill="#1c241c" stroke="#3d4d3d" stroke-width="3"/>
+    <circle cx="40" cy="195" r="14" fill="#0d120d"/>
+    <line x1="56" y1="185" x2="48" y2="192" stroke="#00ff88" stroke-width="3"/>
+    
+    <!-- Speaker Grille -->
+    <g stroke="#080c08" stroke-width="3">
+      <line x1="15" y1="260" x2="65" y2="260"/>
+      <line x1="15" y1="275" x2="65" y2="275"/>
+      <line x1="15" y1="290" x2="65" y2="290"/>
+      <line x1="15" y1="305" x2="65" y2="305"/>
+      <line x1="15" y1="320" x2="65" y2="320"/>
+    </g>
+    
+    <text x="40" y="348" text-anchor="middle" fill="#00ff88" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="bold">TIVI CRT</text>
+  </g>
+</svg>

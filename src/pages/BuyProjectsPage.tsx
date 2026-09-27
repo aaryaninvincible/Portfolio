@@ -10,8 +10,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Physics-Aware Digital Twin for SCADA Anomaly & Attack Detection',
     description: 'Production-ready Cyber-Physical Digital Twin system integrating real-time SCADA telemetry simulation (IEC 60870-5-104), physics-informed conservation equations, and deep sequence ML models (PyTorch LSTM + Random Forest) with IEEE paper.',
     price: 999,
-    demoUrl: 'https://github.com/aaryaninvincible',
-    imageUrl: '/scada_digital_twin_demo.png',
+    imageUrl: '/thumbnails/scada_digital_twin.png',
     category: 'Cyber-Physical & AI',
   },
   {
@@ -28,7 +27,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Paste2Plan - Voice & Text AI Agile Project Planning Engine',
     description: 'Intelligent Flutter mobile app that converts unstructured voice notes, meeting transcripts, or specifications into structured agile sprints, task backlogs, and notifications.',
     price: 599,
-    imageUrl: '/paste2plan_demo.png',
+    imageUrl: '/thumbnails/paste2plan.png',
     category: 'Mobile & AI',
   },
   {
@@ -36,7 +35,7 @@ const fallbackStoreProjects: StoreProject[] = [
     title: 'Anything-Downloader - Universal Media Processing Suite',
     description: 'Universal multi-platform media downloader (YouTube, Instagram, TikTok, X, Facebook) with adaptive stream muxing, audio extraction, and Docker deployment.',
     price: 499,
-    imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/anything_downloader.png',
     category: 'Full Stack',
   },
   {
@@ -45,7 +44,7 @@ const fallbackStoreProjects: StoreProject[] = [
     description: 'AI-driven student guidance and career roadmap platform featuring interactive aptitude tests, domain pathways, and institute dashboards.',
     price: 499,
     demoUrl: 'https://aaryaninvincible.github.io/AI-Based-C-C/',
-    imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=60',
+    imageUrl: '/thumbnails/ai_based_cc.png',
     category: 'AI / ML',
   },
   {
@@ -54,7 +53,7 @@ const fallbackStoreProjects: StoreProject[] = [
     description: 'Advanced computer vision platform integrating real-time gesture recognition, spatial tracking, and interactive AI canvas control.',
     price: 599,
     demoUrl: '/demos/Cv_project/index.html',
-    imageUrl: 'https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=600&auto=format&fit=crop&q=60',
+    imageUrl: '/thumbnails/cv_project.png',
     category: 'AI / ML',
   },
   {
@@ -63,7 +62,7 @@ const fallbackStoreProjects: StoreProject[] = [
     description: 'Virtual light & image editing system utilizing hand gesture control, Segment Anything Model (SAM) object segmentation, and inpainting.',
     price: 549,
     demoUrl: '/demos/GestureX/index.html',
-    imageUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=60',
+    imageUrl: '/thumbnails/gesture_x.png',
     category: 'AI / ML',
   },
   {
@@ -72,7 +71,7 @@ const fallbackStoreProjects: StoreProject[] = [
     description: 'End-to-end intelligent research paper platform featuring PDF metadata extraction, semantic vector search, AI summarization, and peer review workflows.',
     price: 699,
     demoUrl: '/demos/research-paper-management-platform/index.html',
-    imageUrl: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&auto=format&fit=crop&q=60',
+    imageUrl: '/thumbnails/research_paper.png',
     category: 'Full Stack',
   },
   {

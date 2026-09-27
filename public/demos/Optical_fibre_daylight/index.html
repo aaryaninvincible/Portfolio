@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolarFiber AI — Intelligent Optical-Fibre Solar Daylighting Digital Twin</title>
+    <meta name="description" content="Physics-based digital twin and animated simulation of an AI-controlled optical-fibre solar daylighting system for energy-efficient buildings.">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Top Engineering Dashboard Header -->
+    <header class="header">
+        <div class="brand-section">
+            <div class="brand-logo">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="4"/>
+                    <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="brand-title">SolarFiber AI</h1>
+                <p class="brand-sub">Intelligent Optical-Fibre Daylighting Digital Twin</p>
+            </div>
+        </div>
+
+        <!-- Mode Selector -->
+        <div class="mode-selector">
+            <button class="mode-btn" data-mode="manual">Manual Override</button>
+            <button class="mode-btn" data-mode="auto_tracking">Auto Tracker</button>
+            <button class="mode-btn" data-mode="auto_hybrid">Auto Hybrid PI</button>
+            <button class="mode-btn active" data-mode="ai_optimized">AI-Optimized (MPC)</button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="header-controls">
+            <button id="demo-scenario-btn" class="btn btn-accent">
+                ▶ Run 24h Demonstration Scenario
+            </button>
+            <button id="research-mode-btn" class="btn btn-primary">
+                🔬 Research Mode & Equations
+            </button>
+            <button id="export-csv-btn" class="btn btn-sm">
+                ⬇ Export CSV Dataset
+            </button>
+            <label class="btn btn-sm" style="cursor:pointer;">
+                ⬆ Import Real CSV
+                <input type="file" id="import-csv-input" accept=".csv" style="display:none;">
+            </label>
+        </div>
+    </header>
+
+    <!-- Main Grid Workspace -->
+    <main class="main-layout">
+        <!-- Left & Center Column: Digital Twin Canvas & Live Graphs -->
+        <div class="left-column">
+            <!-- 1. Interactive Digital Twin Viewport -->
+            <section class="viewport-card">
+                <div class="viewport-header">
+                    <div class="viewport-title">
+                        <div class="status-dot"></div>
+                        <span>HARDWARE DIGITAL TWIN — REAL-TIME KINEMATICS & PHOTON PROPAGATION</span>
+                    </div>
+                    <div style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">
+                        LAT: <span id="current-lat">28.61°N</span> | LON: <span id="current-lon">77.20°E</span>
+                    </div>
+                </div>
+
+                <!-- Scenario Callout Narrative -->
+                <div id="demo-narrative-callout" class="timeline-callout"></div>
+
+                <!-- Canvas Rendering Area -->
+                <div class="canvas-container">
+                    <canvas id="digital-twin-canvas"></canvas>
+                </div>
+
+                <!-- Playback & Temporal Controls -->
+                <div class="playback-bar">
+                    <button id="play-pause-btn" class="btn btn-sm btn-primary">⏸ Pause</button>
+                    <button id="reset-btn" class="btn btn-sm">↺ Reset</button>
+
+                    <div class="time-slider-wrapper">
+                        <span style="font-size:0.75rem; color:var(--text-secondary); font-weight:600;">TIME:</span>
+                        <input type="range" id="time-slider" min="0" max="24" step="0.05" value="11.5">
+                        <span id="time-readout" class="time-readout">11:30</span>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-size:0.75rem; color:var(--text-secondary);">SPEED:</span>
+                        <select id="speed-select" class="select-styled">
+                            <option value="1">1x (Normal)</option>
+                            <option value="5" selected>5x (Fluid)</option>
+                            <option value="20">20x (Fast)</option>
+                            <option value="60">60x (Time-Lapse)</option>
+                        </select>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-size:0.75rem; color:var(--text-secondary);">WEATHER:</span>
+                        <select id="weather-select" class="select-styled">
+                            <option value="sunny" selected>☀ Clear Sunny</option>
+                            <option value="partly_cloudy">⛅ Partly Cloudy</option>
+                            <option value="cloudy">☁ Broken Clouds</option>
+                            <option value="overcast">🌧 Heavy Overcast</option>
+                            <option value="rainy">⛈ Rainy / Storm</option>
+                        </select>
+                    </div>
+
+                    <div style="display:flex; align-items:center; gap:6px; min-width:140px;">
+                        <span style="font-size:0.72rem; color:var(--text-muted);">CLOUDS:</span>
+                        <input type="range" id="cloud-slider" min="0" max="1" step="0.05" value="0">
+                        <span id="cloud-val-badge" style="font-size:0.72rem; font-family:var(--font-mono); color:var(--accent-cyan);">0%</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Predefined Experiments Suite Bar -->
+            <section class="panel-card" style="padding:12px 16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">
+                        🔬 PREDEFINED RESEARCH EXPERIMENTS & BENCHMARKS
+                    </span>
+                    <span style="font-size:0.7rem; color:var(--accent-cyan); font-family:var(--font-mono);">
+                        8 Parametric Sweeps
+                    </span>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn btn-sm exp-trigger-btn" data-exp="A">Exp A: Sunny Baseline</button>
+                    <button class="btn btn-sm exp-trigger-btn" data-exp="B">Exp B: Cloud Attenuation</button>
+                    <button class="btn btn-sm exp-trigger-btn" data-exp="C">Exp C: Rapid Cloud Transient</button>
+                    <button class="btn btn-sm exp-trigger-btn" data-exp="D">Exp D: Fiber Length Sweep</button>
+                    <button class="btn btn-sm exp-trigger-btn" data-exp="E">Exp E: Tracker Kinematics</button>
+                    <button class="btn btn-sm exp-trigger-btn" data-exp="F">Exp F: PI vs AI MPC</button>
+                    <button class="btn btn-sm exp-trigger-btn" data-exp="G">Exp G: LED vs Hybrid</button>
+                    <button class="btn btn-sm exp-trigger-btn" data-exp="H">Exp H: Lux Target Sweep</button>
+                </div>
+            </section>
+
+            <!-- 3. Real-Time Telemetry Multi-Channel Charts -->
+            <section class="charts-card">
+                <div class="charts-header">
+                    <div style="font-size:0.82rem; font-weight:700; color:var(--text-primary);">
+                        CONTINUOUS REAL-TIME TELEMETRY STREAM
+                    </div>
+                    <div class="chart-tabs">
+                        <button class="chart-tab-btn active" data-tab="power_lux">Daylight & LED Power</button>
+                        <button class="chart-tab-btn" data-tab="solar_irr">Solar GHI / DNI</button>
+                        <button class="chart-tab-btn" data-tab="thermal">Focal Temperature</button>
+                        <button class="chart-tab-btn" data-tab="energy_eco">Energy Savings %</button>
+                    </div>
+                </div>
+                <div id="telemetry-chart-container" class="chart-viewport"></div>
+            </section>
+        </div>
+
+        <!-- Right Column: Live Sensor Telemetry, AI Forecaster & Hardware Tuning -->
+        <div class="right-column">
+            <!-- 1. Live Telemetry Readout Grid -->
+            <section class="panel-card">
+                <div class="panel-title">
+                    <span>Virtual Sensor Probes</span>
+                    <span style="font-size:0.7rem; color:var(--accent-emerald); font-family:var(--font-mono);">● 9 ACTIVE</span>
+                </div>
+                <div class="telemetry-grid">
+                    <div class="telemetry-item">
+                        <div class="telemetry-label">Solar GHI</div>
+                        <div id="telemetry-ghi" class="telemetry-val">0 W/m²</div>
+                        <div id="telemetry-dni" class="telemetry-sub">DNI: 0 W/m²</div>
+                    </div>
+                    <div class="telemetry-item">
+                        <div class="telemetry-label">Outdoor Lux</div>
+                        <div id="telemetry-outdoor-lux" class="telemetry-val">0 Lux</div>
+                        <div id="telemetry-solar-alt" class="telemetry-sub">Alt: 0°</div>
+                    </div>
+                    <div class="telemetry-item">
+                        <div class="telemetry-label">Focal Temp</div>
+                        <div id="telemetry-focal-temp" class="telemetry-val" style="color:var(--accent-emerald);">28°C</div>
+                        <div class="telemetry-sub">Safe &lt; 85°C</div>
+                    </div>
+                    <div class="telemetry-item">
+                        <div class="telemetry-label">Fiber Output</div>
+                        <div id="telemetry-fiber-opt-power" class="telemetry-val">0.0 W Opt</div>
+                        <div class="telemetry-sub">Visible Spectrum</div>
+                    </div>
+                    <div class="telemetry-item">
+                        <div class="telemetry-label">Daylight Lux</div>
+                        <div id="telemetry-daylight-lux" class="telemetry-val" style="color:var(--accent-yellow);">0 Lux</div>
+                        <div class="telemetry-sub">Optical Diffuser</div>
+                    </div>
+                    <div class="telemetry-item">
+                        <div class="telemetry-label">Indoor Total</div>
+                        <div id="telemetry-total-indoor-lux" class="telemetry-val" style="color:var(--accent-emerald);">0 Lux</div>
+                        <div class="telemetry-sub">On Desk Workplane</div>
+                    </div>
+                    <div class="telemetry-item span-2">
+                        <div class="telemetry-label">LED Supplemental Power & Savings</div>
+                        <div id="telemetry-led-power" class="telemetry-val" style="color:var(--accent-rose);">0.0 W (0%)</div>
+                        <div class="telemetry-sub">
+                            Grid Energy Saved: <strong id="telemetry-energy-saved" style="color:var(--accent-emerald);">100%</strong> | Avoided: <span id="telemetry-co2-saved">0 g/hr</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. AI Predictive Lookahead Forecaster -->
+            <section class="panel-card ai-card">
+                <div class="panel-title" style="color:var(--accent-purple);">
+                    <span>AI Lookahead Forecaster</span>
+                    <span class="ai-horizon-badge">AR-GBDT MPC</span>
+                </div>
+                <div class="ai-forecast-row">
+                    <span>Horizon T+15 min</span>
+                    <span id="ai-pred-15m-lux" style="color:var(--accent-yellow); font-weight:700;">-- Lux</span>
+                    <span id="ai-pred-15m-led" style="color:var(--accent-cyan); font-family:var(--font-mono);">-- W</span>
+                </div>
+                <div class="ai-forecast-row">
+                    <span>Horizon T+30 min</span>
+                    <span id="ai-pred-30m-lux" style="color:var(--accent-yellow); font-weight:700;">-- Lux</span>
+                    <span id="ai-pred-30m-led" style="color:var(--accent-cyan); font-family:var(--font-mono);">-- W</span>
+                </div>
+                <div class="ai-forecast-row">
+                    <span>Horizon T+60 min</span>
+                    <span id="ai-pred-60m-lux" style="color:var(--accent-yellow); font-weight:700;">-- Lux</span>
+                    <span id="ai-pred-60m-led" style="color:var(--accent-cyan); font-family:var(--font-mono);">-- W</span>
+                </div>
+                <div style="margin-top:10px; font-size:0.7rem; color:var(--text-secondary); display:flex; justify-content:space-between; align-items:center;">
+                    <span>System Status:</span>
+                    <span id="ai-anomaly-status" class="badge badge-green">Optimal AI Autonomous Operation</span>
+                </div>
+            </section>
+
+            <!-- 3. Hardware & Optical Parameter Configuration -->
+            <section class="panel-card">
+                <div class="panel-title">
+                    <span>Hardware Parameters</span>
+                    <span style="font-size:0.7rem; color:var(--accent-cyan);">CAD TUNING</span>
+                </div>
+
+                <div class="param-group">
+                    <div class="param-label">
+                        <span>Geolocation City Preset:</span>
+                    </div>
+                    <select id="geo-preset-select" class="select-styled" style="width:100%;">
+                        <option value="delhi" selected>New Delhi, India (28.61°N, 77.20°E)</option>
+                        <option value="singapore">Singapore (1.35°N, 103.82°E)</option>
+                        <option value="london">London, UK (51.50°N, -0.12°W)</option>
+                        <option value="phoenix">Phoenix, USA (33.44°N, -112.07°W)</option>
+                        <option value="cairo">Cairo, Egypt (30.04°N, 31.23°E)</option>
+                        <option value="tokyo">Tokyo, Japan (35.67°N, 139.65°E)</option>
+                    </select>
+                </div>
+
+                <div class="param-group">
+                    <div class="param-label">
+                        <span>Tracking Mechanism:</span>
+                    </div>
+                    <select id="param-tracker-type" class="select-styled" style="width:100%;">
+                        <option value="dual_axis" selected>Dual-Axis Continuous Tracker</option>
+                        <option value="single_axis">Single-Axis Horizontal E-W</option>
+                        <option value="fixed">Fixed 30° South Tilt</option>
+                        <option value="ai_optimized">AI-Optimized Micro-Stepper</option>
+                    </select>
+                </div>
+
+                <div class="param-group">
+                    <div class="param-label">
+                        <span>Collector Diameter:</span>
+                        <span id="collector-dia-badge" class="param-val-badge">0.8 m</span>
+                    </div>
+                    <input type="range" id="param-collector-dia" min="0.3" max="2.5" step="0.1" value="0.8">
+                </div>
+
+                <div class="param-group">
+                    <div class="param-label">
+                        <span>Optical Fiber Length:</span>
+                        <span id="fiber-length-badge" class="param-val-badge">12 m</span>
+                    </div>
+                    <input type="range" id="param-fiber-length" min="1" max="50" step="1" value="12">
+                </div>
+
+                <div class="param-group">
+                    <div class="param-label">
+                        <span>Fiber Core Material:</span>
+                    </div>
+                    <select id="param-fiber-type" class="select-styled" style="width:100%;">
+                        <option value="quartz_silica" selected>Quartz Fused Silica (Low Loss, 0.035 dB/m)</option>
+                        <option value="quartz_bundle">Multicore Quartz Bundle (0.045 dB/m)</option>
+                        <option value="pmma">PMMA Polymer Optical Fiber (0.16 dB/m)</option>
+                    </select>
+                </div>
+
+                <div class="param-group">
+                    <div class="param-label">
+                        <span>Indoor Target Lux:</span>
+                    </div>
+                    <select id="param-target-lux" class="select-styled" style="width:100%;">
+                        <option value="300">300 Lux (Casual / Circulation)</option>
+                        <option value="500" selected>500 Lux (Standard Office Workdesk)</option>
+                        <option value="750">750 Lux (Detailed Precision Engineering)</option>
+                        <option value="1000">1000 Lux (High-Acuity Surgical / Lab)</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:12px; border-top:1px solid var(--border-subtle);">
+                    <label class="switch-label">
+                        <input type="checkbox" id="param-occupancy-toggle" checked>
+                        <span>Room Occupied</span>
+                    </label>
+                    <label class="switch-label">
+                        <input type="checkbox" id="param-ir-filter-toggle" checked>
+                        <span>IR Cold Mirror</span>
+                    </label>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Research Mode & Analytical Equations Modal -->
+    <div id="research-modal" class="modal-backdrop">
+        <div class="modal-window">
+            <button class="modal-close-btn">&times;</button>
+            <div id="research-modal-content"></div>
+        </div>
+    </div>
+
+    <!-- Experiment Benchmark Results Modal -->
+    <div id="experiment-results-modal" class="modal-backdrop">
+        <div class="modal-window">
+            <button class="modal-close-btn">&times;</button>
+            <div id="experiment-results-content"></div>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="js/solar_math.js"></script>
+    <script src="js/optical_thermal_sim.js"></script>
+    <script src="js/ai_controller.js"></script>
+    <script src="js/digital_twin_canvas.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/experiments.js"></script>
+    <script src="js/data_exporter.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

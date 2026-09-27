@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="elecbg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#09131f"/>
+      <stop offset="50%" stop-color="#0b1b2d"/>
+      <stop offset="100%" stop-color="#060c14"/>
+    </linearGradient>
+    <linearGradient id="civic-blue" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#60a5fa"/>
+    </linearGradient>
+    <linearGradient id="saffron-green" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff9933"/>
+      <stop offset="50%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#138808"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="800" height="500" fill="url(#elecbg)"/>
+  
+  <!-- Subtle Map Grid -->
+  <g stroke="rgba(255,255,255,0.03)" stroke-width="1">
+    <circle cx="400" cy="250" r="100"/>
+    <circle cx="400" cy="250" r="200"/>
+    <circle cx="400" cy="250" r="300"/>
+    <line x1="100" y1="250" x2="700" y2="250"/>
+    <line x1="400" y1="50" x2="400" y2="450"/>
+  </g>
+  
+  <!-- Main Dashboard Card -->
+  <rect x="70" y="45" width="660" height="410" rx="16" fill="rgba(15, 23, 42, 0.9)" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1.5"/>
+  
+  <!-- Dashboard Top Nav -->
+  <rect x="70" y="45" width="660" height="54" rx="16" fill="rgba(10, 18, 32, 0.95)"/>
+  <rect x="70" y="80" width="660" height="19" fill="rgba(10, 18, 32, 0.95)"/>
+  
+  <rect x="95" y="60" width="24" height="24" rx="6" fill="#3b82f6"/>
+  <text x="102" y="77" fill="#fff" font-family="'Space Grotesk', sans-serif" font-weight="900" font-size="14">⚖</text>
+  
+  <text x="130" y="77" fill="#ffffff" font-family="'Space Grotesk', sans-serif" font-weight="bold" font-size="16">Election Guide AI</text>
+  <rect x="290" y="62" width="130" height="20" rx="10" fill="rgba(59, 130, 246, 0.15)" stroke="rgba(59, 130, 246, 0.4)"/>
+  <text x="302" y="76" fill="#60a5fa" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="bold">CIVIC INTELLIGENCE</text>
+  
+  <!-- Search/Ask Bar -->
+  <rect x="440" y="58" width="265" height="28" rx="14" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)"/>
+  <text x="460" y="76" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">🔍 Compare constituency candidates...</text>
+  
+  <!-- Left Side: Interactive Conversational AI Chat -->
+  <rect x="95" y="115" width="310" height="315" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)"/>
+  <text x="115" y="142" fill="#64748b" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="bold">AI CITIZEN ADVISOR</text>
+  
+  <!-- User Message -->
+  <rect x="115" y="160" width="250" height="42" rx="10" fill="rgba(59, 130, 246, 0.2)" stroke="rgba(59, 130, 246, 0.3)"/>
+  <text x="125" y="186" fill="#e2e8f0" font-family="'Space Grotesk', sans-serif" font-size="12">What are Candidate A's climate &amp; tech policies?</text>
+  
+  <!-- AI Bot Reply -->
+  <rect x="115" y="215" width="270" height="95" rx="10" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
+  <text x="125" y="238" fill="#60a5fa" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="bold">🤖 Unbiased Policy Synthesis:</text>
+  <text x="125" y="258" fill="#cbd5e1" font-family="'Space Grotesk', sans-serif" font-size="11">● 100% clean grid transition target by 2035</text>
+  <text x="125" y="278" fill="#cbd5e1" font-family="'Space Grotesk', sans-serif" font-size="11">● $4B AI educational infrastructure grant</text>
+  <text x="125" y="298" fill="#10b981" font-family="'JetBrains Mono', monospace" font-size="10">Verified via official parliamentary manifesto records</text>
+  
+  <!-- Chat input bottom -->
+  <rect x="115" y="380" width="270" height="34" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)"/>
+  <text x="130" y="402" fill="#64748b" font-family="'JetBrains Mono', monospace" font-size="11">Ask about voter ID registration...</text>
+  
+  <!-- Right Side: Candidate Comparison Matrix & Metrics -->
+  <rect x="425" y="115" width="280" height="150" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)"/>
+  <text x="445" y="142" fill="#64748b" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="bold">PARLIAMENTARY ATTENDANCE</text>
+  
+  <g transform="translate(445, 160)">
+    <text x="0" y="18" fill="#cbd5e1" font-family="'Space Grotesk', sans-serif" font-size="12">Candidate A (Incumbent)</text>
+    <rect x="0" y="25" width="240" height="8" rx="4" fill="rgba(255,255,255,0.1)"/>
+    <rect x="0" y="25" width="220" height="8" rx="4" fill="#3b82f6"/>
+    <text x="205" y="20" fill="#60a5fa" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="bold">92%</text>
+    
+    <text x="0" y="58" fill="#cbd5e1" font-family="'Space Grotesk', sans-serif" font-size="12">Candidate B (Challenger)</text>
+    <rect x="0" y="65" width="240" height="8" rx="4" fill="rgba(255,255,255,0.1)"/>
+    <rect x="0" y="65" width="185" height="8" rx="4" fill="#ff9933"/>
+    <text x="205" y="60" fill="#ff9933" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="bold">77%</text>
+  </g>
+  
+  <!-- Right Bottom: Polling & Civic Telemetry -->
+  <rect x="425" y="280" width="280" height="150" rx="12" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)"/>
+  <text x="445" y="305" fill="#64748b" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="bold">CONSTITUENCY POLLING METRICS</text>
+  
+  <circle cx="480" cy="365" r="35" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"/>
+  <circle cx="480" cy="365" r="35" fill="none" stroke="#10b981" stroke-width="8" stroke-dasharray="160 60"/>
+  <text x="480" y="370" text-anchor="middle" fill="#ffffff" font-family="'Space Grotesk', sans-serif" font-weight="bold" font-size="13">78%</text>
+  
+  <text x="535" y="350" fill="#e2e8f0" font-family="'Space Grotesk', sans-serif" font-size="12" font-weight="bold">Civic Participation</text>
+  <text x="535" y="370" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">+14.2% vs previous term</text>
+  <text x="535" y="390" fill="#38bdf8" font-family="'JetBrains Mono', monospace" font-size="11">Real-time Election Data</text>
+</svg>

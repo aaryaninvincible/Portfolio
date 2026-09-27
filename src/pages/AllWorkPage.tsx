@@ -34,7 +34,7 @@ const fallbackProjects: PortfolioProject[] = [
     category: 'AI',
     technologies: ['AI', 'JavaScript', 'HTML5', 'CSS3', 'Career Analytics'],
     demoUrl: 'https://aaryaninvincible.github.io/AI-Based-C-C/',
-    imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=60',
+    imageUrl: '/thumbnails/ai_based_cc.png',
   },
   {
     id: 'cv-project',
@@ -43,7 +43,7 @@ const fallbackProjects: PortfolioProject[] = [
     category: 'AI/ML',
     technologies: ['Computer Vision', 'OpenCV', 'MediaPipe', 'Python', 'PyTorch'],
     demoUrl: '/demos/Cv_project/index.html',
-    imageUrl: 'https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=600&auto=format&fit=crop&q=60',
+    imageUrl: '/thumbnails/cv_project.png',
   },
   {
     id: 'gesture-x',
@@ -52,7 +52,7 @@ const fallbackProjects: PortfolioProject[] = [
     category: 'AI/ML',
     technologies: ['MediaPipe', 'SAM (Meta AI)', 'OpenCV', 'Streamlit', 'Python'],
     demoUrl: '/demos/GestureX/index.html',
-    imageUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=60',
+    imageUrl: '/thumbnails/gesture_x.png',
   },
   {
     id: 'research-paper-management-platform',
@@ -61,7 +61,7 @@ const fallbackProjects: PortfolioProject[] = [
     category: 'AI',
     technologies: ['Next.js', 'NestJS', 'Prisma', 'TypeScript', 'PostgreSQL', 'AI'],
     demoUrl: '/demos/research-paper-management-platform/index.html',
-    imageUrl: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&auto=format&fit=crop&q=60',
+    imageUrl: '/thumbnails/research_paper.png',
   },
   {
     id: 'fitness-rewired',
@@ -245,7 +245,7 @@ export const AllWorkPage: React.FC = () => {
                   ))}
                 </div>
                 <div className="flex flex-wrap gap-3 mt-6 items-center pt-3 border-t border-white/5">
-                  {project.demoUrl && (
+                  {project.demoUrl && (!project.demoUrl.includes('github.com') || project.demoUrl.includes('.github.io')) && (
                     <a href={project.demoUrl} target="_blank" rel="noreferrer" className="text-sm font-bold text-light hover:text-primary inline-flex items-center gap-1 transition-colors">
                       Demo <ExternalLink size={14} />
                     </a>

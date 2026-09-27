@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="treebg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1329"/>
+      <stop offset="50%" stop-color="#070d1d"/>
+      <stop offset="100%" stop-color="#03060f"/>
+    </linearGradient>
+    <linearGradient id="cyan-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f3ff"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="node-active" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff7300"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="800" height="500" fill="url(#treebg)"/>
+  
+  <!-- App Window Frame -->
+  <rect x="70" y="45" width="660" height="410" rx="14" fill="#0f172a" stroke="rgba(0, 243, 255, 0.3)" stroke-width="1.5"/>
+  
+  <!-- Header Bar -->
+  <rect x="70" y="45" width="660" height="42" rx="14" fill="#1e293b"/>
+  <rect x="70" y="74" width="660" height="13" fill="#1e293b"/>
+  <circle cx="95" cy="66" r="5" fill="#ef4444"/>
+  <circle cx="112" cy="66" r="5" fill="#f59e0b"/>
+  <circle cx="129" cy="66" r="5" fill="#10b981"/>
+  <text x="160" y="71" fill="#f8fafc" font-family="'Space Grotesk', sans-serif" font-weight="bold" font-size="13">AlgoVista — Interactive Binary Tree &amp; BST Visualizer</text>
+  
+  <!-- Toolbar Controls -->
+  <g transform="translate(100, 105)">
+    <!-- Insert Input -->
+    <rect x="0" y="0" width="130" height="30" rx="6" fill="#0f172a" stroke="#334155"/>
+    <text x="12" y="20" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="11">Val: 42</text>
+    
+    <!-- Insert Button -->
+    <rect x="140" y="0" width="80" height="30" rx="6" fill="#0284c7"/>
+    <text x="156" y="20" fill="#ffffff" font-family="'Space Grotesk', sans-serif" font-weight="bold" font-size="11">+ Insert</text>
+    
+    <!-- Balance Button -->
+    <rect x="230" y="0" width="90" height="30" rx="6" fill="#10b981"/>
+    <text x="242" y="20" fill="#ffffff" font-family="'Space Grotesk', sans-serif" font-weight="bold" font-size="11">AVL Balance</text>
+    
+    <!-- Traversal Tabs -->
+    <rect x="330" y="0" width="80" height="30" rx="6" fill="rgba(255,255,255,0.06)"/>
+    <text x="345" y="20" fill="#cbd5e1" font-family="'Space Grotesk', sans-serif" font-size="11">Inorder</text>
+    
+    <rect x="420" y="0" width="80" height="30" rx="6" fill="rgba(255,255,255,0.06)"/>
+    <text x="432" y="20" fill="#cbd5e1" font-family="'Space Grotesk', sans-serif" font-size="11">Preorder</text>
+  </g>
+  
+  <!-- Tree Visual Canvas -->
+  <g transform="translate(400, 200)">
+    <!-- Tree Edges -->
+    <g stroke="rgba(0, 243, 255, 0.5)" stroke-width="2.5">
+      <!-- Root to Level 1 -->
+      <line x1="0" y1="0" x2="-130" y2="70"/>
+      <line x1="0" y1="0" x2="130" y2="70"/>
+      
+      <!-- Level 1 to Level 2 -->
+      <line x1="-130" y1="70" x2="-200" y2="140"/>
+      <line x1="-130" y1="70" x2="-65" y2="140"/>
+      <line x1="130" y1="70" x2="65" y2="140"/>
+      <line x1="130" y1="70" x2="200" y2="140"/>
+    </g>
+    
+    <!-- Animated Highlight Ray to newly inserted node 42 -->
+    <line x1="0" y1="0" x2="-130" y2="70" stroke="#ff7300" stroke-width="3" stroke-dasharray="6 4"/>
+    <line x1="-130" y1="70" x2="-65" y2="140" stroke="#ff7300" stroke-width="3" stroke-dasharray="6 4"/>
+    
+    <!-- Nodes -->
+    <!-- Root Node (50) -->
+    <circle cx="0" cy="0" r="24" fill="url(#cyan-blue)" stroke="#ffffff" stroke-width="2"/>
+    <text x="0" y="6" text-anchor="middle" fill="#ffffff" font-family="'Space Grotesk', sans-serif" font-weight="bold" font-size="15">50</text>
+    
+    <!-- Level 1 Nodes -->
+    <circle cx="-130" cy="70" r="22" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+    <text x="-130" y="76" text-anchor="middle" fill="#ffffff" font-family="'Space Grotesk', sans-serif" font-weight="bold" font-size="14">30</text>
+    
+    <circle cx="130" cy="70" r="22" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+    <text x="130" y="76" text-anchor="middle" fill="#ffffff" font-family="'Space Grotesk', sans-serif" font-weight="bold" font-size="14">70</text>
+    
+    <!-- Level 2 Nodes -->
+    <circle cx="-200" cy="140" r="20" fill="#1e293b" stroke="#64748b" stroke-width="2"/>
+    <text x="-200" y="146" text-anchor="middle" fill="#cbd5e1" font-family="'Space Grotesk', sans-serif" font-weight="bold" font-size="13">20</text>
+    
+    <!-- Active Inserted Target Node 42 -->
+    <circle cx="-65" cy="140" r="22" fill="url(#node-active)" stroke="#ffffff" stroke-width="2.5" filter="drop-shadow(0 0 10px rgba(255,115,0,0.8))"/>
+    <text x="-65" y="146" text-anchor="middle" fill="#ffffff" font-family="'Space Grotesk', sans-serif" font-weight="bold" font-size="14">42</text>
+    
+    <circle cx="65" cy="140" r="20" fill="#1e293b" stroke="#64748b" stroke-width="2"/>
+    <text x="65" y="146" text-anchor="middle" fill="#cbd5e1" font-family="'Space Grotesk', sans-serif" font-weight="bold" font-size="13">60</text>
+    
+    <circle cx="200" cy="140" r="20" fill="#1e293b" stroke="#64748b" stroke-width="2"/>
+    <text x="200" y="146" text-anchor="middle" fill="#cbd5e1" font-family="'Space Grotesk', sans-serif" font-weight="bold" font-size="13">85</text>
+  </g>
+  
+  <!-- Bottom Traversal Output Banner -->
+  <g transform="translate(100, 400)">
+    <rect x="0" y="0" width="600" height="34" rx="8" fill="#1e293b" stroke="#334155"/>
+    <text x="15" y="22" fill="#00f3ff" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="bold">INORDER:</text>
+    <text x="90" y="22" fill="#f8fafc" font-family="'JetBrains Mono', monospace" font-size="11">20 &rarr; 30 &rarr; <tspan fill="#ff7300" font-weight="bold">42 (New)</tspan> &rarr; 50 &rarr; 60 &rarr; 70 &rarr; 85</text>
+  </g>
+</svg>

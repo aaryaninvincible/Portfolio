@@ -164,7 +164,6 @@ export const AdminPage: React.FC = () => {
           title: 'Chatbot AI Integration',
           description: 'A clean React chat interface integrated with OpenAI and Gemini APIs, complete with message history, styling, and system prompt configurations.',
           price: 199,
-          demoUrl: 'https://github.com/aaryaninvincible',
           imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780efad99a?w=600&auto=format&fit=crop&q=60',
           screenshots: [
             'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60',
@@ -175,7 +174,6 @@ export const AdminPage: React.FC = () => {
           title: 'E-commerce Cart Template',
           description: 'A premium frontend e-commerce layout featuring grid products view, slide-over cart management, responsive drawers, and animated add-to-cart operations.',
           price: 299,
-          demoUrl: 'https://github.com/aaryaninvincible',
           imageUrl: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&auto=format&fit=crop&q=60',
           screenshots: [
             'https://images.unsplash.com/photo-1472851294608-062f824d296e?w=600&auto=format&fit=crop&q=60',
@@ -186,7 +184,6 @@ export const AdminPage: React.FC = () => {
           title: 'Task Automation Script',
           description: 'Python scripts equipped with a clean GUI to automate file cataloging, batch renaming, automated backups, and PDF format conversions in one-click.',
           price: 149,
-          demoUrl: 'https://github.com/aaryaninvincible',
           imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=60',
           screenshots: [
             'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop&q=60'
@@ -196,7 +193,6 @@ export const AdminPage: React.FC = () => {
           title: 'IoT Dashboard UI',
           description: 'Fully responsive React monitoring dashboard with real-time graphs, toggles, gauges, and mock web-sockets integration for sensor management.',
           price: 399,
-          demoUrl: 'https://github.com/aaryaninvincible',
           imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=60',
           screenshots: [
             'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&auto=format&fit=crop&q=60',
@@ -207,7 +203,6 @@ export const AdminPage: React.FC = () => {
           title: 'Weather Forecast PWA',
           description: 'A Progressive Web App featuring current atmospheric readings, 5-day forecasts, location history memory, offline caching, and location search coordinates.',
           price: 99,
-          demoUrl: 'https://github.com/aaryaninvincible',
           imageUrl: 'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=600&auto=format&fit=crop&q=60',
           screenshots: [
             'https://images.unsplash.com/photo-1580193796842-143008c3327a?w=600&auto=format&fit=crop&q=60'

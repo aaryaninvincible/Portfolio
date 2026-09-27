@@ -18,8 +18,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'IEEE Access Research'
     ],
     highlights: '96.4% F1-Score | 4.2ms Ultra-Low Detection Latency | 2.1% False Alarm Rate | IEEE Access Paper',
-    imageUrl: '/scada_digital_twin_demo.png',
-    demoUrl: 'https://github.com/aaryaninvincible',
+    imageUrl: '/thumbnails/scada_digital_twin.png',
     useCase: 'Critical infrastructure protection for smart power grids, industrial water treatment, and manufacturing SCADA networks.',
     featured: true,
     codeProtected: true,
@@ -41,7 +40,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'High-CRI Photometry'
     ],
     highlights: 'R² = 0.9846 Trajectory Forecast | 78.2% Energy Reduction | 76.4% Daylight Autonomy | Patent Novelty Disclosure',
-    imageUrl: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/solarfiber_ai.png',
     demoUrl: '/demos/Optical_fibre_daylight/index.html',
     useCase: 'Zero-carbon natural daylight harvesting for deep-plan corporate towers, underground transit hubs, and hospitals.',
     featured: true,
@@ -64,7 +63,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'Tailwind CSS'
     ],
     highlights: '100% Human Score on major detectors | Real-time sentence delta telemetry | Zero semantic distortion',
-    imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/ai_removal.png',
     useCase: 'Academic writing enhancement, enterprise copywriting authenticity, and AI detector bypass research.',
     featured: true,
     codeProtected: true,
@@ -87,7 +86,7 @@ export const mainBigProjects: PortfolioProject[] = [
     ],
     highlights: 'Sub-15ms multi-finger gesture recognition, virtual air-mouse, and zero-latency spatial canvas',
     demoUrl: '/demos/Cv_project/index.html',
-    imageUrl: 'https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/cv_project.png',
     useCase: 'Touchless human-computer interaction, digital presentation control, and sterile medical display navigation.',
     featured: true,
     codeProtected: true,
@@ -109,7 +108,7 @@ export const mainBigProjects: PortfolioProject[] = [
     ],
     highlights: 'Real-time gesture triggered SAM masks, ambient light compensation, and interactive background manipulation',
     demoUrl: '/demos/GestureX/index.html',
-    imageUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/gesture_x.png',
     useCase: 'Zero-touch creative media editing, medical scan navigation, and spatial computing interaction.',
     featured: true,
     codeProtected: true,
@@ -132,7 +131,7 @@ export const mainBigProjects: PortfolioProject[] = [
     ],
     highlights: 'Semantic vector search across academic papers, AI executive summaries, and structured peer review governance',
     demoUrl: '/demos/research-paper-management-platform/index.html',
-    imageUrl: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/research_paper.png',
     useCase: 'University research departments, lab publication indexing, and automated academic literature review.',
     featured: true,
     codeProtected: true,
@@ -153,7 +152,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'LMS Automation'
     ],
     highlights: 'Zero-tab throttling persistence | Universal 16x video acceleration | Enterprise passkey vault',
-    imageUrl: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/course_completion.svg',
     useCase: 'Streamlined online education, study productivity optimization, and video learning acceleration.',
     featured: true,
     codeProtected: true,
@@ -173,7 +172,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'Webview API'
     ],
     highlights: 'Zero-overhead background streaming | Curated lo-fi channels | Custom status bar controls',
-    imageUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/lofi_coder.svg',
     useCase: 'Deep-work programming sessions, flow-state concentration, and distraction-free audio playback.',
     featured: true,
     codeProtected: true,
@@ -194,7 +193,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'Android SDK'
     ],
     highlights: '60 FPS Gyroscopic Parallax | Sub-2% Battery Drain Engine | Instant 4K Offline Caching',
-    imageUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/livewallx.svg',
     useCase: 'Personalized mobile personalization, AMOLED battery saving, and smooth gyroscopic UI aesthetics.',
     featured: true,
     codeProtected: true,
@@ -238,7 +237,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'SQLite'
     ],
     highlights: 'Offline-capable agile sprint breakdown, automated effort estimation, and device calendar sync',
-    imageUrl: '/paste2plan_demo.png',
+    imageUrl: '/thumbnails/paste2plan.png',
     useCase: 'Transforming chaotic engineering ideas into structured agile sprints with full task breakdown.',
     featured: true,
     codeProtected: true,
@@ -260,7 +259,7 @@ export const mainBigProjects: PortfolioProject[] = [
     ],
     highlights: 'Personalized career progression trees, skill gap analysis, and curated curriculum tracks',
     demoUrl: 'https://aaryaninvincible.github.io/AI-Based-C-C/',
-    imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/ai_based_cc.png',
     useCase: 'Early-stage student aptitude testing, career counseling, and university degree navigation.',
     featured: true,
     codeProtected: true,
@@ -282,7 +281,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'Tailwind CSS'
     ],
     highlights: 'Multi-threaded stream extraction, 4K video transcoding, and responsive browser UI',
-    imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/anything_downloader.png',
     useCase: 'High-speed media extraction for researchers, creators, and offline archiving.',
     featured: true,
     codeProtected: true,
@@ -324,7 +323,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'Tailwind CSS'
     ],
     highlights: 'Unbiased policy comparison engine, multilingual voting guide, and dynamic polling data',
-    imageUrl: 'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/election_guide.svg',
     useCase: 'Informed democratic voting, unbiased policy comparison, and civic literacy.',
     featured: true,
     codeProtected: true,
@@ -366,7 +365,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'HLS.js'
     ],
     highlights: 'Analog CRT rasterizer emulation | Reactive audio spectrum visualizer | Low-latency streaming',
-    imageUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/tivi_streamer.svg',
     useCase: 'Aesthetic retro streaming, cyberpunk media playback, and interactive ambient displays.',
     featured: true,
     codeProtected: true,
@@ -386,7 +385,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'CSS Motion'
     ],
     highlights: 'Silky 60fps 3D canvas interaction | Scroll-coupled cinematic video transitions | High visual aesthetics',
-    imageUrl: 'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/sunflower.png',
     useCase: 'Brand storytelling, digital art exhibition, and interactive 3D web presentation.',
     featured: true,
     codeProtected: true,
@@ -406,7 +405,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'Material You Design'
     ],
     highlights: 'Glance AppWidget API | Real-time sensor polling without wake-lock penalty | Material 3 Dynamic Colors',
-    imageUrl: 'https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/android_widget.svg',
     useCase: 'At-a-glance Android home-screen productivity, battery telemetry, and personalized mobile dash widgets.',
     featured: true,
     codeProtected: true,
@@ -426,7 +425,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'Big-O Benchmarking'
     ],
     highlights: '100% test passing coverage | Optimized time & space complexity implementations | Clean idiomatic code',
-    imageUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/dsa_python.svg',
     useCase: 'Algorithmic problem solving, technical interview preparation, and performance benchmarking.',
     featured: true,
     codeProtected: true,
@@ -447,7 +446,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'Firebase Storage'
     ],
     highlights: 'GPU-accelerated physics animations | Protected private admin media management | Real-time Firebase sync',
-    imageUrl: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/birthday_memory.png',
     useCase: 'Private celebratory portal, multimedia timeline archiving, and sentimental interactive storytelling.',
     featured: true,
     codeProtected: true,
@@ -467,7 +466,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'CSS Glassmorphism'
     ],
     highlights: 'Sub-100ms first contentful paint | Dynamic card tilt mathematics | Clean modular component architecture',
-    imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/anurag_portfolio.png',
     useCase: 'High-converting portfolio design, developer branding, and modern frontend design benchmarks.',
     featured: true,
     codeProtected: true,
@@ -487,7 +486,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'Canvas 2D'
     ],
     highlights: 'Harmonic frequency visualization, GLSL fragment shader distortions, and zero CPU bottlenecking',
-    imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/jaadutona.svg',
     useCase: 'Generative art performance, music visualizer accompaniment, and creative tech showcasing.',
     featured: true,
     codeProtected: true,
@@ -507,7 +506,7 @@ export const mainBigProjects: PortfolioProject[] = [
       'Tailwind CSS'
     ],
     highlights: 'Animated node balancing, live traversal step-through (Inorder/Preorder/Postorder), and complexity guides',
-    imageUrl: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=800&auto=format&fit=crop&q=80',
+    imageUrl: '/thumbnails/tree_visualizer.svg',
     useCase: 'Computer science education, mastering trees and graphs, and algorithm visual intuition.',
     featured: true,
     codeProtected: true,

@@ -18,6 +18,19 @@ import { ResumePage } from './pages/ResumePage';
 import { CertificationsPage } from './pages/CertificationsPage';
 import { ContactPage } from './pages/ContactPage';
 
+const ScrollToTop: React.FC = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    // Ensure every page transition resets scroll position to top
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [pathname]);
+
+  return null;
+};
+
 const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
 
@@ -25,10 +38,11 @@ const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) =
     <AnimatePresence mode="wait">
       <motion.div
         key={location.pathname}
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.5, ease: [0.175, 0.885, 0.32, 1.275] }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        className="page-fade-in"
       >
         {children}
       </motion.div>
@@ -36,25 +50,25 @@ const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) =
   );
 };
 
-// ─── Fullscreen alert banner ──────────────────────────────────────────────────
+// ─── Fullscreen alert banner (Apple Dynamic Island style toast) ───────────────────
 const FullscreenAlert: React.FC = () => {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const t = setTimeout(() => setVisible(false), 3000);
+    const t = setTimeout(() => setVisible(false), 4500);
     return () => clearTimeout(t);
   }, []);
 
   if (!visible) return null;
   return (
-    <div className="fixed top-0 left-0 right-0 z-[999] flex items-center justify-between gap-3 px-4 py-2.5 bg-gradient-to-r from-primary/90 to-accent/80 backdrop-blur-sm text-black font-mono text-xs font-bold shadow-lg">
+    <div className="fixed top-16 sm:top-20 inset-x-3 sm:inset-x-auto sm:right-6 sm:max-w-md z-[55] flex items-center justify-between gap-3 px-4 py-2.5 rounded-2xl glass-elevated border border-primary/40 text-white font-mono text-xs font-semibold shadow-[0_12px_35px_rgba(255,115,0,0.25)] animate-in fade-in slide-in-from-top-4 duration-300">
       <span className="flex items-center gap-2">
-        <span className="text-base">🔊</span>
-        For the best experience — unmute audio &amp; use full screen (F11)
+        <span className="text-base animate-pulse">🔊</span>
+        <span>For best experience — unmute audio &amp; explore live!</span>
       </span>
       <button
         onClick={() => setVisible(false)}
-        className="ml-auto shrink-0 w-6 h-6 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center text-black transition-all"
+        className="ml-auto shrink-0 w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-slate-300 hover:text-white transition-all text-xs"
         aria-label="Dismiss"
       >✕</button>
     </div>
@@ -157,7 +171,7 @@ const MusicWidget: React.FC = () => {
     >
       <button
         onClick={() => audioManager.togglePlay()}
-        className="glass flex items-center gap-2 rounded-full px-3.5 py-2 sm:px-4 sm:py-2.5 text-xs font-bold font-orbitron tracking-wider uppercase text-primary border-primary/30 hover:border-primary hover:shadow-[0_0_15px_rgba(255,115,0,0.3)] transition-all shrink-0"
+        className="glass-pill flex items-center gap-2 rounded-full px-3.5 py-2 sm:px-4 sm:py-2.5 text-xs font-bold font-orbitron tracking-wider uppercase text-primary border-primary/30 hover:border-primary hover:shadow-[0_0_15px_rgba(255,115,0,0.3)] transition-all shrink-0 active:scale-95"
         title="Toggle Music Playback"
       >
         {!isPlaying || isSeaViewActive ? (
@@ -168,7 +182,7 @@ const MusicWidget: React.FC = () => {
         ) : (
           <>
             <Volume2 size={14} className="text-primary animate-bounce" />
-            <span className="text-gradient text-[11px] sm:text-xs truncate max-w-[110px] sm:max-w-[160px]">
+            <span className="text-gradient text-[11px] sm:text-xs truncate max-w-[100px] sm:max-w-[160px]">
               {currentTrack.title}
             </span>
           </>
@@ -178,7 +192,7 @@ const MusicWidget: React.FC = () => {
       {/* Volume button to expand slider cleanly on mobile & desktop */}
       <button
         onClick={() => setShowVolume(!showVolume)}
-        className="glass p-2 sm:p-2.5 rounded-full text-slate-300 hover:text-primary border-white/10 transition-colors shrink-0"
+        className="glass-pill p-2 sm:p-2.5 rounded-full text-slate-300 hover:text-primary border-white/15 transition-colors shrink-0 active:scale-95"
         title="Adjust Volume"
       >
         <Volume2 size={14} />
@@ -186,7 +200,7 @@ const MusicWidget: React.FC = () => {
 
       {/* Volume slider — shows when expanded */}
       {showVolume && (
-        <div className="glass flex items-center gap-2 rounded-full px-3 py-1.5 border-white/10 shadow-lg">
+        <div className="glass-pill flex items-center gap-2 rounded-full px-3 py-1.5 border-white/15 shadow-xl">
           <span className="text-[10px] font-mono text-slate-400 w-6 text-right">{volume}%</span>
           <input
             type="range"
@@ -225,13 +239,14 @@ const AppContent: React.FC = () => {
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
 
   useEffect(() => {
-    // Force amoled black and orange theme
+    // Pure AMOLED Dark Mode locked
     document.documentElement.dataset.theme = 'amoled';
     localStorage.setItem('portfolio-theme', 'amoled');
   }, []);
 
   return (
     <>
+      <ScrollToTop />
       <FullscreenAlert />
       <SplashLoader />
       <ParticleBackground />

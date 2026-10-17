@@ -18,14 +18,16 @@ export const InteractiveWidgets: React.FC = () => {
         <h2 className="text-3xl md:text-5xl font-orbitron">Performance & Skills Infographics</h2>
       </div>
       
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         {stats.map((stat) => (
-          <GlassCard key={stat.label} className="p-6 text-center flex flex-col items-center justify-center gap-3 hover:-translate-y-2 transition-transform duration-300">
-            <div className="w-12 h-12 flex items-center justify-center bg-white/5 rounded-full border border-white/10">
+          <GlassCard key={stat.label} className="p-5 flex items-center gap-4 hover:-translate-y-1.5 transition-all duration-300">
+            <div className="w-12 h-12 shrink-0 flex items-center justify-center bg-white/[0.06] rounded-2xl border border-white/10 shadow-[0_0_20px_rgba(255,115,0,0.12)]">
               {stat.icon}
             </div>
-            <div className="text-2xl font-orbitron font-bold text-light">{stat.value}</div>
-            <div className="text-xs text-slate-400 font-mono uppercase tracking-wider">{stat.label}</div>
+            <div className="space-y-0.5 min-w-0">
+              <div className="text-2xl font-orbitron font-extrabold text-light tracking-wide">{stat.value}</div>
+              <div className="text-[11px] text-slate-400 font-mono uppercase tracking-wider">{stat.label}</div>
+            </div>
           </GlassCard>
         ))}
       </div>

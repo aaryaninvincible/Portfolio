@@ -141,10 +141,10 @@ export const CertificationsPage: React.FC = () => {
                 }
               }}
             >
-              <div className="relative overflow-hidden bg-black/60 border-b border-white/10">
+              <div className="relative overflow-hidden bg-white/[0.02] backdrop-blur-sm border-b border-white/10">
                 {certificate.imageUrl ? (
                   certificate.imageUrl.toLowerCase().endsWith('.pdf') ? (
-                    <div className="flex h-56 flex-col items-center justify-center bg-black/50 px-6 text-center gap-2">
+                    <div className="flex h-56 flex-col items-center justify-center bg-white/[0.01] px-6 text-center gap-2">
                       <FileText className="h-10 w-10 text-primary animate-pulse" />
                       <span className="font-orbitron text-sm text-slate-300">PDF Credential</span>
                     </div>
@@ -157,7 +157,7 @@ export const CertificationsPage: React.FC = () => {
                     />
                   )
                 ) : (
-                  <div className="flex h-56 items-center justify-center bg-black/50 px-6 text-center">
+                  <div className="flex h-56 items-center justify-center bg-white/[0.01] px-6 text-center">
                     <Trophy className="mr-3 h-8 w-8 shrink-0 text-primary" />
                     <span className="font-orbitron text-lg text-light">{certificate.issuer || 'Certificate'}</span>
                   </div>

@@ -607,27 +607,32 @@ export const SeaFooter: React.FC = () => {
       <style>{`
         .sea-ui {
           position: absolute;
-          bottom: 15px;
+          bottom: 20px;
           top: auto;
-          left: 15px;
-          width: 320px;
-          background: rgba(30, 25, 30, 0.5);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 16px;
-          padding: 20px;
-          color: rgba(255,255,255,0.9);
+          left: 16px;
+          width: 300px;
+          max-width: calc(100vw - 32px);
+          background: rgba(16, 18, 24, 0.65);
+          backdrop-filter: blur(20px) saturate(190%);
+          -webkit-backdrop-filter: blur(20px) saturate(190%);
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          border-radius: 20px;
+          padding: 18px;
+          color: rgba(255,255,255,0.95);
           pointer-events: auto;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-          transform: scale(0.7);
+          box-shadow: 
+            inset 0 1px 1px 0 rgba(255, 255, 255, 0.22),
+            0 15px 35px rgba(0,0,0,0.6);
+          transform: scale(0.85);
           transform-origin: bottom left;
         }
         @media (min-width: 640px) {
           .sea-ui {
             padding: 24px;
-            transform: scale(0.75);
+            width: 320px;
+            transform: scale(0.85);
             bottom: 30px;
+            left: 24px;
           }
         }
         hr.rain-drop {

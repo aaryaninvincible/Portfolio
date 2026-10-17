@@ -12,6 +12,7 @@ import {
   Github,
   Instagram,
   Languages,
+  Layers,
   Linkedin,
   Mail,
   ShieldCheck,
@@ -19,12 +20,16 @@ import {
   Sparkles,
   Trophy,
   Utensils,
+  X,
+  Activity,
   Youtube,
 } from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
 import { InteractiveWidgets } from '../components/InteractiveWidgets';
 import { MiniGames } from '../components/MiniGames';
 import { MusicPlaylistWidget } from '../components/MusicPlaylist';
+import { TechStackShowcase } from '../components/TechStackShowcase';
+import { LiquidGlassDrop } from '../components/LiquidGlassDrop';
 import { mainBigProjects } from '../data/mainProjects';
 import { linkedInCertificates } from '../data/profile';
 import { fetchGitHubProjects } from '../lib/github';
@@ -84,6 +89,7 @@ export const HomePage: React.FC = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [selectedProjectCategory, setSelectedProjectCategory] = useState('All Innovations');
   const [visibleProjectCount, setVisibleProjectCount] = useState(6);
+  const [selectedSpecProject, setSelectedSpecProject] = useState<PortfolioProject | null>(null);
 
   const [showScrollPopup, setShowScrollPopup] = useState(false);
 
@@ -135,16 +141,16 @@ export const HomePage: React.FC = () => {
     return projects.filter((p) => {
       const text = `${p.category} ${p.title} ${p.technologies.join(' ')}`.toLowerCase();
       if (selectedProjectCategory === 'Cyber-Physical & Security') {
-        return text.includes('scada') || text.includes('cyber') || text.includes('security') || text.includes('challan') || text.includes('twin');
+        return text.includes('scada') || text.includes('cyber') || text.includes('security') || text.includes('challan') || text.includes('twin') || text.includes('solarfiber');
       }
       if (selectedProjectCategory === 'AI & Deep Learning') {
-        return text.includes('ai') || text.includes('gemini') || text.includes('pytorch') || text.includes('learning') || text.includes('counseling') || text.includes('research');
+        return text.includes('ai') || text.includes('gemini') || text.includes('pytorch') || text.includes('learning') || text.includes('counseling') || text.includes('research') || text.includes('prompt') || text.includes('nlp') || text.includes('humanize');
       }
       if (selectedProjectCategory === 'Computer Vision') {
         return text.includes('vision') || text.includes('opencv') || text.includes('mediapipe') || text.includes('gesture') || text.includes('sam');
       }
       if (selectedProjectCategory === 'Full Stack & Mobile') {
-        return text.includes('full stack') || text.includes('flutter') || text.includes('mobile') || text.includes('next.js') || text.includes('react') || text.includes('downloader') || text.includes('tree');
+        return text.includes('full stack') || text.includes('flutter') || text.includes('mobile') || text.includes('next.js') || text.includes('react') || text.includes('downloader') || text.includes('tree') || text.includes('prepforge') || text.includes('dialer') || text.includes('wellness');
       }
       return true;
     });
@@ -184,25 +190,36 @@ export const HomePage: React.FC = () => {
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-orbitron font-black text-light drop-shadow-[0_0_10px_rgba(255,115,0,0.7)]">
             Aryan <span className="text-gradient">Raikwar</span>
           </h1>
-          <p className="text-lg md:text-xl text-slate-300 max-w-3xl font-mono leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl font-sans leading-relaxed">
             I build full-stack apps, AI/ML tools, IoT dashboards, student major projects, and freelance software systems
             with clean demos, admin panels, and production-ready workflows.
           </p>
-          <div className="flex flex-wrap gap-4">
-            <a href="#projects" className="glass px-6 py-3 rounded-lg text-primary font-bold hover:bg-white/10">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-1">
+            <a href="#projects" className="liquid-glass-capsule inline-flex items-center justify-center px-6 py-3 rounded-full text-primary font-bold hover:text-white transition-all text-sm font-sans shadow-[0_0_20px_rgba(255,115,0,0.25)]">
               View Projects
             </a>
-            <a href="/resume" className="glass px-6 py-3 rounded-lg text-secondary font-bold hover:bg-white/10 inline-flex items-center gap-2">
-              <Download size={18} /> Resume
+            <a href="/resume" className="liquid-glass-capsule inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-secondary font-bold hover:text-white transition-all text-sm font-sans">
+              <Download size={16} /> Resume
             </a>
-            <a href="/buy-projects" className="glass px-6 py-3 rounded-lg text-accent font-bold hover:bg-white/10">
+            <a href="/buy-projects" className="liquid-glass-capsule inline-flex items-center justify-center px-6 py-3 rounded-full text-accent font-bold hover:text-white transition-all text-sm font-sans">
               Buy Projects
             </a>
+            <LiquidGlassDrop
+              variant="drop"
+              title="Explore Tech Stack"
+              onClick={() => {
+                const el = document.getElementById('tech-stack');
+                el?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="w-12 h-12 shrink-0 hidden sm:inline-flex"
+            >
+              <Sparkles size={18} className="text-primary animate-pulse" />
+            </LiquidGlassDrop>
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-sm">
-          <div className="relative rounded-[2rem] border border-primary/30 bg-black p-3 shadow-[0_0_60px_rgba(255,115,0,0.25)]">
+        <div className="relative mx-auto w-full max-w-sm mb-12 sm:mb-0">
+          <div className="relative rounded-[2rem] border border-white/20 glass p-3 shadow-[0_0_60px_rgba(255,115,0,0.2)]">
             <picture>
               <source srcSet="/aryan.webp" type="image/webp" />
               <source srcSet="/aryan.jpg" type="image/jpeg" />
@@ -216,19 +233,19 @@ export const HomePage: React.FC = () => {
                 className="aspect-[4/5] w-full rounded-[1.5rem] object-cover"
               />
             </picture>
-            <div className="absolute -bottom-6 left-6 right-6 glass rounded-xl p-4">
-              <div className="grid grid-cols-3 gap-3 text-center">
+            <div className="absolute -bottom-5 sm:-bottom-6 left-1/2 -translate-x-1/2 w-[92%] sm:w-[88%] liquid-glass-capsule rounded-2xl p-3 sm:p-4 border-white/25 shadow-2xl">
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-3 text-center">
                 <div>
-                  <p className="font-orbitron text-xl text-primary">13K+</p>
-                  <p className="text-xs text-slate-400">Followers</p>
+                  <p className="font-orbitron text-lg sm:text-xl text-primary font-bold">13K+</p>
+                  <p className="text-[11px] sm:text-xs text-slate-400 font-sans">Followers</p>
                 </div>
                 <div>
-                  <p className="font-orbitron text-xl text-secondary">AI/ML</p>
-                  <p className="text-xs text-slate-400">Focus</p>
+                  <p className="font-orbitron text-lg sm:text-xl text-secondary font-bold">AI/ML</p>
+                  <p className="text-[11px] sm:text-xs text-slate-400 font-sans">Focus</p>
                 </div>
                 <div>
-                  <p className="font-orbitron text-xl text-accent">Full</p>
-                  <p className="text-xs text-slate-400">Stack</p>
+                  <p className="font-orbitron text-lg sm:text-xl text-accent font-bold">Full</p>
+                  <p className="text-[11px] sm:text-xs text-slate-400 font-sans">Stack</p>
                 </div>
               </div>
             </div>
@@ -376,11 +393,18 @@ export const HomePage: React.FC = () => {
                       renderer.toneMappingExposure = 1.6;
                       document.body.appendChild(renderer.domElement);
 
+                      const isTouchScreen = window.innerWidth < 768;
                       const controls = new OrbitControls(camera, renderer.domElement);
                       controls.enableDamping = true;
                       controls.dampingFactor = 0.03;
                       controls.autoRotate = true;
                       controls.autoRotateSpeed = 0.4;
+                      if (isTouchScreen) {
+                          controls.enableRotate = false;
+                          controls.enableZoom = false;
+                          controls.enablePan = false;
+                          renderer.domElement.style.touchAction = 'pan-y';
+                      }
 
                       const noiseChunk = [
                           "vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }",
@@ -451,7 +475,7 @@ export const HomePage: React.FC = () => {
                               "varying vec3 vNormal;",
                               "varying vec3 vView;",
                               "void main() {",
-                              " rim = pow(1.0 - max(dot(vNormal, vView), 0.0), 4.0);",
+                              "    float rim = pow(1.0 - max(dot(vNormal, vView), 0.0), 4.0);",
                               "    gl_FragColor = vec4(vec3(1.0, 0.45, 0.1) * rim * uIntensity * 5.0, 1.0);",
                               "}"
                           ].join('\\n'),
@@ -619,7 +643,9 @@ export const HomePage: React.FC = () => {
 
       <InteractiveWidgets />
 
-      <section id="playlist" className="space-y-6">
+      <TechStackShowcase />
+
+      <section id="playlist" className="space-y-6 scroll-mt-28">
         <div className="text-center space-y-3">
           <span className="section-kicker font-mono uppercase tracking-widest text-xs">Aryan's Jukebox</span>
           <h2 className="text-3xl md:text-5xl font-orbitron font-black text-light">Aryan's Favorite <span className="text-gradient">Playlist 🎵</span></h2>
@@ -630,7 +656,7 @@ export const HomePage: React.FC = () => {
         <MusicPlaylistWidget />
       </section>
 
-      <section id="about" className="space-y-8 max-w-4xl mx-auto">
+      <section id="about" className="space-y-8 max-w-4xl mx-auto scroll-mt-28">
         <div className="text-center space-y-4">
           <span className="section-kicker">About Me</span>
           <h2 className="text-3xl md:text-5xl font-orbitron font-black text-light">Software That <span className="text-gradient">Ships</span></h2>
@@ -672,7 +698,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ── Standalone Centered Gaming Arcade Section ── */}
-      <section id="arcade" className="space-y-8 max-w-6xl mx-auto text-center">
+      <section id="arcade" className="space-y-8 max-w-6xl mx-auto text-center scroll-mt-28">
         <div className="text-center space-y-3">
           <span className="section-kicker">Retro Arcade</span>
           <h2 className="text-3xl md:text-5xl font-orbitron font-black text-light flex items-center justify-center gap-3">
@@ -688,7 +714,7 @@ export const HomePage: React.FC = () => {
         </GlassCard>
       </section>
 
-      <section id="projects" className="space-y-10">
+      <section id="projects" className="space-y-10 scroll-mt-28">
         <div className="text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-mono mb-2 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
             <ShieldCheck size={14} className="text-emerald-400" />
@@ -733,7 +759,7 @@ export const HomePage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {displayedProjects.map((project, index) => (
             <GlassCard key={project.id} className="group flex flex-col h-full overflow-hidden hover:border-primary/50 hover:shadow-[0_0_30px_rgba(255,115,0,0.15)] transition-all duration-300">
-              <div className="h-48 sm:h-52 bg-black/70 relative overflow-hidden flex items-center justify-center border-b border-white/5">
+              <div className="h-48 sm:h-52 bg-white/[0.02] backdrop-blur-sm relative overflow-hidden flex items-center justify-center border-b border-white/10">
                 {project.videoUrl ? (
                   <video src={project.videoUrl} className="h-full w-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500" autoPlay muted loop playsInline />
                 ) : project.imageUrl ? (
@@ -750,16 +776,35 @@ export const HomePage: React.FC = () => {
               </div>
               <div className="p-5 sm:p-6 flex flex-col flex-grow justify-between">
                 <div>
-                  <span className="text-xs font-bold text-secondary uppercase tracking-widest font-mono">{project.category}</span>
-                  <h3 className="font-orbitron text-lg sm:text-2xl text-primary mt-2 mb-2 font-bold group-hover:text-white transition-colors">{project.title}</h3>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="text-xs font-bold text-secondary uppercase tracking-widest font-mono">{project.category}</span>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedSpecProject(project)}
+                      className="px-2.5 py-1 rounded-full liquid-glass-capsule text-[11px] font-sans font-semibold text-primary hover:text-white transition-all flex items-center gap-1 shrink-0"
+                      title="Open Deep Architecture & Telemetry Specs"
+                    >
+                      <Layers size={12} />
+                      <span>Deep Specs</span>
+                    </button>
+                  </div>
+
+                  <h3 className="font-display text-lg sm:text-xl text-primary font-bold group-hover:text-white transition-colors line-clamp-2 mb-2">
+                    {project.title}
+                  </h3>
+
                   {project.highlights && (
-                    <div className="mb-3 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-xs flex items-center gap-1.5">
-                      <span>⚡ {project.highlights}</span>
+                    <div className="mb-3 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-xs flex items-center gap-1.5 truncate">
+                      <span className="truncate">⚡ {project.highlights}</span>
                     </div>
                   )}
-                  <p className="text-slate-300 text-xs sm:text-sm mb-4 font-mono leading-relaxed">{project.description}</p>
-                  {project.useCase && <p className="text-xs text-slate-400 mb-4 font-mono italic">Impact: {project.useCase}</p>}
+
+                  {/* Clean 2-line summary preventing giant text walls on homepage */}
+                  <p className="text-slate-300 text-xs sm:text-sm mb-4 font-sans leading-relaxed line-clamp-2">
+                    {project.description}
+                  </p>
                 </div>
+
                 <div>
                   <div className="flex gap-1.5 sm:gap-2 flex-wrap mb-4">
                     {project.technologies.slice(0, 4).map((tech) => (
@@ -768,6 +813,7 @@ export const HomePage: React.FC = () => {
                       </span>
                     ))}
                   </div>
+
                   <div className="flex flex-wrap gap-2.5 sm:gap-3 items-center pt-3 border-t border-white/5">
                     {project.demoUrl && (!project.demoUrl.includes('github.com') || project.demoUrl.includes('.github.io')) && (
                       <a href={project.demoUrl} target="_blank" rel="noreferrer" className="text-xs sm:text-sm font-bold text-light hover:text-primary inline-flex items-center gap-1 transition-colors">
@@ -787,6 +833,111 @@ export const HomePage: React.FC = () => {
             </GlassCard>
           ))}
         </div>
+
+        {/* Liquid Glass Deep Architecture & Specs Modal */}
+        <AnimatePresence>
+          {selectedSpecProject && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-fadeIn">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl liquid-glass-header border border-white/20 p-6 sm:p-8 shadow-2xl space-y-6"
+              >
+                {/* Modal Header */}
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <span className="text-xs font-bold text-secondary uppercase tracking-widest font-mono">
+                      {selectedSpecProject.category} &bull; Architecture Dossier
+                    </span>
+                    <h3 className="text-2xl sm:text-3xl font-orbitron font-bold text-white mt-1">
+                      {selectedSpecProject.title}
+                    </h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedSpecProject(null)}
+                    className="p-2 rounded-full liquid-glass-capsule text-slate-300 hover:text-white transition-colors shrink-0"
+                    title="Close"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                {/* Key Metrics / Highlights Pill */}
+                {selectedSpecProject.highlights && (
+                  <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-xs sm:text-sm flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.15)]">
+                    <Activity size={18} className="text-emerald-400 shrink-0" />
+                    <span>{selectedSpecProject.highlights}</span>
+                  </div>
+                )}
+
+                {/* Full Architecture Description */}
+                <div className="space-y-2">
+                  <h4 className="text-xs uppercase tracking-widest text-primary font-mono font-bold">
+                    System Architecture &amp; Methodology
+                  </h4>
+                  <p className="text-slate-200 text-sm sm:text-base font-sans leading-relaxed">
+                    {selectedSpecProject.description}
+                  </p>
+                </div>
+
+                {/* Impact & Use Case */}
+                {selectedSpecProject.useCase && (
+                  <div className="space-y-2 p-4 rounded-2xl liquid-glass-capsule border-white/10">
+                    <h4 className="text-xs uppercase tracking-widest text-secondary font-mono font-bold">
+                      Operational Impact &amp; Domain Application
+                    </h4>
+                    <p className="text-slate-300 text-sm font-sans italic">
+                      {selectedSpecProject.useCase}
+                    </p>
+                  </div>
+                )}
+
+                {/* Full Tech Stack */}
+                <div className="space-y-2">
+                  <h4 className="text-xs uppercase tracking-widest text-slate-400 font-mono font-bold">
+                    Technologies &amp; Libraries
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedSpecProject.technologies.map((t) => (
+                      <span key={t} className="px-3 py-1 rounded-full bg-white/10 text-white font-mono text-xs border border-white/15">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Action CTA Buttons */}
+                <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-white/10">
+                  <div className="flex items-center gap-3">
+                    {selectedSpecProject.demoUrl && (!selectedSpecProject.demoUrl.includes('github.com') || selectedSpecProject.demoUrl.includes('.github.io')) && (
+                      <a
+                        href={selectedSpecProject.demoUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-5 py-2.5 rounded-xl bg-primary text-black font-bold font-sans text-sm hover:brightness-110 transition-all inline-flex items-center gap-1.5 shadow-[0_0_20px_rgba(255,115,0,0.4)]"
+                      >
+                        Live Demo <ExternalLink size={15} />
+                      </a>
+                    )}
+                    <a
+                      href={`/buy-projects?select=${encodeURIComponent(selectedSpecProject.id)}`}
+                      className="px-5 py-2.5 rounded-xl liquid-glass-capsule text-white font-bold font-sans text-sm hover:border-primary/50 transition-all inline-flex items-center gap-1.5"
+                    >
+                      Buy Verified Source <ShoppingBag size={15} />
+                    </a>
+                  </div>
+
+                  <span className="text-xs text-emerald-400 flex items-center gap-1.5 font-mono">
+                    <ShieldCheck size={14} /> Proprietary Code Protected
+                  </span>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
 
         {/* Project Controls: Show More / Show Less & View All Showcase */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-4">
@@ -816,7 +967,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      <section id="certificates" className="space-y-10">
+      <section id="certificates" className="space-y-10 scroll-mt-28">
         <div className="text-center space-y-4">
           <span className="section-kicker font-mono uppercase tracking-widest text-xs inline-flex items-center gap-1.5">
             <ShieldCheck size={14} /> Verified Credentials ({allCertificates.length}+ Total)
@@ -841,10 +992,10 @@ export const HomePage: React.FC = () => {
                   }
                 }}
               >
-                <div className="relative overflow-hidden bg-black/60 border-b border-white/10">
+                <div className="relative overflow-hidden bg-white/[0.02] backdrop-blur-sm border-b border-white/10">
                   {certificate.imageUrl ? (
                     certificate.imageUrl.toLowerCase().endsWith('.pdf') ? (
-                      <div className="flex h-52 flex-col items-center justify-center bg-black/50 px-6 text-center gap-2">
+                      <div className="flex h-52 flex-col items-center justify-center bg-white/[0.01] px-6 text-center gap-2">
                         <FileText className="h-10 w-10 text-primary animate-pulse" />
                         <span className="font-orbitron text-sm text-slate-300">PDF Credential</span>
                       </div>
@@ -852,7 +1003,7 @@ export const HomePage: React.FC = () => {
                       <img src={certificate.imageUrl} alt={certificate.title} className="h-52 w-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                     )
                   ) : (
-                    <div className="flex h-52 items-center justify-center bg-black/50 px-6 text-center">
+                    <div className="flex h-52 items-center justify-center bg-white/[0.01] px-6 text-center">
                       <Trophy className="mr-3 h-8 w-8 shrink-0 text-primary" />
                       <span className="font-orbitron text-lg text-light">{certificate.issuer || 'Certificate'}</span>
                     </div>
@@ -899,7 +1050,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ── Flex / Creators & Community Realm ────────────────────────────── */}
-      <section id="creators-hub" className="space-y-10">
+      <section id="creators-hub" className="space-y-10 scroll-mt-28">
         <div className="text-center space-y-3">
           <span className="section-kicker font-mono uppercase tracking-widest text-xs">Social Impact &amp; Community</span>
           <h2 className="text-3xl md:text-5xl font-orbitron font-black text-light">
@@ -910,102 +1061,134 @@ export const HomePage: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
-          {/* Instagram Card */}
-          <GlassCard className="p-8 relative overflow-hidden group flex flex-col justify-between border-E1306C/30 hover:border-[#E1306C]/60 transition-all duration-500">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#E1306C]/20 to-purple-600/10 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform" />
-            
-            <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
+          {/* Instagram Liquid Jelly Card */}
+          <motion.div
+            whileHover={{ scale: 1.025, y: -6 }}
+            transition={{ type: "spring", stiffness: 350, damping: 22 }}
+            className="liquid-jelly-card p-6 sm:p-8 flex flex-col justify-between group border-pink-500/30 hover:border-pink-500/70"
+          >
+            {/* Ambient moving caustic back-glow */}
+            <div className="absolute -top-16 -right-16 w-48 h-48 bg-gradient-to-br from-pink-500/30 via-purple-600/20 to-transparent rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform duration-700" />
+            <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-gradient-to-tr from-amber-500/20 to-transparent rounded-full blur-2xl pointer-events-none" />
+
+            <div className="space-y-6 relative z-10">
               <div className="flex items-center gap-4">
-                <img
-                  src="/codesworld_logo_new.png"
-                  alt="codesworld.exe logo"
-                  className="w-16 h-16 rounded-full object-cover border-2 border-[#E1306C] shadow-[0_0_15px_rgba(225,48,108,0.4)]"
-                />
+                <div className="relative">
+                  <img
+                    src="/codesworld_logo_new.png"
+                    alt="codesworld.exe logo"
+                    className="w-16 h-16 rounded-2xl object-cover border-2 border-pink-500/80 shadow-[0_0_24px_rgba(225,48,108,0.5)] group-hover:rotate-3 transition-transform duration-300"
+                  />
+                  <span className="absolute -bottom-1 -right-1 flex h-4 w-4">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-4 w-4 bg-pink-500 border-2 border-black"></span>
+                  </span>
+                </div>
                 <div>
-                  <h3 className="font-orbitron text-xl font-bold text-light">@codesworld.exe</h3>
-                  <p className="text-xs font-mono text-[#E1306C] font-bold">13K+ Followers · Millions of Views</p>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-orbitron text-xl font-bold text-light">@codesworld.exe</h3>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-pink-500/20 text-pink-400 border border-pink-500/40">VERIFIED</span>
+                  </div>
+                  <p className="text-xs font-mono text-pink-400 font-semibold tracking-wide">13K+ Dev Community · 5M+ Views</p>
                 </div>
               </div>
 
               <p className="text-slate-300 font-mono text-xs leading-relaxed">
-                Dedicated technical teaching channel sharing modern web development tips, full-stack architecture, project walkthroughs, and developer hacks.
+                Dedicated technical engineering channel sharing modern web development architectures, interactive UI breakdowns, full-stack tips, and daily developer hacks.
               </p>
 
-              <div className="grid grid-cols-3 gap-2 text-center font-mono py-2 bg-white/5 rounded-xl border border-white/5 text-xs">
-                <div>
-                  <p className="font-orbitron font-bold text-primary">13K+</p>
-                  <p className="text-[10px] text-slate-400">Devs</p>
+              <div className="grid grid-cols-3 gap-2.5 text-center font-mono py-3 px-2 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-md">
+                <div className="space-y-0.5">
+                  <p className="font-orbitron font-extrabold text-base sm:text-lg text-primary">13.2K+</p>
+                  <p className="text-[10px] uppercase tracking-wider text-slate-400">Developers</p>
                 </div>
-                <div>
-                  <p className="font-orbitron font-bold text-accent">Millions</p>
-                  <p className="text-[10px] text-slate-400">Views</p>
+                <div className="space-y-0.5 border-x border-white/10">
+                  <p className="font-orbitron font-extrabold text-base sm:text-lg text-pink-400">5M+</p>
+                  <p className="text-[10px] uppercase tracking-wider text-slate-400">Impressions</p>
                 </div>
-                <div>
-                  <p className="font-orbitron font-bold text-secondary">100+</p>
-                  <p className="text-[10px] text-slate-400">Reels</p>
+                <div className="space-y-0.5">
+                  <p className="font-orbitron font-extrabold text-base sm:text-lg text-cyan-400">120+</p>
+                  <p className="text-[10px] uppercase tracking-wider text-slate-400">Tutorials</p>
                 </div>
               </div>
             </div>
 
-            <div className="pt-6">
+            <div className="pt-6 relative z-10">
               <a
                 href="https://www.instagram.com/codesworld.exe?igsh=MnFqbThoOWdkbWE2"
                 target="_blank"
                 rel="noreferrer"
-                className="w-full glass border-[#E1306C]/40 text-light hover:text-[#E1306C] hover:border-[#E1306C] py-3 rounded-xl font-orbitron text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(225,48,108,0.2)]"
+                className="w-full relative overflow-hidden group/btn py-3.5 px-4 rounded-xl font-orbitron text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 bg-gradient-to-r from-pink-600/30 to-purple-600/30 hover:from-pink-600 hover:to-purple-600 text-white border border-pink-500/50 shadow-[0_8px_25px_rgba(225,48,108,0.3)] hover:shadow-[0_12px_35px_rgba(225,48,108,0.5)]"
               >
-                <Instagram size={16} className="text-[#E1306C]" /> Visit Instagram (@codesworld.exe)
+                <Instagram size={17} className="text-pink-300 group-hover/btn:text-white transition-colors" />
+                <span>Explore Instagram (@codesworld.exe)</span>
               </a>
             </div>
-          </GlassCard>
+          </motion.div>
 
-          {/* YouTube Gaming Card */}
-          <GlassCard className="p-8 relative overflow-hidden group flex flex-col justify-between border-red-500/30 hover:border-red-500/60 transition-all duration-500">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-red-600/20 to-orange-600/10 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform" />
+          {/* YouTube Gaming Liquid Jelly Card */}
+          <motion.div
+            whileHover={{ scale: 1.025, y: -6 }}
+            transition={{ type: "spring", stiffness: 350, damping: 22 }}
+            className="liquid-jelly-card p-6 sm:p-8 flex flex-col justify-between group border-red-500/30 hover:border-red-500/70"
+          >
+            {/* Ambient moving caustic back-glow */}
+            <div className="absolute -top-16 -right-16 w-48 h-48 bg-gradient-to-br from-red-600/30 via-orange-600/20 to-transparent rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform duration-700" />
+            <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-gradient-to-tr from-red-500/20 to-transparent rounded-full blur-2xl pointer-events-none" />
 
-            <div className="space-y-6">
+            <div className="space-y-6 relative z-10">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-red-600 to-orange-500 flex items-center justify-center text-white font-black font-orbitron text-xl shadow-[0_0_15px_rgba(255,0,0,0.4)] border-2 border-red-500 overflow-hidden">
-                  <img src="/youtube_logo.png" alt="Aryan Invincible TV" className="w-full h-full object-cover" />
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-600 to-orange-500 flex items-center justify-center text-white font-black font-orbitron text-xl shadow-[0_0_24px_rgba(255,0,0,0.5)] border-2 border-red-500/80 overflow-hidden group-hover:-rotate-3 transition-transform duration-300">
+                    <img src="/youtube_logo.png" alt="Aryan Invincible TV" className="w-full h-full object-cover" />
+                  </div>
+                  <span className="absolute -bottom-1 -right-1 flex h-4 w-4">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 border-2 border-black"></span>
+                  </span>
                 </div>
                 <div>
-                  <h3 className="font-orbitron text-xl font-bold text-light">Aryan Invincible TV</h3>
-                  <p className="text-xs font-mono text-red-400 font-bold">@aryaninvincible78 · Valorant Live</p>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-orbitron text-xl font-bold text-light">Aryan Invincible TV</h3>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-red-500/20 text-red-400 border border-red-500/40">LIVE CASTER</span>
+                  </div>
+                  <p className="text-xs font-mono text-red-400 font-semibold tracking-wide">@aryaninvincible78 · Valorant Arena</p>
                 </div>
               </div>
 
               <p className="text-slate-300 font-mono text-xs leading-relaxed">
-                Official gaming &amp; superhero channel! Streaming live Valorant gameplay every weekend, community matches, and interactive streams.
+                Official gaming &amp; interactive live broadcasts! Streaming high-octane Valorant competitive matches, custom lobbies, superhero lore, and community game nights.
               </p>
 
-              <div className="grid grid-cols-3 gap-2 text-center font-mono py-2 bg-white/5 rounded-xl border border-white/5 text-xs">
-                <div>
-                  <p className="font-orbitron font-bold text-red-400">VALORANT</p>
-                  <p className="text-[10px] text-slate-400">Live Streams</p>
+              <div className="grid grid-cols-3 gap-2.5 text-center font-mono py-3 px-2 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-md">
+                <div className="space-y-0.5">
+                  <p className="font-orbitron font-extrabold text-base sm:text-lg text-red-400">VALORANT</p>
+                  <p className="text-[10px] uppercase tracking-wider text-slate-400">Ranked Matches</p>
                 </div>
-                <div>
-                  <p className="font-orbitron font-bold text-primary">Sat + Sun</p>
-                  <p className="text-[10px] text-slate-400">Schedule</p>
+                <div className="space-y-0.5 border-x border-white/10">
+                  <p className="font-orbitron font-extrabold text-base sm:text-lg text-primary">WEEKENDS</p>
+                  <p className="text-[10px] uppercase tracking-wider text-slate-400">Live Streams</p>
                 </div>
-                <div>
-                  <p className="font-orbitron font-bold text-accent">Gaming</p>
-                  <p className="text-[10px] text-slate-400">Community</p>
+                <div className="space-y-0.5">
+                  <p className="font-orbitron font-extrabold text-base sm:text-lg text-amber-400">1080p 60</p>
+                  <p className="text-[10px] uppercase tracking-wider text-slate-400">Crystal Feed</p>
                 </div>
               </div>
             </div>
 
-            <div className="pt-6">
+            <div className="pt-6 relative z-10">
               <a
                 href="https://youtube/@aryaninvincible78?si=B66qwBq-TyVFlo-M"
                 target="_blank"
                 rel="noreferrer"
-                className="w-full glass border-red-500/40 text-light hover:text-red-400 hover:border-red-500 py-3 rounded-xl font-orbitron text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(255,0,0,0.2)]"
+                className="w-full relative overflow-hidden group/btn py-3.5 px-4 rounded-xl font-orbitron text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-300 bg-gradient-to-r from-red-600/30 to-orange-600/30 hover:from-red-600 hover:to-orange-600 text-white border border-red-500/50 shadow-[0_8px_25px_rgba(255,0,0,0.3)] hover:shadow-[0_12px_35px_rgba(255,0,0,0.5)]"
               >
-                <Youtube size={16} className="text-red-500" /> Watch YouTube Channel (@aryaninvincible78)
+                <Youtube size={17} className="text-red-300 group-hover/btn:text-white transition-colors" />
+                <span>Watch YouTube Live (@aryaninvincible78)</span>
               </a>
             </div>
-          </GlassCard>
+          </motion.div>
         </div>
       </section>
 
@@ -1073,7 +1256,7 @@ export const HomePage: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="fixed bottom-6 right-6 z-[100] max-w-sm glass border border-[#ff7300]/40 rounded-xl p-4 shadow-[0_10px_30px_rgba(255,115,0,0.15)] flex gap-3 items-center pointer-events-auto"
+            className="fixed bottom-20 right-3.5 sm:bottom-6 sm:right-6 z-[100] max-w-[calc(100vw-2rem)] sm:max-w-sm glass-elevated border border-primary/40 rounded-2xl p-3.5 sm:p-4 shadow-[0_15px_35px_rgba(255,115,0,0.25)] flex gap-3 items-center pointer-events-auto"
           >
             <div className="w-10 h-10 rounded-full bg-[#ff7300]/25 flex items-center justify-center text-primary animate-bounce">
               ✨

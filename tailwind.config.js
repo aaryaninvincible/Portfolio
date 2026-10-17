@@ -19,8 +19,10 @@ export default {
         }
       },
       fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['Outfit', '"Plus Jakarta Sans"', 'sans-serif'],
         orbitron: ['Orbitron', 'sans-serif'],
-        mono: ['Roboto Mono', 'monospace'],
+        mono: ['"JetBrains Mono"', '"Roboto Mono"', 'monospace'],
       },
       animation: {
         'blob': 'blob 20s infinite ease-in-out alternate',

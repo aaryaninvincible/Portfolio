@@ -76,10 +76,13 @@ export const CyberTerminalModal: React.FC<CyberTerminalModalProps> = ({ isOpen, 
         response = (
           <div className="text-xs text-slate-300 space-y-1">
             <p className="text-primary font-bold">FEATURED FLAGSHIP BUILDS:</p>
-            <p>1. <span className="text-white font-bold">Synapse AI Canvas</span> - Node-based AI workflow editor</p>
-            <p>2. <span className="text-white font-bold">E-Challan Traffic AI</span> - ANPR license plate recognition</p>
-            <p>3. <span className="text-white font-bold">AI Fitness Pose Tracker</span> - Realtime posture analyzer</p>
-            <p className="text-slate-400">Visit /all-work to view all live demos.</p>
+            <p>1. <span className="text-white font-bold">Physics-Aware SCADA Digital Twin</span> - IEEE Access Cyber-Physical Defense</p>
+            <p>2. <span className="text-white font-bold">Better Prompt Suite</span> - Multi-Language Cognitive Prompt Engine</p>
+            <p>3. <span className="text-white font-bold">PrepForge SaaS</span> - Technical Placement & Python Worker Sandbox</p>
+            <p>4. <span className="text-white font-bold">Nothing Dialer</span> - AMOLED Android Telecom & InCallService</p>
+            <p>5. <span className="text-white font-bold">Solstice & You Sunflower 3D</span> - Interactive 3D WebGL Installation</p>
+            <p>6. <span className="text-white font-bold">E-Challan Scam Detector</span> - Cybersecurity Phishing Defense</p>
+            <p className="text-slate-400">Visit /all-work or /buy-projects to view all projects.</p>
           </div>
         );
         break;
@@ -123,8 +126,11 @@ export const CyberTerminalModal: React.FC<CyberTerminalModalProps> = ({ isOpen, 
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-      <div className={`w-full max-w-2xl h-[480px] glass border border-white/20 rounded-2xl shadow-[0_0_50px_rgba(0,243,255,0.2)] flex flex-col overflow-hidden font-mono text-xs ${isMatrixMode ? 'text-emerald-400 border-emerald-500/40 shadow-[0_0_50px_rgba(16,185,129,0.3)]' : ''}`}>
+    <div 
+      className="fixed inset-0 z-[9999] bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className={`w-full max-w-2xl h-[480px] glass-elevated border border-white/20 rounded-2xl shadow-[0_0_50px_rgba(0,243,255,0.2)] flex flex-col overflow-hidden font-mono text-xs ${isMatrixMode ? 'text-emerald-400 border-emerald-500/40 shadow-[0_0_50px_rgba(16,185,129,0.3)]' : ''}`}>
         {/* Terminal Header Bar */}
         <div className="px-4 py-3 bg-black/80 border-b border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-2">

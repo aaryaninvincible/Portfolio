@@ -44,7 +44,7 @@ print(text[:5])         # Output: "Hello"
 print(text[7:])         # Output: "World!"
 
 # 4. Negative Indexing (Slice from end)
-print(text[-6:-1])      # Output: "World"
+print(text[ -6 : -1 ])      # Output: "World"
 
 # 5. Step Slicing (every 2nd character)
 print(text[::2])        # Output: "Hlo Wrd"

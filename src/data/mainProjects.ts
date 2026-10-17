@@ -48,6 +48,72 @@ export const mainBigProjects: PortfolioProject[] = [
     source: 'admin'
   },
   {
+    id: 'better-prompt',
+    title: 'Better Prompt — Multi-Language Prompt Engineering Suite',
+    description: 'Intelligent prompt engineering engine and CLI that transforms raw requirements into production-grade prompts across 4 rigorous cognitive frameworks (Structured, CO-STAR, CRISPE, XML) with zero cloud token consumption and offline Ollama AI refinement.',
+    category: 'AI & NLP Tools',
+    badge: 'Flagship Prompt Engine',
+    technologies: [
+      'Python',
+      'Prompt Engineering',
+      'LLM Architectures',
+      'CO-STAR & CRISPE',
+      'Multi-Language NLP',
+      'Ollama Gemma 4',
+      'Streamlit & CLI'
+    ],
+    highlights: 'Zero-Cloud-Token Deterministic Expansion | 4 Prompt Frameworks | Multi-Language Support (English, Hindi, Spanish) | Streamlit & CLI UI',
+    imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60',
+    useCase: 'Production system prompt authoring, LLM accuracy tuning, and enterprise requirement transformation without token overhead.',
+    featured: true,
+    codeProtected: true,
+    source: 'admin'
+  },
+  {
+    id: 'prepforge-platform',
+    title: 'PrepForge — Technical Placement & Code Practice SaaS Platform',
+    description: 'Comprehensive technical interview and engineering placement SaaS platform. Integrates an isolated client-side Web Worker execution sandbox for Python coding challenges, an 8-step bidirectional Excel roadmap import/export wizard, Firebase Firestore, and server-validated timed exams.',
+    category: 'Full Stack & SaaS',
+    badge: 'Production Placement SaaS',
+    technologies: [
+      'React 18',
+      'TypeScript',
+      'Isolated Web Worker Sandbox',
+      'Firebase Firestore',
+      'Cloud Functions',
+      'Tailwind CSS',
+      'Recharts'
+    ],
+    highlights: 'Isolated Python Worker Sandbox (3000ms recursion guard) | 8-Step Dual-direction Excel Wizard | Real-Time Exam Engine',
+    imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&auto=format&fit=crop&q=60',
+    useCase: 'Campus placement preparation, automated algorithmic grading, and structured 8-pillar learning roadmaps.',
+    featured: true,
+    codeProtected: true,
+    source: 'admin'
+  },
+  {
+    id: 'nothing-dialer',
+    title: 'Nothing Dialer — Minimalist AMOLED Android Dialer & Telecom Suite',
+    description: 'Production-oriented custom Android phone dialer combining the minimalist dot-matrix design language of Nothing OS with enterprise telecom capabilities. Powered by Flutter, Clean Architecture MVVM, Riverpod, and native Android InCallService.',
+    category: 'Mobile & Android',
+    badge: 'Flutter & Android Telecom',
+    technologies: [
+      'Flutter',
+      'Dart',
+      'Android Telecom API',
+      'InCallService',
+      'Riverpod',
+      'AMOLED Design',
+      'Native Audio Engine'
+    ],
+    highlights: 'Native Android Telecom InCallService | Pure AMOLED #000000 Palette | Live Custom Incoming Call Studio & Voice Notes Player',
+    imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02560?w=600&auto=format&fit=crop&q=60',
+    useCase: 'Daily telephony management, custom caller typography and backgrounds, and low-latency call memo recording.',
+    featured: true,
+    codeProtected: true,
+    source: 'admin'
+  },
+  {
     id: 'ai-removal',
     title: 'HumanizeAI: Advanced AI Detection Bypass & Syntactic NLP Pipeline',
     description: 'High-precision NLP engine designed to humanize synthetic LLM prose and bypass commercial AI detectors (GPTZero, Turnitin, CopyLeaks). Orchestrates syntactic burstiness modulation, perplexity re-anchoring, clause reordering, and semantic invariance with real-time sentence transformation mapping and Gemini API integration.',
@@ -373,18 +439,19 @@ export const mainBigProjects: PortfolioProject[] = [
   },
   {
     id: 'sunflower-experience',
-    title: 'Sunflower - Interactive 3D WebGL Botanic Experience',
-    description: 'High-fidelity interactive WebGL and canvas visual installation combining cinematic scroll-linked video transitions, smooth physics-based particle flowers, and spatial audio design.',
+    title: 'Solstice & You — Interactive 3D WebGL Botanic Experience & Love Letter',
+    description: 'High-fidelity interactive 3D WebGL botanic installation and romantic storytelling experience. Features a procedural Blender Vogel-spiral sunflower with real-time cursor/touch heliotropic head tracking, petal-drop physics oracle, realistic 3D envelope wax seal, and procedural Web Audio chimes.',
     category: '3D & WebGL',
-    badge: 'Creative WebGL',
+    badge: 'Creative WebGL & 3D',
     technologies: [
       'Three.js / WebGL',
-      'JavaScript',
-      'Lenis Smooth Scroll',
-      'Audio Synthesis',
-      'CSS Motion'
+      'Blender (bpy Python)',
+      'Heliotropism Shaders',
+      'Web Audio API',
+      'Interactive 3D Physics',
+      'Procedural Modeling'
     ],
-    highlights: 'Silky 60fps 3D canvas interaction | Scroll-coupled cinematic video transitions | High visual aesthetics',
+    highlights: 'Real-time cursor & touch heliotropism | Mathematical Vogel phyllotaxis center | Procedural Web Audio chimes & wax seal interaction',
     imageUrl: '/thumbnails/sunflower.png',
     useCase: 'Brand storytelling, digital art exhibition, and interactive 3D web presentation.',
     featured: true,
@@ -407,6 +474,26 @@ export const mainBigProjects: PortfolioProject[] = [
     highlights: 'Glance AppWidget API | Real-time sensor polling without wake-lock penalty | Material 3 Dynamic Colors',
     imageUrl: '/thumbnails/android_widget.svg',
     useCase: 'At-a-glance Android home-screen productivity, battery telemetry, and personalized mobile dash widgets.',
+    featured: true,
+    codeProtected: true,
+    source: 'admin'
+  },
+  {
+    id: 'mussu-wellness',
+    title: 'Mussu Wellness — Holistic Health, Movement & Wellness Ecosystem',
+    description: 'Cross-platform health and holistic physical wellness mobile & web application with custom deployment architecture, guided movement sessions, nutrition regimens, and personalized habit telemetry.',
+    category: 'Mobile & HealthTech',
+    badge: 'Health & Wellness App',
+    technologies: [
+      'Kotlin / Android',
+      'Gradle',
+      'Cloud Architecture',
+      'Health Analytics',
+      'Wellness Telemetry'
+    ],
+    highlights: 'Native Android Release Engine | Holistic Habit Telemetry | Production Cloud Deployment',
+    imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&auto=format&fit=crop&q=60',
+    useCase: 'Personal wellness training, mindful habit tracking, and responsive lifestyle transformation.',
     featured: true,
     codeProtected: true,
     source: 'admin'

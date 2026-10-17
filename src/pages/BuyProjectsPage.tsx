@@ -14,6 +14,30 @@ const fallbackStoreProjects: StoreProject[] = [
     category: 'Cyber-Physical & AI',
   },
   {
+    id: 'store-better-prompt',
+    title: 'Better Prompt — Multi-Language Prompt Engineering Suite',
+    description: 'Production-grade cognitive prompt engineering engine with 4 frameworks (Structured, CO-STAR, CRISPE, XML), zero cloud token overhead, and offline Ollama refinement.',
+    price: 699,
+    imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60',
+    category: 'AI & Tools',
+  },
+  {
+    id: 'store-prepforge',
+    title: 'PrepForge — Technical Placement & Code Practice SaaS Platform',
+    description: 'Complete placement prep SaaS with isolated Web Worker Python code runner sandbox, 8-step Excel roadmap integration, and timed exam grading.',
+    price: 799,
+    imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&auto=format&fit=crop&q=60',
+    category: 'Full Stack',
+  },
+  {
+    id: 'store-nothing-dialer',
+    title: 'Nothing Dialer — Minimalist AMOLED Android Dialer & Telecom Suite',
+    description: 'Production-oriented custom Android phone dialer combining the minimalist dot-matrix aesthetic of Nothing OS with native Android InCallService telecom APIs.',
+    price: 649,
+    imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02560?w=600&auto=format&fit=crop&q=60',
+    category: 'Mobile & Android',
+  },
+  {
     id: 'store-synapse-ai',
     title: 'Synapse AI - Multimodal Screen & Real-Time Voice Agent',
     description: 'Next-generation AI voice and vision copilot designed for low-latency live dialogue, active desktop screen-share analysis, interactive visual troubleshooting, and intelligent code inspection.',
@@ -624,7 +648,7 @@ export const BuyProjectsPage: React.FC = () => {
             return (
               <GlassCard key={product.id} className="flex flex-col h-full group overflow-hidden relative">
                 {/* Image / Screenshots Carousel */}
-                <div className="h-56 bg-black relative overflow-hidden flex items-center justify-center border-b border-white/5">
+                <div className="h-56 bg-white/[0.02] backdrop-blur-sm relative overflow-hidden flex items-center justify-center border-b border-white/10">
                   <img src={allImages[currentIdx]} className="h-full w-full object-cover opacity-85 hover:scale-105 transition-all duration-500" alt={product.title} />
                   
                   {isFree && (

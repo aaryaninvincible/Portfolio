@@ -12,7 +12,7 @@ interface CommandPaletteProps {
 interface CommandItem {
   id: string;
   title: string;
-  category: 'Navigation' | 'Actions' | 'Socials';
+  category: 'Navigation' | 'Actions' | 'Socials' | 'Projects';
   icon: React.ReactNode;
   action: () => void;
 }
@@ -56,6 +56,27 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
       category: 'Navigation',
       icon: <FolderGit2 size={16} className="text-accent" />,
       action: () => { navigate('/all-work'); onClose(); }
+    },
+    {
+      id: 'proj-better-prompt',
+      title: 'Better Prompt — Prompt Engineering Suite',
+      category: 'Projects',
+      icon: <Code size={16} className="text-primary" />,
+      action: () => { navigate('/#projects'); onClose(); }
+    },
+    {
+      id: 'proj-prepforge',
+      title: 'PrepForge — Technical Placement SaaS',
+      category: 'Projects',
+      icon: <Sparkles size={16} className="text-accent" />,
+      action: () => { navigate('/#projects'); onClose(); }
+    },
+    {
+      id: 'proj-nothing-dialer',
+      title: 'Nothing Dialer — Minimalist Android App',
+      category: 'Projects',
+      icon: <ExternalLink size={16} className="text-secondary" />,
+      action: () => { navigate('/#projects'); onClose(); }
     },
     {
       id: 'nav-arcade',
@@ -130,8 +151,11 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
   );
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md flex items-start justify-center pt-16 sm:pt-24 px-4 overflow-y-auto">
-      <div className="w-full max-w-xl glass border border-white/15 rounded-2xl shadow-[0_0_50px_rgba(255,115,0,0.25)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div 
+      className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md flex items-start justify-center pt-16 sm:pt-24 px-4 overflow-y-auto"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="w-full max-w-xl glass-elevated border border-white/20 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8),0_0_35px_rgba(255,115,0,0.25)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Search Header */}
         <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/10 bg-black/40">
           <Search size={18} className="text-primary shrink-0" />

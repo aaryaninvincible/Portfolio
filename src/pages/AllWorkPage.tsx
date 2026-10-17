@@ -178,7 +178,7 @@ export const AllWorkPage: React.FC = () => {
   const filtered = filter === 'All' ? projects : projects.filter((project) => project.category === filter);
 
   return (
-    <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto space-y-16">
+    <div className="pt-32 pb-32 px-6 max-w-7xl mx-auto space-y-16">
       <div className="text-center space-y-6">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs sm:text-sm font-mono shadow-[0_0_15px_rgba(16,185,129,0.15)]">
           <ShieldCheck size={16} className="text-emerald-400" />
@@ -193,13 +193,13 @@ export const AllWorkPage: React.FC = () => {
         </p>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-4">
+      <div className="flex flex-wrap justify-center gap-2.5 sm:gap-3">
         {categories.map((category) => (
           <button
             key={category}
             onClick={() => setFilter(category)}
-            className={`px-5 py-2 rounded-full font-mono text-sm transition-all border ${
-              filter === category ? 'bg-primary/20 text-primary border-primary' : 'glass text-light hover:border-primary/50'
+            className={`px-4 sm:px-5 py-2 rounded-full font-sans text-xs sm:text-sm font-medium transition-all ${
+              filter === category ? 'liquid-glass-capsule text-white border-primary shadow-[0_0_20px_rgba(255,115,0,0.35)]' : 'glass-pill text-slate-300 hover:text-white hover:border-white/30'
             }`}
           >
             {category}
@@ -210,7 +210,7 @@ export const AllWorkPage: React.FC = () => {
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filtered.map((project) => (
           <GlassCard key={project.id} className="group flex flex-col h-full overflow-hidden hover:border-primary/50 hover:shadow-[0_0_25px_rgba(255,115,0,0.15)] transition-all duration-300">
-            <div className="h-52 overflow-hidden relative border-b border-light/5 bg-black/50 flex items-center justify-center">
+            <div className="h-52 overflow-hidden relative border-b border-white/10 bg-white/[0.02] backdrop-blur-sm flex items-center justify-center">
               {project.videoUrl ? (
                 <video src={project.videoUrl} className="h-full w-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" autoPlay muted loop playsInline />
               ) : (
@@ -228,13 +228,13 @@ export const AllWorkPage: React.FC = () => {
             </div>
             <div className="p-6 flex flex-col flex-grow justify-between">
               <div>
-                <h3 className="font-orbitron font-bold text-xl text-primary capitalize group-hover:text-white transition-colors">{project.title}</h3>
+                <h3 className="font-display font-bold text-xl text-primary capitalize group-hover:text-white transition-colors">{project.title}</h3>
                 {project.highlights && (
-                  <div className="mt-2 mb-2 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-xs flex items-center gap-1.5">
-                    <span>⚡ {project.highlights}</span>
+                  <div className="mt-2 mb-2 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-xs flex items-center gap-1.5 truncate">
+                    <span className="truncate">⚡ {project.highlights}</span>
                   </div>
                 )}
-                <p className="font-mono text-sm text-slate-300 leading-relaxed mt-3">{project.description}</p>
+                <p className="font-sans text-sm text-slate-300 leading-relaxed mt-3 line-clamp-3">{project.description}</p>
               </div>
               <div>
                 <div className="flex flex-wrap gap-2 mt-5">

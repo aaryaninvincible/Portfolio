@@ -63,10 +63,11 @@ export const mainBigProjects: PortfolioProject[] = [
       'Streamlit & CLI'
     ],
     highlights: 'Zero-Cloud-Token Deterministic Expansion | 4 Prompt Frameworks | Multi-Language Support (English, Hindi, Spanish) | Streamlit & CLI UI',
-    imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=60',
+    imageUrl: '/thumbnails/better_prompt.png',
+    repoUrl: 'https://github.com/aaryaninvincible/better_prompt',
     useCase: 'Production system prompt authoring, LLM accuracy tuning, and enterprise requirement transformation without token overhead.',
     featured: true,
-    codeProtected: true,
+    codeProtected: false,
     source: 'admin'
   },
   {
@@ -85,10 +86,11 @@ export const mainBigProjects: PortfolioProject[] = [
       'Recharts'
     ],
     highlights: 'Isolated Python Worker Sandbox (3000ms recursion guard) | 8-Step Dual-direction Excel Wizard | Real-Time Exam Engine',
-    imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&auto=format&fit=crop&q=60',
+    imageUrl: '/thumbnails/prepforge.png',
+    repoUrl: 'https://github.com/aaryaninvincible/prepforge',
     useCase: 'Campus placement preparation, automated algorithmic grading, and structured 8-pillar learning roadmaps.',
     featured: true,
-    codeProtected: true,
+    codeProtected: false,
     source: 'admin'
   },
   {
@@ -107,10 +109,208 @@ export const mainBigProjects: PortfolioProject[] = [
       'Native Audio Engine'
     ],
     highlights: 'Native Android Telecom InCallService | Pure AMOLED #000000 Palette | Live Custom Incoming Call Studio & Voice Notes Player',
-    imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02560?w=600&auto=format&fit=crop&q=60',
+    imageUrl: '/thumbnails/nothing_dialer.png',
+    repoUrl: 'https://github.com/aaryaninvincible/nothing_dialer',
     useCase: 'Daily telephony management, custom caller typography and backgrounds, and low-latency call memo recording.',
     featured: true,
-    codeProtected: true,
+    codeProtected: false,
+    source: 'admin'
+  },
+  {
+    id: 'liquid-glass-ui',
+    title: 'Liquid Glass UI — Physical Jetpack Compose & AGSL Optical Engine',
+    description: 'Production-grade Android Jetpack Compose + AGSL (Android Graphics Shading Language) physical liquid glass UI engine with real-time ray refraction, 7-band spectral chromatic dispersion, and live interactive optical studio.',
+    category: 'Mobile & Android',
+    badge: 'AGSL & Compose Flagship',
+    technologies: [
+      'Android Jetpack Compose',
+      'AGSL RuntimeShader',
+      'Ray Refraction',
+      '7-Band Dispersion',
+      'Compose GraphicsLayer',
+      'Kotlin'
+    ],
+    highlights: 'Real-time AGSL Shader Refraction | 7-Band Chromatic Aberration | 60fps Dynamic Specular Rim Drift | Interactive Web Studio',
+    imageUrl: '/thumbnails/liquid_glass_ui.png',
+    repoUrl: 'https://github.com/aaryaninvincible/liquid-glass-ui',
+    useCase: 'Next-generation Android glassmorphic UI components, audio visualizer cards, and physical ray refraction.',
+    featured: true,
+    codeProtected: false,
+    source: 'admin'
+  },
+  {
+    id: 'beatwave-music',
+    title: 'BeatWave — Next-Gen Android Streaming & Music Player',
+    description: 'Flagship Android music player and streaming platform showcasing physical liquid glass design, dynamic visualizers, and seamless local and streaming playback.',
+    category: 'Mobile & Android',
+    badge: 'Android Flagship Player',
+    technologies: [
+      'Kotlin',
+      'Jetpack Compose',
+      'ExoPlayer / Media3',
+      'AGSL Shaders',
+      'Room Database',
+      'Audio Waveform'
+    ],
+    highlights: 'High-Fidelity Audio Streaming | Liquid Glass Compose Shell | Waveform Seeking & FFT Visualizer',
+    imageUrl: '/thumbnails/liquid_glass_ui.png',
+    repoUrl: 'https://github.com/aaryaninvincible/BeatWave',
+    useCase: 'Daily personal audio streaming, playlist curation, and audiophile sound enhancement.',
+    featured: true,
+    codeProtected: false,
+    source: 'admin'
+  },
+  {
+    id: 'retromusic-player',
+    title: 'RetroMusic — Vinyl Turntable & Glassmorphic Android Player',
+    description: 'Luxury retro-modern Android music player built with Kotlin, Jetpack Compose, spinning vinyl turntable physics, ambient floating particles, multi-band studio equalizer, and ID3 metadata tag editor.',
+    category: 'Mobile & Android',
+    badge: 'Retro Vinyl & Jetpack Compose',
+    technologies: [
+      'Kotlin',
+      'Jetpack Compose',
+      'AudioFX Multi-Band EQ',
+      'Vinyl Turntable Physics',
+      'Floating Particles',
+      'Foreground Audio Service'
+    ],
+    highlights: 'Realistic Rotating Vinyl Turntable | Interactive Floating Particles | 5-Band Equalizer | Synced Karaoke Lyrics',
+    imageUrl: '/thumbnails/retromusic_app.png',
+    repoUrl: 'https://github.com/aaryaninvincible/Music-app',
+    useCase: 'Immersive vinyl-style local audio playback, studio audio equalization, and synced karaoke singing.',
+    featured: true,
+    codeProtected: false,
+    source: 'admin'
+  },
+  {
+    id: 'chrome-coursera-assistant',
+    title: 'Course Completion Assistant (Manifest V3 Extension)',
+    description: 'Enterprise-grade Chrome Extension for online learners (Coursera, Udemy, edX, Canvas, YouTube) featuring Always Active window persistence, universal media acceleration, passkey security, and executive telemetry dashboard.',
+    category: 'Web & Extensions',
+    badge: 'Manifest V3 Flagship',
+    technologies: [
+      'Chrome Extension Manifest V3',
+      'Web Platform APIs',
+      'Media Acceleration',
+      'Always-Active Persistence',
+      'WebAuthn Passkeys',
+      'Modern Glassmorphic Dashboard'
+    ],
+    highlights: 'Always Active Persistence | 1x-5x Universal Video Speed Controller | FIDO2 Passkeys | Rich Learning Metrics',
+    imageUrl: '/thumbnails/course_completion_assistant.png',
+    repoUrl: 'https://github.com/aaryaninvincible/Chrome-Coursera-Extension',
+    useCase: 'Automated video progression, distraction-free study tracking, and multi-platform course acceleration.',
+    featured: true,
+    codeProtected: false,
+    source: 'admin'
+  },
+  {
+    id: 'eventara-utsav-ai',
+    title: 'Eventara (Utsav AI) — Editorial Celebration & Event Planner',
+    description: 'Full-stack cultural event planning and celebration management platform. Features deterministic INR budget allocation, multi-step creation wizards, vendor milestone checklists, 3D WebGL stage lighting visualizer, and dual dark/light editorial aesthetics.',
+    category: 'Full Stack & SaaS',
+    badge: 'Editorial Event SaaS',
+    technologies: [
+      'React 18',
+      'TypeScript',
+      'Three.js WebGL',
+      'Tailwind CSS',
+      'Deterministic INR Math',
+      'Vite 6'
+    ],
+    highlights: 'Deterministic INR Budget Allocator | Multi-Step Celebration Wizard | 3D Stage Visualizer | Live Production on Vercel',
+    imageUrl: '/thumbnails/utsav_ai.png',
+    demoUrl: 'https://eventara-planner.vercel.app',
+    repoUrl: 'https://github.com/aaryaninvincible/utsav-ai',
+    useCase: 'Indian wedding planning, cultural festival coordination, corporate galas, and deterministic budget optimization.',
+    featured: true,
+    codeProtected: false,
+    source: 'admin'
+  },
+  {
+    id: 'faminas-african-american-restaurant',
+    title: "Famina's Kitchen & Lounge — African & American Culinary Platform",
+    description: 'Production-ready restaurant web platform and ordering system featuring an authentic fusion of African delicacies (Jollof Rice, Oxtail, Suya) and American classics (Texas Brisket, Smash Burgers, BBQ Ribs) with live cart, table reservations, and Firebase backend.',
+    category: 'Full Stack & Web',
+    badge: 'Full-Stack Restaurant SaaS',
+    technologies: [
+      'React 19',
+      'TypeScript',
+      'Tailwind CSS v4',
+      'Motion (Framer Motion)',
+      'Express.js & Node.js',
+      'Firebase Cloud Firestore'
+    ],
+    highlights: 'Online Ordering & Cart | Table Reservation Engine | Catering Calculator | Guestbook Reviews & SEO Feed',
+    imageUrl: '/thumbnails/faminas_restaurant.png',
+    repoUrl: 'https://github.com/aaryaninvincible/faminas-african-american-restaurant',
+    useCase: 'Restaurant digital ordering, multi-cultural catering booking, table seat reservations, and delivery routing.',
+    featured: true,
+    codeProtected: false,
+    source: 'admin'
+  },
+  {
+    id: 'alfaz-lyrics',
+    title: 'Alfaaz — Yeh Jawaani Hai Deewani Kinetic Typography',
+    description: 'Cinematic full-screen typographic lyric website for "Alfaaz (Acoustic)" styled with the romantic visual aesthetic of Yeh Jawaani Hai Deewani (YJHD) and Apple Music / Spotify kinetic lyrics synchronization via YouTube IFrame API.',
+    category: 'Web & Animation',
+    badge: 'Apple Music Typography',
+    technologies: [
+      'Next.js 14',
+      'React 18',
+      'Framer Motion',
+      'Tailwind CSS',
+      'YouTube IFrame API',
+      'Apple Music Fluid Mesh'
+    ],
+    highlights: 'Apple Music Fluid Mesh Background | 100% Synchronized Karaoke Lyrics | Polaroid Diary Modals | Spotify Player Bar',
+    imageUrl: '/thumbnails/alfaz_lyrics.png',
+    repoUrl: 'https://github.com/aaryaninvincible/alfaz-lyrics',
+    useCase: 'Kinetic music visualization, lyrical storytelling, synchronized song experiences, and high-impact web design.',
+    featured: true,
+    codeProtected: false,
+    source: 'admin'
+  },
+  {
+    id: 'romantic-birthday-wish',
+    title: 'Romantic Birthday Wish & Love Journey Web Experience',
+    description: 'Glassmorphism-powered interactive romantic journey web application featuring Web Audio API ambient piano generation, 3D wax seal love letter, interactive birthday cake blowing simulation, and scroll-driven memory walk.',
+    category: 'Web & Animation',
+    badge: 'Interactive Experience',
+    technologies: [
+      'HTML5 Canvas',
+      'Web Audio API',
+      'CSS3 3D Transforms',
+      'Interactive Wax Seal',
+      'Particle Confetti'
+    ],
+    highlights: 'Interactive Lock Screen | Ambient Web Audio Piano | Crackable 3D Wax Seal | Cake Candle Extinguishing Simulator',
+    imageUrl: '/thumbnails/romantic_birthday_wish.png',
+    repoUrl: 'https://github.com/aaryaninvincible/romantic-birthday-wish',
+    useCase: 'Bespoke romantic celebration web journeys, interactive storytelling, and luxury glassmorphic animations.',
+    featured: true,
+    codeProtected: false,
+    source: 'admin'
+  },
+  {
+    id: 'sunflower-love-letter',
+    title: 'Solstice & You — 3D Procedural Sunflower & Love Letter',
+    description: 'Artistic pairing of a procedural 3D sunflower model built with mathematical phyllotaxis in Blender Python (bpy) and an interactive Three.js WebGL love letter experience with heliotropic sun tracking.',
+    category: '3D & Creative Tech',
+    badge: 'Three.js & Blender 3D',
+    technologies: [
+      'Three.js WebGL',
+      'Blender Python (bpy)',
+      'Fibonacci Phyllotaxis Math',
+      'Web Audio API',
+      'Procedural Shaders'
+    ],
+    highlights: 'Procedural 280-Floret Fibonacci Vogel Spiral | Three.js Heliotropic Sun-Tracking | 3D Interactive Wax Envelope',
+    imageUrl: '/thumbnails/sunflower_love_letter.png',
+    repoUrl: 'https://github.com/aaryaninvincible/sunflower-love-letter',
+    useCase: '3D WebGL plant visualization, procedural mathematical modeling, and interactive storytelling.',
+    featured: true,
+    codeProtected: false,
     source: 'admin'
   },
   {

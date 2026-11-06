@@ -336,46 +336,24 @@ export const mainBigProjects: PortfolioProject[] = [
     source: 'admin'
   },
   {
-    id: 'cv-project',
-    title: 'Computer Vision Intelligence Suite (Cv_project)',
-    description: 'Advanced real-time computer vision platform integrating hand gesture classification, spatial cursor tracking, touchless air-mouse interaction, and interactive AI canvas control with sub-millisecond responsiveness.',
-    category: 'Computer Vision & AI',
-    badge: 'Flagship Vision Suite',
-    technologies: [
-      'Computer Vision',
-      'OpenCV',
-      'MediaPipe',
-      'Python',
-      'PyTorch',
-      'Spatial Tracking',
-      'Air-Canvas'
-    ],
-    highlights: 'Sub-15ms multi-finger gesture recognition, virtual air-mouse, and zero-latency spatial canvas',
-    demoUrl: '/demos/Cv_project/index.html',
-    imageUrl: '/thumbnails/cv_project.png',
-    useCase: 'Touchless human-computer interaction, digital presentation control, and sterile medical display navigation.',
-    featured: true,
-    codeProtected: true,
-    source: 'admin'
-  },
-  {
     id: 'gesture-x',
-    title: 'GestureX - Real-Time Gesture & SAM Object Control',
-    description: 'High-performance interactive AI canvas combining contactless hand gesture tracking with Meta AI’s Segment Anything Model (SAM) for zero-shot object segmentation, layer manipulation, and real-time visual inpainting.',
+    title: 'GestureX — Real-Time Computer Vision & Meta SAM Intelligence Suite',
+    description: 'Flagship interactive spatial computing suite combining real-time 21-joint MediaPipe hand landmark tracking, zero-latency touchless air-canvas interaction, and Meta AI’s Segment Anything Model (SAM) for zero-shot object segmentation and inpainting.',
     category: 'Computer Vision & AI',
-    badge: 'Meta SAM + Vision',
+    badge: 'Flagship Vision & Meta SAM',
     technologies: [
-      'SAM (Meta AI)',
+      'Meta SAM',
       'MediaPipe',
       'OpenCV',
-      'Streamlit',
+      'PyTorch',
       'Python',
-      'TorchVision'
+      'Spatial AI',
+      'Touchless Canvas'
     ],
-    highlights: 'Real-time gesture triggered SAM masks, ambient light compensation, and interactive background manipulation',
+    highlights: 'Sub-15ms multi-finger gesture recognition, Meta SAM zero-shot mask segmentation, and virtual air-canvas',
     demoUrl: '/demos/GestureX/index.html',
     imageUrl: '/thumbnails/gesture_x.png',
-    useCase: 'Zero-touch creative media editing, medical scan navigation, and spatial computing interaction.',
+    useCase: 'Touchless human-computer interaction, creative media editing, presentation control, and sterile medical display navigation.',
     featured: true,
     codeProtected: true,
     source: 'admin'

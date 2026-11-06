@@ -19,36 +19,20 @@ export const githubPagesProjects: PortfolioProject[] = [
     "source": "github"
   },
   {
-    "id": "cv-project",
-    "title": "Computer Vision Intelligence Suite (Cv_project)",
-    "description": "Advanced computer vision platform integrating real-time gesture recognition, spatial tracking, and interactive AI canvas control.",
-    "category": "AI/ML",
-    "technologies": [
-      "Computer Vision",
-      "OpenCV",
-      "MediaPipe",
-      "Python",
-      "PyTorch"
-    ],
-    "demoUrl": "/demos/Cv_project/index.html",
-    "imageUrl": "https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=600&auto=format&fit=crop&q=60",
-    "featured": true,
-    "source": "admin"
-  },
-  {
     "id": "gesture-x",
-    "title": "GestureX - Real-Time Gesture & SAM Control",
-    "description": "Virtual light & image editing system utilizing hand gesture control, Segment Anything Model (SAM) object segmentation, and inpainting.",
+    "title": "GestureX — Real-Time Computer Vision & Meta SAM Suite",
+    "description": "Flagship spatial AI platform integrating 21-joint MediaPipe hand landmark tracking, zero-shot Meta SAM object segmentation, touchless air-mouse, and real-time inpainting canvas.",
     "category": "AI/ML",
     "technologies": [
+      "Meta SAM",
       "MediaPipe",
-      "SAM (Meta AI)",
       "OpenCV",
-      "Streamlit",
-      "Python"
+      "PyTorch",
+      "Python",
+      "Streamlit"
     ],
     "demoUrl": "/demos/GestureX/index.html",
-    "imageUrl": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=60",
+    "imageUrl": "/thumbnails/gesture_x.png",
     "featured": true,
     "source": "admin"
   },

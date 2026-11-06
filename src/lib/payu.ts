@@ -140,8 +140,14 @@ export async function launchPayUCheckout(payload: PayUPaymentPayload, config?: P
       : 'https://test.payu.in/_payment';
 
   const amountStr = payload.amount.toFixed(2);
-  const cleanProductInfo = payload.productinfo.substring(0, 80).replace(/[^a-zA-Z0-9 _-]/g, '');
-  const cleanFirstname = (payload.firstname.split(' ')[0] || 'Customer').substring(0, 30);
+  const cleanProductInfo = (payload.productinfo || 'ProjectLicense')
+    .replace(/[^a-zA-Z0-9 ]/g, '')
+    .trim()
+    .substring(0, 50) || 'ProjectLicense';
+  const cleanFirstname = (payload.firstname.split(' ')[0] || 'Customer')
+    .replace(/[^a-zA-Z]/g, '')
+    .substring(0, 25) || 'Customer';
+  const cleanPhone = (payload.phone || '7999791878').replace(/\D/g, '').slice(-10) || '7999791878';
   const surl = payload.surl || `${window.location.origin}/buy-projects?payu_status=success&txnid=${payload.txnid}`;
   const furl = payload.furl || `${window.location.origin}/buy-projects?payu_status=failure&txnid=${payload.txnid}`;
 
@@ -151,7 +157,7 @@ export async function launchPayUCheckout(payload: PayUPaymentPayload, config?: P
     amount: amountStr,
     productinfo: cleanProductInfo,
     firstname: cleanFirstname,
-    email: payload.email,
+    email: payload.email.trim(),
     salt: currentConfig.merchantSalt,
   });
 
@@ -160,18 +166,18 @@ export async function launchPayUCheckout(payload: PayUPaymentPayload, config?: P
   form.action = endpoint;
   form.style.display = 'none';
 
+  // Standard PayU Enterprise parameters (omit deprecated service_provider)
   const fields: Record<string, string> = {
     key: currentConfig.merchantKey,
     txnid: payload.txnid,
     amount: amountStr,
     productinfo: cleanProductInfo,
     firstname: cleanFirstname,
-    email: payload.email,
-    phone: payload.phone || '9999999999',
+    email: payload.email.trim(),
+    phone: cleanPhone,
     surl: surl,
     furl: furl,
     hash: hash,
-    service_provider: 'payu_paisa',
   };
 
   Object.entries(fields).forEach(([k, v]) => {

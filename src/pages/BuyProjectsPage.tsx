@@ -603,13 +603,14 @@ export const BuyProjectsPage: React.FC = () => {
   };
 
   const handlePayUCheckout = async () => {
+    if (isSubmitting) return;
     if (!fullName.trim() || !email.trim()) {
       alert('Please provide your name and email to proceed.');
       return;
     }
     setIsSubmitting(true);
     try {
-      const generatedTxnId = 'PAYU_' + Date.now() + '_' + Math.floor(1000 + Math.random() * 9000);
+      const generatedTxnId = 'TXN' + Date.now().toString().slice(-8) + Math.random().toString(36).substring(2, 6).toUpperCase();
 
       // If configured with real key in production, launch live PayU Hosted Checkout form
       if (payuConfig.isConfigured && payuConfig.mode === 'production') {
@@ -630,7 +631,7 @@ export const BuyProjectsPage: React.FC = () => {
           {
             txnid: generatedTxnId,
             amount: subtotal,
-            productinfo: itemNames.substring(0, 70),
+            productinfo: itemNames.substring(0, 50),
             firstname: fullName,
             email: email,
             phone: phone || '7999791878',
@@ -1347,6 +1348,15 @@ export const BuyProjectsPage: React.FC = () => {
                           <p className="text-[9px] text-slate-400 text-center italic">
                             🔒 256-bit Encrypted SHA-512 Verification • Live MID: 13843501 • Key: d6nKRr
                           </p>
+
+                          <div className="bg-amber-500/10 border border-amber-500/25 rounded-xl p-3 text-[11px] text-slate-300 space-y-1">
+                            <span className="text-amber-400 font-bold flex items-center gap-1">
+                              ⚡ Note on Gateway Rate Limits:
+                            </span>
+                            <p className="text-[10px] text-slate-300 leading-relaxed">
+                              PayU applies a 60-second security cooldown between rapid clicks. If you see <em>"Too many Requests"</em>, wait 60 seconds before retrying or use the <strong>Manual QR tab</strong> above for instant UPI payment with zero cooldown.
+                            </p>
+                          </div>
                         </div>
                       )}
 

@@ -1,16 +1,31 @@
 /**
  * PayU Automated Payment Service Integration
- * Supports PayU Hosted Checkout & Bolt Web Checkout for INR transactions
+ * Configured with Live Production Credentials for Aryan Raikwar Portfolio
+ * Supports PayU Hosted Checkout (UPI, Cards, NetBanking, Wallets)
  */
 
 export interface PayUConfig {
   merchantKey: string;
   merchantSalt: string;
+  merchantId?: string;
+  clientId?: string;
+  clientSecret?: string;
   mode: 'sandbox' | 'production';
   isConfigured: boolean;
 }
 
 const LOCAL_STORAGE_KEY = 'payu_merchant_config_v1';
+
+// Production Credentials provided from PayU Dashboard
+export const DEFAULT_LIVE_PAYU_CONFIG: PayUConfig = {
+  merchantKey: 'd6nKRr',
+  merchantSalt: 'jLTUUqLZlk5KwZYIZKUxFgxdz8yz9c3C',
+  merchantId: '13843501',
+  clientId: 'f2329d860cfa805a6001f62186272eae6eb24c1e93a2f7f451aec3c046fca8fe',
+  clientSecret: '480ff80486a00c722bc51b1335fd795259cb0600d0ea0ddd93a397c2e29a5825',
+  mode: 'production',
+  isConfigured: true,
+};
 
 export function getPayUConfig(): PayUConfig {
   try {
@@ -21,7 +36,10 @@ export function getPayUConfig(): PayUConfig {
         return {
           merchantKey: parsed.merchantKey.trim(),
           merchantSalt: parsed.merchantSalt.trim(),
-          mode: parsed.mode || 'sandbox',
+          merchantId: parsed.merchantId || DEFAULT_LIVE_PAYU_CONFIG.merchantId,
+          clientId: parsed.clientId || DEFAULT_LIVE_PAYU_CONFIG.clientId,
+          clientSecret: parsed.clientSecret || DEFAULT_LIVE_PAYU_CONFIG.clientSecret,
+          mode: parsed.mode || 'production',
           isConfigured: true,
         };
       }
@@ -33,33 +51,37 @@ export function getPayUConfig(): PayUConfig {
   // Check Vite env
   const envKey = (import.meta as any).env?.VITE_PAYU_MERCHANT_KEY || '';
   const envSalt = (import.meta as any).env?.VITE_PAYU_MERCHANT_SALT || '';
-  const envMode = (import.meta as any).env?.VITE_PAYU_MODE || 'sandbox';
+  const envMode = (import.meta as any).env?.VITE_PAYU_MODE || '';
 
   if (envKey && envSalt) {
     return {
       merchantKey: envKey.trim(),
       merchantSalt: envSalt.trim(),
-      mode: envMode === 'production' ? 'production' : 'sandbox',
+      merchantId: (import.meta as any).env?.VITE_PAYU_MERCHANT_ID || DEFAULT_LIVE_PAYU_CONFIG.merchantId,
+      clientId: (import.meta as any).env?.VITE_PAYU_CLIENT_ID || DEFAULT_LIVE_PAYU_CONFIG.clientId,
+      clientSecret: (import.meta as any).env?.VITE_PAYU_CLIENT_SECRET || DEFAULT_LIVE_PAYU_CONFIG.clientSecret,
+      mode: envMode === 'sandbox' ? 'sandbox' : 'production',
       isConfigured: true,
     };
   }
 
-  // Default sandbox placeholder
-  return {
-    merchantKey: 'gtKFFx', // Standard PayU public test merchant key
-    merchantSalt: 'eCwWELxi', // Standard PayU test salt
-    mode: 'sandbox',
-    isConfigured: false,
-  };
+  // Live Production default
+  return { ...DEFAULT_LIVE_PAYU_CONFIG };
 }
 
-export function savePayUConfig(config: { merchantKey: string; merchantSalt: string; mode: 'sandbox' | 'production' }): void {
+export function savePayUConfig(config: {
+  merchantKey: string;
+  merchantSalt: string;
+  mode: 'sandbox' | 'production';
+  merchantId?: string;
+}): void {
   localStorage.setItem(
     LOCAL_STORAGE_KEY,
     JSON.stringify({
       merchantKey: config.merchantKey.trim(),
       merchantSalt: config.merchantSalt.trim(),
       mode: config.mode,
+      merchantId: config.merchantId || DEFAULT_LIVE_PAYU_CONFIG.merchantId,
     })
   );
 }

@@ -24,6 +24,9 @@ dist-ssr
 *.sw?
 
 .vercel
+.env
+.env.*
+!.env.example
 
 # Saved out of repo codes
 curtain.html

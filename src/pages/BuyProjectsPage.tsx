@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import {
   ShoppingCart,
   ShoppingBag,
@@ -430,14 +431,33 @@ export const BuyProjectsPage: React.FC = () => {
   
   // Checkout flow states
   const [checkoutStep, setCheckoutStep] = useState<'cart' | 'details' | 'payment' | 'success'>('cart');
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [githubHandle, setGithubHandle] = useState('');
+  const [fullName, setFullName] = useState(() => {
+    try { return localStorage.getItem('checkout_fullName') || ''; } catch { return ''; }
+  });
+  const [email, setEmail] = useState(() => {
+    try { return localStorage.getItem('checkout_email') || ''; } catch { return ''; }
+  });
+  const [phone, setPhone] = useState(() => {
+    try { return localStorage.getItem('checkout_phone') || ''; } catch { return ''; }
+  });
+  const [githubHandle, setGithubHandle] = useState(() => {
+    try { return localStorage.getItem('checkout_github') || ''; } catch { return ''; }
+  });
   const [upiTxnId, setUpiTxnId] = useState('');
   const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
   const [orderId, setOrderId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (fullName) localStorage.setItem('checkout_fullName', fullName);
+      if (email) localStorage.setItem('checkout_email', email);
+      if (phone) localStorage.setItem('checkout_phone', phone);
+      if (githubHandle) localStorage.setItem('checkout_github', githubHandle);
+    } catch {
+      // ignore
+    }
+  }, [fullName, email, phone, githubHandle]);
 
   // Sorting and Filtering States
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -941,452 +961,541 @@ export const BuyProjectsPage: React.FC = () => {
         </div>
       )}
 
-      {/* Cart Drawer */}
-      {isCartOpen && (
-        <div className="fixed inset-0 z-[100] overflow-hidden font-mono">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsCartOpen(false)} />
+      {/* Cart Drawer Portal */}
+      {isCartOpen && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[99999] overflow-hidden font-mono" style={{ isolation: 'isolate' }}>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
+            onClick={() => setIsCartOpen(false)}
+          />
 
-          <div className="absolute inset-y-0 right-0 max-w-full flex pl-10 z-[101]">
-            <div className="w-screen max-w-md bg-dark border-l border-white/10 shadow-2xl p-6 flex flex-col h-full relative">
+          {/* Drawer container pinned to right of viewport */}
+          <div className="fixed inset-y-0 right-0 w-full max-w-md bg-[#0a0a0f] border-l border-white/10 shadow-2xl flex flex-col h-full pointer-events-auto z-10">
+            
+            {/* Header */}
+            <div className="flex-shrink-0 flex items-center justify-between border-b border-white/10 p-5 bg-[#0e0e16]">
+              <div className="flex items-center gap-2">
+                <ShoppingCart className="text-primary" size={20} />
+                <h2 className="font-orbitron text-base font-bold text-light uppercase tracking-wider">Your Cart</h2>
+                {cart.length > 0 && (
+                  <span className="text-[11px] bg-primary/20 text-primary px-2 py-0.5 rounded-full font-bold">
+                    {cart.reduce((s, i) => s + i.quantity, 0)} {cart.reduce((s, i) => s + i.quantity, 0) === 1 ? 'item' : 'items'}
+                  </span>
+                )}
+              </div>
+              <button
+                onClick={() => setIsCartOpen(false)}
+                className="w-8 h-8 rounded-lg border border-white/15 flex items-center justify-center hover:border-primary text-slate-300 hover:text-primary transition-colors cursor-pointer"
+                aria-label="Close cart"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Clickable Step Navigation Tabs */}
+            <div className="flex-shrink-0 grid grid-cols-3 gap-1 px-4 py-2.5 text-[11px] font-bold border-b border-white/10 bg-black/40">
+              <button
+                type="button"
+                onClick={() => checkoutStep !== 'success' && setCheckoutStep('cart')}
+                className={`py-1.5 px-2 rounded text-center transition-all cursor-pointer font-orbitron ${
+                  checkoutStep === 'cart'
+                    ? 'bg-primary/20 text-primary border border-primary/40'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                1. Items
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (cart.length > 0 && checkoutStep !== 'success') {
+                    setCheckoutStep('details');
+                  }
+                }}
+                className={`py-1.5 px-2 rounded text-center transition-all cursor-pointer font-orbitron ${
+                  checkoutStep === 'details'
+                    ? 'bg-primary/20 text-primary border border-primary/40'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                2. Details
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (cart.length > 0 && fullName.trim() && email.trim() && checkoutStep !== 'success') {
+                    setCheckoutStep('payment');
+                  }
+                }}
+                className={`py-1.5 px-2 rounded text-center transition-all cursor-pointer font-orbitron ${
+                  checkoutStep === 'payment'
+                    ? 'bg-primary/20 text-primary border border-primary/40'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {isFreeCheckout ? '3. Follow' : '3. Payment'}
+              </button>
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-6">
               
-              {/* Header */}
-              <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                <div className="flex items-center gap-2">
-                  <ShoppingCart className="text-primary" size={20} />
-                  <h2 className="font-orbitron text-lg font-bold text-light uppercase tracking-wider">Your Cart</h2>
-                </div>
-                <button
-                  onClick={() => setIsCartOpen(false)}
-                  className="w-8 h-8 rounded-lg border border-white/15 flex items-center justify-center hover:border-primary text-slate-300 hover:text-primary transition-colors"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-
-              {/* Steps indicators */}
-              <div className="grid grid-cols-3 gap-2 py-4 text-[10px] text-center text-slate-400 font-bold border-b border-white/5">
-                <span className={checkoutStep === 'cart' ? 'text-primary' : ''}>1. Items</span>
-                <span className={checkoutStep === 'details' ? 'text-primary' : ''}>2. Delivery Info</span>
-                <span className={checkoutStep === 'payment' ? 'text-primary' : ''}>
-                  {isFreeCheckout ? '3. Follow GitHub' : '3. Pay UPI'}
-                </span>
-              </div>
-
-              {/* Scrollable Content */}
-              <div className="flex-1 min-h-0 overflow-y-auto py-4 space-y-6 pr-1">
-                
-                {/* STEP 1: CART ITEMS */}
-                {checkoutStep === 'cart' && (
-                  <>
-                    {cart.length === 0 ? (
-                      <div className="h-48 flex flex-col items-center justify-center text-slate-400 gap-3">
-                        <ShoppingBag size={36} className="opacity-40" />
-                        <span className="text-xs">Your cart is empty.</span>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        {cart.map((item) => (
-                          <div key={item.product.id} className="flex gap-4 p-3 bg-white/5 rounded-xl border border-white/5 items-center">
-                            <img src={item.product.imageUrl} className="w-16 h-16 object-cover rounded-lg" alt={item.product.title} />
-                            <div className="flex-grow">
-                              <h4 className="font-bold text-light text-sm">{item.product.title}</h4>
-                              <p className="text-accent text-xs font-bold mt-1">
-                                {item.product.price === 0 ? <span className="text-emerald-400">FREE</span> : `₹${item.product.price}`}
-                              </p>
-                              <span className="text-[10px] text-slate-400 mt-1 block">Full Source Code License</span>
-                            </div>
-                            <button
-                              onClick={() => removeFromCart(item.product.id)}
-                              className="text-slate-400 hover:text-red-400 p-2"
-                              aria-label="Remove item"
-                            >
-                              <Trash2 size={15} />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </>
-                )}
-
-                {/* STEP 2: DELIVERY INFO */}
-                {checkoutStep === 'details' && (
-                  <div className="space-y-4">
-                    <h3 className="font-orbitron text-sm font-bold text-light mb-4">Delivery & Contact Information</h3>
-                    <div className="space-y-1">
-                      <label className="text-[11px] text-slate-400 uppercase">Gmail Address (for ZIP delivery)*</label>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="input-shell text-xs"
-                        placeholder="yourname@gmail.com"
-                        required
-                      />
+              {/* STEP 1: CART ITEMS */}
+              {checkoutStep === 'cart' && (
+                <>
+                  {cart.length === 0 ? (
+                    <div className="h-64 flex flex-col items-center justify-center text-slate-400 gap-3">
+                      <ShoppingBag size={42} className="opacity-40 text-primary" />
+                      <span className="text-sm font-bold text-light">Your cart is empty.</span>
+                      <p className="text-xs text-slate-400 text-center max-w-xs">
+                        Select a project from the catalog and click "Buy Now" or "+Cart" to add it here.
+                      </p>
+                      <button
+                        onClick={() => setIsCartOpen(false)}
+                        className="mt-2 glass text-xs font-bold px-5 py-2 rounded-lg text-primary hover:bg-white/5 border-primary/30 cursor-pointer"
+                      >
+                        Browse Projects
+                      </button>
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-[11px] text-slate-400 uppercase">Your Name*</label>
-                      <input
-                        type="text"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        className="input-shell text-xs"
-                        placeholder="John Doe"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[11px] text-slate-400 uppercase">WhatsApp / Phone (Optional)</label>
-                      <input
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="input-shell text-xs"
-                        placeholder="+91 XXXXX XXXXX"
-                      />
-                    </div>
-                    <p className="text-[10px] text-slate-400 leading-relaxed italic bg-white/5 p-3 rounded-lg border border-white/5">
-                      Information is strictly used to send the project source code ZIP file directly to your Gmail account.
-                    </p>
-                  </div>
-                )}
-
-                {/* STEP 3: PAYMENT / FREE GITHUB FOLLOW */}
-                {checkoutStep === 'payment' && (
-                  <>
-                    {isFreeCheckout ? (
-                      /* FREE CHECKOUT: GITHUB FOLLOW FLOW */
-                      <div className="space-y-5 flex flex-col items-center">
-                        <div className="flex items-center gap-2 text-emerald-400 font-bold font-orbitron">
-                          <Gift size={22} />
-                          <span>Free Project Download</span>
-                        </div>
-                        
-                        <div className="w-full bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-5 text-center space-y-3">
-                          <p className="text-xs font-mono text-slate-200">
-                            This project is <span className="text-emerald-400 font-bold">100% FREE</span>! No payment details required.
-                          </p>
-                          <p className="text-[11px] text-slate-300">
-                            Simply follow <span className="text-primary font-bold">@aaryaninvincible</span> on GitHub to receive your source code ZIP.
-                          </p>
-
-                          <a
-                            href="https://github.com/aaryaninvincible"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="glass border-primary/40 text-primary hover:bg-primary/20 px-4 py-2.5 rounded-lg text-xs font-bold font-mono inline-flex items-center gap-2 justify-center w-full transition-all shadow-[0_0_15px_rgba(255,115,0,0.2)]"
-                          >
-                            <Github size={16} /> Follow @aaryaninvincible on GitHub <ExternalLink size={12} />
-                          </a>
-                        </div>
-
-                        <form onSubmit={handleFreeClaimSubmit} className="w-full space-y-4 border-t border-white/5 pt-4">
-                          <div className="space-y-1">
-                            <label className="text-[10px] text-slate-400 uppercase font-bold">Your GitHub Handle / Username*</label>
-                            <input
-                              type="text"
-                              value={githubHandle}
-                              onChange={(e) => setGithubHandle(e.target.value)}
-                              className="input-shell text-xs font-mono"
-                              placeholder="@yourgithubusername"
-                              required
-                            />
-                          </div>
-                          <p className="text-[9px] text-slate-400 text-center leading-relaxed">
-                            We will verify your follow and email the full project ZIP file directly to <span className="text-light font-bold">{email}</span>.
-                          </p>
-                          <button
-                            type="submit"
-                            disabled={isSubmitting || !githubHandle.trim()}
-                            className="w-full bg-emerald-400 text-black py-3 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-emerald-300 disabled:opacity-50 font-orbitron shadow-[0_0_15px_rgba(52,211,153,0.3)] transition-all"
-                          >
-                            {isSubmitting ? 'Verifying...' : 'Verify Follow & Claim Free ZIP'}
-                          </button>
-                        </form>
-                      </div>
-                    ) : (
-                      /* PAID CHECKOUT: AUTOMATED PAYU & UPI FLOW */
-                      <div className="space-y-5 flex flex-col items-center">
-                        <div className="w-full flex justify-between items-center">
-                          <h3 className="font-orbitron text-sm font-bold text-light">Select Payment Method</h3>
-                          <button
-                            type="button"
-                            onClick={() => setShowPayUSettings(!showPayUSettings)}
-                            className="text-[11px] text-slate-400 hover:text-primary flex items-center gap-1 font-mono transition-colors"
-                          >
-                            <Settings size={12} /> PayU Account Config
-                          </button>
-                        </div>
-
-                        {/* PayU Configuration Modal / Drawer */}
-                        {showPayUSettings && (
-                          <form onSubmit={handleSavePayUSettings} className="w-full bg-slate-900/90 border border-primary/40 rounded-xl p-4 space-y-3 font-mono text-xs">
-                            <div className="flex justify-between items-center text-primary font-bold">
-                              <span>PayU Merchant Credentials</span>
-                              <button type="button" onClick={() => setShowPayUSettings(false)} className="text-slate-400 hover:text-white">✕</button>
-                            </div>
-                            <div className="space-y-1">
-                              <label className="text-[10px] text-slate-400">PAYU MERCHANT KEY</label>
-                              <input
-                                type="text"
-                                value={customKey}
-                                onChange={(e) => setCustomKey(e.target.value)}
-                                placeholder="Enter PayU Key"
-                                className="input-shell text-xs"
-                                required
-                              />
-                            </div>
-                            <div className="space-y-1">
-                              <label className="text-[10px] text-slate-400">PAYU MERCHANT SALT</label>
-                              <input
-                                type="password"
-                                value={customSalt}
-                                onChange={(e) => setCustomSalt(e.target.value)}
-                                placeholder="Enter PayU Salt"
-                                className="input-shell text-xs"
-                                required
-                              />
-                            </div>
-                            <div className="flex gap-4 items-center pt-1 text-[11px]">
-                              <label className="flex items-center gap-1.5 cursor-pointer">
-                                <input
-                                  type="radio"
-                                  name="mode"
-                                  checked={customMode === 'sandbox'}
-                                  onChange={() => setCustomMode('sandbox')}
-                                />
-                                <span>Sandbox (Test)</span>
-                              </label>
-                              <label className="flex items-center gap-1.5 cursor-pointer">
-                                <input
-                                  type="radio"
-                                  name="mode"
-                                  checked={customMode === 'production'}
-                                  onChange={() => setCustomMode('production')}
-                                />
-                                <span className="text-emerald-400 font-bold">Live Production</span>
-                              </label>
-                            </div>
-                            <button
-                              type="submit"
-                              className="w-full bg-primary text-black py-2 rounded font-bold text-xs uppercase tracking-wider hover:opacity-90 mt-2"
-                            >
-                              Save PayU Credentials
-                            </button>
-                          </form>
-                        )}
-
-                        {/* Method Tabs */}
-                        <div className="grid grid-cols-2 gap-2 w-full">
-                          <button
-                            type="button"
-                            onClick={() => setPaymentMethod('payu')}
-                            className={`p-3 rounded-xl border text-left transition-all flex flex-col gap-1 ${
-                              paymentMethod === 'payu'
-                                ? 'bg-primary/10 border-primary text-primary shadow-[0_0_15px_rgba(255,115,0,0.2)]'
-                                : 'bg-black/30 border-white/5 text-slate-400 hover:text-white'
-                            }`}
-                          >
-                            <div className="flex items-center gap-2 font-bold font-orbitron text-xs">
-                              <Zap size={14} className="text-primary" />
-                              <span>PayU Automated</span>
-                            </div>
-                            <span className="text-[10px] text-slate-300">Instant Verification • UPI / Cards</span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => setPaymentMethod('upi')}
-                            className={`p-3 rounded-xl border text-left transition-all flex flex-col gap-1 ${
-                              paymentMethod === 'upi'
-                                ? 'bg-primary/10 border-primary text-primary shadow-[0_0_15px_rgba(255,115,0,0.2)]'
-                                : 'bg-black/30 border-white/5 text-slate-400 hover:text-white'
-                            }`}
-                          >
-                            <div className="flex items-center gap-2 font-bold font-orbitron text-xs">
-                              <QrCode size={14} className="text-primary" />
-                              <span>Manual QR / UTR</span>
-                            </div>
-                            <span className="text-[10px] text-slate-300">Scan QR Code & Upload Receipt</span>
-                          </button>
-                        </div>
-
-                        {/* TAB 1: PAYU AUTOMATED GATEWAY */}
-                        {paymentMethod === 'payu' && (
-                          <div className="w-full space-y-4">
-                            <div className="bg-gradient-to-br from-slate-900 to-black border border-primary/30 rounded-xl p-5 space-y-4 shadow-xl">
-                              <div className="flex justify-between items-center">
-                                <div className="flex items-center gap-2">
-                                  <ShieldCheck size={20} className="text-emerald-400" />
-                                  <span className="font-bold text-sm text-light font-orbitron">PayU Secure Payments</span>
-                                </div>
-                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-mono">
-                                  {payuConfig.mode === 'production' && payuConfig.isConfigured ? 'PRODUCTION LIVE' : 'AUTOMATED VERIFIED'}
-                                </span>
-                              </div>
-
-                              <p className="text-xs text-slate-300 leading-relaxed">
-                                Pay securely with zero manual verification delays. Supports all major payment channels across India:
-                              </p>
-
-                              <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-300 font-mono">
-                                <div className="bg-white/5 p-2 rounded border border-white/5 flex items-center gap-1.5">
-                                  <span>⚡ UPI (GPay, PhonePe, Paytm)</span>
-                                </div>
-                                <div className="bg-white/5 p-2 rounded border border-white/5 flex items-center gap-1.5">
-                                  <span>💳 Credit & Debit Cards</span>
-                                </div>
-                                <div className="bg-white/5 p-2 rounded border border-white/5 flex items-center gap-1.5">
-                                  <span>🏦 NetBanking (50+ Banks)</span>
-                                </div>
-                                <div className="bg-white/5 p-2 rounded border border-white/5 flex items-center gap-1.5">
-                                  <span>📱 Wallets & EMI Options</span>
-                                </div>
-                              </div>
-
-                              <div className="border-t border-white/10 pt-3 flex justify-between items-center text-sm font-bold">
-                                <span className="text-slate-300">Total Payable:</span>
-                                <span className="text-primary font-orbitron text-lg">₹{subtotal}</span>
-                              </div>
-                            </div>
-
-                            <button
-                              type="button"
-                              onClick={handlePayUCheckout}
-                              disabled={isSubmitting}
-                              className="w-full bg-gradient-to-r from-primary to-amber-500 text-black py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:opacity-95 font-orbitron shadow-[0_0_25px_rgba(255,115,0,0.35)] flex items-center justify-center gap-2 transition-all disabled:opacity-50"
-                            >
-                              <CreditCard size={16} />
-                              {isSubmitting ? 'Connecting to PayU Gateway...' : `Proceed to Pay ₹${subtotal} via PayU`}
-                            </button>
-
-                            <p className="text-[9px] text-slate-400 text-center italic">
-                              🔒 256-bit Encrypted SHA-512 Verification • Instant Order & Download ZIP Unlock
+                  ) : (
+                    <div className="space-y-4">
+                      {cart.map((item) => (
+                        <div key={item.product.id} className="flex gap-4 p-3.5 bg-white/5 rounded-xl border border-white/5 items-center">
+                          <img src={item.product.imageUrl} className="w-16 h-16 object-cover rounded-lg flex-shrink-0" alt={item.product.title} />
+                          <div className="flex-grow min-w-0">
+                            <h4 className="font-bold text-light text-xs truncate" title={item.product.title}>{item.product.title}</h4>
+                            <p className="text-accent text-xs font-bold mt-1">
+                              {item.product.price === 0 ? <span className="text-emerald-400">FREE</span> : `₹${item.product.price}`}
                             </p>
+                            <span className="text-[10px] text-slate-400 mt-1 block">Full Source Code License</span>
                           </div>
-                        )}
+                          <button
+                            onClick={() => removeFromCart(item.product.id)}
+                            className="text-slate-400 hover:text-red-400 p-2 cursor-pointer transition-colors"
+                            aria-label="Remove item"
+                            title="Remove item"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
 
-                        {/* TAB 2: MANUAL UPI SCAN & UTR UPLOAD */}
-                        {paymentMethod === 'upi' && (
-                          <div className="w-full space-y-4">
-                            <div className="flex flex-col items-center gap-3 w-full bg-black/40 border border-white/5 rounded-xl p-4">
-                              <div className="bg-white p-2 border border-primary/30 rounded-lg">
-                                <img src="/payment_qr.png" className="w-44 h-52 object-contain" alt="Scan QR code" />
-                              </div>
-                              
-                              <p className="text-[10px] text-slate-400 text-center font-bold">
-                                Scan with GPay, PhonePe, Paytm, BHIM or any UPI App
-                              </p>
-
-                              <div className="w-full border-t border-white/5 pt-3 mt-1 flex flex-col gap-1 text-center text-xs">
-                                <div>UPI ID: <span className="text-primary font-bold">{upiId}</span></div>
-                                <div>Payee: <span className="text-light">{upiName}</span></div>
-                                <div className="text-sm font-bold text-accent">Total Amount: ₹{subtotal}</div>
-                              </div>
-
-                              <a
-                                href={upiPaymentUri}
-                                className="w-full bg-primary text-black py-2.5 rounded-lg text-xs font-bold text-center uppercase tracking-wider hover:opacity-95 md:hidden block mt-2"
-                              >
-                                🚀 Open UPI Mobile App
-                              </a>
-                            </div>
-
-                            <form onSubmit={handlePlaceOrder} className="w-full space-y-4 border-t border-white/5 pt-4">
-                              <div className="space-y-1">
-                                <label className="text-[10px] text-slate-400 uppercase font-bold">Upload Payment Screenshot*</label>
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={(e) => setScreenshotFile(e.target.files?.[0] || null)}
-                                  className="input-shell text-xs"
-                                  required
-                                />
-                              </div>
-                              <div className="space-y-1">
-                                <label className="text-[10px] text-slate-400 uppercase font-bold">UPI Transaction ID / UTR*</label>
-                                <input
-                                  type="text"
-                                  value={upiTxnId}
-                                  onChange={(e) => setUpiTxnId(e.target.value)}
-                                  className="input-shell text-xs text-center font-bold"
-                                  placeholder="e.g. 308945672314"
-                                  required
-                                />
-                              </div>
-                              <button
-                                type="submit"
-                                disabled={isSubmitting || !upiTxnId.trim() || !screenshotFile}
-                                className="w-full bg-primary text-black py-3 rounded-lg text-xs font-bold uppercase tracking-widest hover:shadow-[0_0_15px_rgba(255,115,0,0.3)] disabled:opacity-50 font-orbitron"
-                              >
-                                {isSubmitting ? 'Submitting Receipt...' : 'Confirm Payment & Order'}
-                              </button>
-                            </form>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </>
-                )}
-
-
-                {/* SUCCESS SCREEN */}
-                {checkoutStep === 'success' && (
-                  <div className="flex flex-col items-center justify-center py-10 text-center space-y-4">
-                    <CheckCircle2 size={48} className="text-emerald-400 animate-pulse" />
-                    <h3 className="font-orbitron text-lg font-bold text-light">
-                      {isFreeCheckout ? 'Free Project Claimed! 🎉' : 'Order Submitted!'}
-                    </h3>
-                    <p className="text-xs text-slate-300 leading-relaxed font-mono">
-                      Your reference ID is <span className="text-primary font-bold">{orderId}</span>. 
-                    </p>
-                    <p className="text-[11px] text-slate-300 leading-relaxed">
-                      {isFreeCheckout ? (
-                        <>Thank you for following on GitHub! The project ZIP file will be sent directly to <span className="text-light font-bold">{email}</span> shortly.</>
-                      ) : (
-                        <>Aryan Raikwar will verify the UPI Transaction ID (<span className="text-light font-bold">{upiTxnId}</span>) and email the repository link or zip download to <span className="text-light font-bold">{email}</span> shortly.</>
-                      )}
-                    </p>
-                    <button
-                      onClick={() => {
-                        setCheckoutStep('cart');
-                        setIsCartOpen(false);
-                      }}
-                      className="glass text-xs font-bold px-6 py-2.5 rounded-lg text-primary hover:bg-white/5 border-primary/20"
-                    >
-                      Continue Browsing
-                    </button>
+              {/* STEP 2: DELIVERY INFO */}
+              {checkoutStep === 'details' && (
+                <div className="space-y-4">
+                  <h3 className="font-orbitron text-sm font-bold text-light mb-2">Delivery & Contact Information</h3>
+                  <div className="space-y-1">
+                    <label className="text-[11px] text-slate-400 uppercase font-bold">Gmail Address (for ZIP delivery)*</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="input-shell text-xs"
+                      placeholder="aryanraikwar78@gmail.com"
+                      required
+                    />
                   </div>
-                )}
-              </div>
-
-              {/* Bottom Drawer Footer */}
-              {checkoutStep !== 'success' && checkoutStep !== 'payment' && cart.length > 0 && (
-                <div className="border-t border-white/10 pt-4 mt-auto">
-                  <div className="flex justify-between items-center text-sm mb-4">
-                    <span className="text-slate-400">Total Items:</span>
-                    <span className="text-light font-bold">{cart.reduce((s, i) => s + i.quantity, 0)}</span>
+                  <div className="space-y-1">
+                    <label className="text-[11px] text-slate-400 uppercase font-bold">Your Name*</label>
+                    <input
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="input-shell text-xs"
+                      placeholder="Aryan Raikwar"
+                      required
+                    />
                   </div>
-                  <div className="flex justify-between items-center text-sm mb-6">
-                    <span className="text-slate-400">Subtotal:</span>
-                    <span className="text-primary font-bold text-lg">
-                      {subtotal === 0 ? <span className="text-emerald-400">FREE</span> : `₹${subtotal}`}
-                    </span>
+                  <div className="space-y-1">
+                    <label className="text-[11px] text-slate-400 uppercase font-bold">WhatsApp / Phone (for order updates)</label>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="input-shell text-xs"
+                      placeholder="+91 79997 91878"
+                    />
                   </div>
-                  <button
-                    onClick={handleNextStep}
-                    className="w-full bg-primary text-black py-3 rounded-lg text-xs font-bold font-orbitron uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-95 shadow-[0_0_15px_rgba(255,115,0,0.2)]"
-                  >
-                    <span>
-                      Proceed to {checkoutStep === 'cart' ? 'Delivery Details' : (isFreeCheckout ? 'GitHub Verification' : 'UPI Payment')}
-                    </span>
-                  </button>
+                  <p className="text-[10px] text-slate-400 leading-relaxed italic bg-white/5 p-3 rounded-lg border border-white/5">
+                    Your details are strictly used to deliver verified source code repositories, download links, and ZIP files directly to your Gmail.
+                  </p>
                 </div>
               )}
 
+              {/* STEP 3: PAYMENT / FREE GITHUB FOLLOW */}
+              {checkoutStep === 'payment' && (
+                <>
+                  <div className="flex items-center justify-between pb-1">
+                    <button
+                      type="button"
+                      onClick={() => setCheckoutStep('details')}
+                      className="text-xs text-slate-400 hover:text-primary flex items-center gap-1 cursor-pointer font-mono transition-colors"
+                    >
+                      ← Back to Details
+                    </button>
+                    {!isFreeCheckout && (
+                      <button
+                        type="button"
+                        onClick={() => setShowPayUSettings(!showPayUSettings)}
+                        className="text-[10px] text-slate-400 hover:text-primary flex items-center gap-1 font-mono transition-colors cursor-pointer"
+                      >
+                        <Settings size={12} /> PayU Keys
+                      </button>
+                    )}
+                  </div>
+
+                  {isFreeCheckout ? (
+                    /* FREE CHECKOUT: GITHUB FOLLOW FLOW */
+                    <div className="space-y-5 flex flex-col items-center">
+                      <div className="flex items-center gap-2 text-emerald-400 font-bold font-orbitron">
+                        <Gift size={22} />
+                        <span>Free Project Download</span>
+                      </div>
+                      
+                      <div className="w-full bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-5 text-center space-y-3">
+                        <p className="text-xs font-mono text-slate-200">
+                          This project is <span className="text-emerald-400 font-bold">100% FREE</span>! No payment details required.
+                        </p>
+                        <p className="text-[11px] text-slate-300">
+                          Simply follow <span className="text-primary font-bold">@aaryaninvincible</span> on GitHub to receive your source code ZIP.
+                        </p>
+
+                        <a
+                          href="https://github.com/aaryaninvincible"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="glass border-primary/40 text-primary hover:bg-primary/20 px-4 py-2.5 rounded-lg text-xs font-bold font-mono inline-flex items-center gap-2 justify-center w-full transition-all shadow-[0_0_15px_rgba(255,115,0,0.2)]"
+                        >
+                          <Github size={16} /> Follow @aaryaninvincible on GitHub <ExternalLink size={12} />
+                        </a>
+                      </div>
+
+                      <form onSubmit={handleFreeClaimSubmit} className="w-full space-y-4 border-t border-white/5 pt-4">
+                        <div className="space-y-1">
+                          <label className="text-[10px] text-slate-400 uppercase font-bold">Your GitHub Handle / Username*</label>
+                          <input
+                            type="text"
+                            value={githubHandle}
+                            onChange={(e) => setGithubHandle(e.target.value)}
+                            className="input-shell text-xs font-mono"
+                            placeholder="@yourgithubusername"
+                            required
+                          />
+                        </div>
+                        <p className="text-[9px] text-slate-400 text-center leading-relaxed">
+                          We will verify your follow and email the full project ZIP file directly to <span className="text-light font-bold">{email}</span>.
+                        </p>
+                        <button
+                          type="submit"
+                          disabled={isSubmitting || !githubHandle.trim()}
+                          className="w-full bg-emerald-400 text-black py-3 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-emerald-300 disabled:opacity-50 font-orbitron shadow-[0_0_15px_rgba(52,211,153,0.3)] transition-all cursor-pointer"
+                        >
+                          {isSubmitting ? 'Verifying...' : 'Verify Follow & Claim Free ZIP'}
+                        </button>
+                      </form>
+                    </div>
+                  ) : (
+                    /* PAID CHECKOUT: AUTOMATED PAYU & UPI FLOW */
+                    <div className="space-y-5 flex flex-col items-center">
+                      {/* PayU Configuration Modal / Drawer */}
+                      {showPayUSettings && (
+                        <form onSubmit={handleSavePayUSettings} className="w-full bg-slate-900/90 border border-primary/40 rounded-xl p-4 space-y-3 font-mono text-xs">
+                          <div className="flex justify-between items-center text-primary font-bold">
+                            <span>PayU Merchant Credentials</span>
+                            <button type="button" onClick={() => setShowPayUSettings(false)} className="text-slate-400 hover:text-white cursor-pointer">✕</button>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] text-slate-400">PAYU MERCHANT KEY</label>
+                            <input
+                              type="text"
+                              value={customKey}
+                              onChange={(e) => setCustomKey(e.target.value)}
+                              placeholder="d6nKRr"
+                              className="input-shell text-xs"
+                              required
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] text-slate-400">PAYU MERCHANT SALT</label>
+                            <input
+                              type="password"
+                              value={customSalt}
+                              onChange={(e) => setCustomSalt(e.target.value)}
+                              placeholder="Enter PayU Salt"
+                              className="input-shell text-xs"
+                              required
+                            />
+                          </div>
+                          <div className="flex gap-4 items-center pt-1 text-[11px]">
+                            <label className="flex items-center gap-1.5 cursor-pointer">
+                              <input
+                                type="radio"
+                                name="mode"
+                                checked={customMode === 'sandbox'}
+                                onChange={() => setCustomMode('sandbox')}
+                              />
+                              <span>Sandbox (Test)</span>
+                            </label>
+                            <label className="flex items-center gap-1.5 cursor-pointer">
+                              <input
+                                type="radio"
+                                name="mode"
+                                checked={customMode === 'production'}
+                                onChange={() => setCustomMode('production')}
+                              />
+                              <span className="text-emerald-400 font-bold">Live Production</span>
+                            </label>
+                          </div>
+                          <button
+                            type="submit"
+                            className="w-full bg-primary text-black py-2 rounded font-bold text-xs uppercase tracking-wider hover:opacity-90 mt-2 cursor-pointer"
+                          >
+                            Save PayU Credentials
+                          </button>
+                        </form>
+                      )}
+
+                      {/* Method Tabs */}
+                      <div className="grid grid-cols-2 gap-2 w-full">
+                        <button
+                          type="button"
+                          onClick={() => setPaymentMethod('payu')}
+                          className={`p-3 rounded-xl border text-left transition-all flex flex-col gap-1 cursor-pointer ${
+                            paymentMethod === 'payu'
+                              ? 'bg-primary/10 border-primary text-primary shadow-[0_0_15px_rgba(255,115,0,0.2)]'
+                              : 'bg-black/30 border-white/5 text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 font-bold font-orbitron text-xs">
+                            <Zap size={14} className="text-primary" />
+                            <span>PayU Gateway</span>
+                          </div>
+                          <span className="text-[10px] text-slate-300">Automated Live • Instant</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setPaymentMethod('upi')}
+                          className={`p-3 rounded-xl border text-left transition-all flex flex-col gap-1 cursor-pointer ${
+                            paymentMethod === 'upi'
+                              ? 'bg-primary/10 border-primary text-primary shadow-[0_0_15px_rgba(255,115,0,0.2)]'
+                              : 'bg-black/30 border-white/5 text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 font-bold font-orbitron text-xs">
+                            <QrCode size={14} className="text-primary" />
+                            <span>Manual QR</span>
+                          </div>
+                          <span className="text-[10px] text-slate-300">UPI Scan & Upload</span>
+                        </button>
+                      </div>
+
+                      {/* TAB 1: PAYU AUTOMATED GATEWAY */}
+                      {paymentMethod === 'payu' && (
+                        <div className="w-full space-y-4">
+                          <div className="bg-gradient-to-br from-slate-900 to-black border border-primary/30 rounded-xl p-5 space-y-4 shadow-xl">
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-center gap-2">
+                                <ShieldCheck size={20} className="text-emerald-400" />
+                                <span className="font-bold text-sm text-light font-orbitron">PayU Automated Live</span>
+                              </div>
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-mono font-bold">
+                                {payuConfig.mode === 'production' && payuConfig.isConfigured ? 'LIVE GATEWAY' : 'TEST MODE'}
+                              </span>
+                            </div>
+
+                            <p className="text-xs text-slate-300 leading-relaxed">
+                              Pay securely via PayU Live with instant verification and direct access link delivery to <span className="text-light font-bold">{email}</span>.
+                            </p>
+
+                            <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-300 font-mono">
+                              <div className="bg-white/5 p-2 rounded border border-white/5 flex items-center gap-1.5">
+                                <span>⚡ UPI Apps (GPay, PhonePe, Paytm)</span>
+                              </div>
+                              <div className="bg-white/5 p-2 rounded border border-white/5 flex items-center gap-1.5">
+                                <span>💳 All Cards (Debit / Credit)</span>
+                              </div>
+                              <div className="bg-white/5 p-2 rounded border border-white/5 flex items-center gap-1.5">
+                                <span>🏦 NetBanking (50+ Banks)</span>
+                              </div>
+                              <div className="bg-white/5 p-2 rounded border border-white/5 flex items-center gap-1.5">
+                                <span>📱 Wallets & EMI</span>
+                              </div>
+                            </div>
+
+                            <div className="border-t border-white/10 pt-3 flex justify-between items-center text-sm font-bold">
+                              <span className="text-slate-300">Total Payable:</span>
+                              <span className="text-primary font-orbitron text-xl">₹{subtotal}</span>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={handlePayUCheckout}
+                            disabled={isSubmitting}
+                            className="w-full bg-gradient-to-r from-primary to-amber-500 text-black py-4 rounded-xl text-xs font-bold uppercase tracking-widest hover:opacity-95 font-orbitron shadow-[0_0_25px_rgba(255,115,0,0.35)] flex items-center justify-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
+                          >
+                            <CreditCard size={18} />
+                            {isSubmitting ? 'Connecting to PayU Gateway...' : `Proceed to Pay ₹${subtotal} via PayU`}
+                          </button>
+
+                          <p className="text-[9px] text-slate-400 text-center italic">
+                            🔒 256-bit Encrypted SHA-512 Verification • Live MID: 13843501 • Key: d6nKRr
+                          </p>
+                        </div>
+                      )}
+
+                      {/* TAB 2: MANUAL UPI SCAN & UTR UPLOAD */}
+                      {paymentMethod === 'upi' && (
+                        <div className="w-full space-y-4">
+                          <div className="flex flex-col items-center gap-3 w-full bg-black/40 border border-white/5 rounded-xl p-4">
+                            <div className="bg-white p-2 border border-primary/30 rounded-lg">
+                              <img src="/payment_qr.png" className="w-44 h-52 object-contain" alt="Scan QR code" />
+                            </div>
+                            
+                            <p className="text-[10px] text-slate-400 text-center font-bold">
+                              Scan with GPay, PhonePe, Paytm, BHIM or any UPI App
+                            </p>
+
+                            <div className="w-full border-t border-white/5 pt-3 mt-1 flex flex-col gap-1 text-center text-xs">
+                              <div>UPI ID: <span className="text-primary font-bold">{upiId}</span></div>
+                              <div>Payee: <span className="text-light">{upiName}</span></div>
+                              <div className="text-sm font-bold text-accent">Total Amount: ₹{subtotal}</div>
+                            </div>
+
+                            <a
+                              href={upiPaymentUri}
+                              className="w-full bg-primary text-black py-2.5 rounded-lg text-xs font-bold text-center uppercase tracking-wider hover:opacity-95 md:hidden block mt-2"
+                            >
+                              🚀 Open UPI Mobile App
+                            </a>
+                          </div>
+
+                          <form onSubmit={handlePlaceOrder} className="w-full space-y-4 border-t border-white/5 pt-4">
+                            <div className="space-y-1">
+                              <label className="text-[10px] text-slate-400 uppercase font-bold">Upload Payment Screenshot*</label>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => setScreenshotFile(e.target.files?.[0] || null)}
+                                className="input-shell text-xs"
+                                required
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-[10px] text-slate-400 uppercase font-bold">UPI Transaction ID / UTR*</label>
+                              <input
+                                type="text"
+                                value={upiTxnId}
+                                onChange={(e) => setUpiTxnId(e.target.value)}
+                                className="input-shell text-xs text-center font-bold"
+                                placeholder="e.g. 308945672314"
+                                required
+                              />
+                            </div>
+                            <button
+                              type="submit"
+                              disabled={isSubmitting || !upiTxnId.trim() || !screenshotFile}
+                              className="w-full bg-primary text-black py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:shadow-[0_0_15px_rgba(255,115,0,0.3)] disabled:opacity-50 font-orbitron cursor-pointer"
+                            >
+                              {isSubmitting ? 'Submitting Receipt...' : 'Confirm Payment & Order'}
+                            </button>
+                          </form>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* SUCCESS SCREEN */}
+              {checkoutStep === 'success' && (
+                <div className="flex flex-col items-center justify-center py-10 text-center space-y-4">
+                  <CheckCircle2 size={48} className="text-emerald-400 animate-pulse" />
+                  <h3 className="font-orbitron text-lg font-bold text-light">
+                    {isFreeCheckout ? 'Free Project Claimed! 🎉' : 'Order Placed Successfully!'}
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed font-mono">
+                    Order Reference ID: <span className="text-primary font-bold">{orderId}</span>
+                  </p>
+                  <p className="text-[11px] text-slate-300 leading-relaxed">
+                    {isFreeCheckout ? (
+                      <>Thank you for following on GitHub! The project ZIP file will be sent directly to <span className="text-light font-bold">{email}</span> shortly.</>
+                    ) : (
+                      <>Your payment has been logged. Project source code ZIP and repository access link will be dispatched directly to <span className="text-light font-bold">{email}</span> shortly.</>
+                    )}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setCheckoutStep('cart');
+                      setIsCartOpen(false);
+                    }}
+                    className="glass text-xs font-bold px-6 py-2.5 rounded-lg text-primary hover:bg-white/5 border-primary/20 cursor-pointer"
+                  >
+                    Continue Browsing
+                  </button>
+                </div>
+              )}
             </div>
+
+            {/* Bottom Drawer Sticky Footer for Step 1 (Cart) */}
+            {checkoutStep === 'cart' && cart.length > 0 && (
+              <div className="flex-shrink-0 border-t border-white/10 p-5 bg-[#0e0e16]/95 backdrop-blur shadow-2xl space-y-3">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-slate-400">Total Items:</span>
+                  <span className="text-light font-bold font-mono">{cart.reduce((s, i) => s + i.quantity, 0)}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-slate-300 font-bold">Subtotal:</span>
+                  <span className="text-primary font-bold text-xl font-orbitron">
+                    {subtotal === 0 ? <span className="text-emerald-400">FREE</span> : `₹${subtotal}`}
+                  </span>
+                </div>
+                <button
+                  onClick={() => setCheckoutStep('details')}
+                  className="w-full bg-primary text-black py-3.5 rounded-xl text-xs font-bold font-orbitron uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-95 shadow-[0_0_20px_rgba(255,115,0,0.3)] cursor-pointer transition-all"
+                >
+                  <span>Proceed to Delivery Details →</span>
+                </button>
+              </div>
+            )}
+
+            {/* Bottom Drawer Sticky Footer for Step 2 (Details) */}
+            {checkoutStep === 'details' && cart.length > 0 && (
+              <div className="flex-shrink-0 border-t border-white/10 p-5 bg-[#0e0e16]/95 backdrop-blur shadow-2xl space-y-3">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-slate-400">Subtotal:</span>
+                  <span className="text-primary font-bold text-base font-orbitron">
+                    {subtotal === 0 ? <span className="text-emerald-400">FREE</span> : `₹${subtotal}`}
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setCheckoutStep('cart')}
+                    className="px-4 py-3 rounded-xl border border-white/15 text-slate-300 hover:text-white hover:bg-white/5 text-xs font-bold transition-all cursor-pointer font-orbitron"
+                  >
+                    ← Cart
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNextStep}
+                    className="flex-1 bg-primary text-black py-3.5 rounded-xl text-xs font-bold font-orbitron uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-95 shadow-[0_0_20px_rgba(255,115,0,0.3)] cursor-pointer transition-all"
+                  >
+                    <span>Proceed to {isFreeCheckout ? 'Verification' : 'Payment'} →</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
